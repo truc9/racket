@@ -5,30 +5,51 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/truc9/racket/domain"
-	"github.com/truc9/racket/dto"
+	"github.com/truc9/racket/handler/dto"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
-type Match struct {
-	Db *gorm.DB
+type matchHandler struct {
+	db    *gorm.DB
+	sugar *zap.SugaredLogger
 }
 
-func (h Match) GetAll(ctx *gin.Context) {
+func NewMatchHandler(db *gorm.DB, sugar *zap.SugaredLogger) *matchHandler {
+	return &matchHandler{
+		db:    db,
+		sugar: sugar,
+	}
+}
+
+func (h matchHandler) GetAll(ctx *gin.Context) {
 	var result []domain.Match
-	h.Db.Find(&result)
+	h.db.Find(&result)
 	ctx.JSON(http.StatusOK, result)
 }
 
-func (h Match) Create(ctx *gin.Context) {
+func (h matchHandler) Create(ctx *gin.Context) {
 	dto := dto.MatchDto{}
-	if err := ctx.ShouldBindJSON(&dto); err != nil {
-		m := &domain.Match{
-			Start:    dto.Start,
-			End:      dto.End,
-			Location: dto.Location,
-		}
-		h.Db.Create(m)
-		ctx.JSON(http.StatusCreated, m)
+	var err error
+	if err = ctx.BindJSON(&dto); err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
 	}
-	ctx.JSON(http.StatusBadRequest, nil)
+
+	h.sugar.Debug(dto)
+
+	m := &domain.Match{
+		Start:    dto.Start,
+		End:      dto.End,
+		Location: dto.Location,
+	}
+
+	h.sugar.Debug(m)
+
+	if err = h.db.Create(m).Error; err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, m)
 }

@@ -1,26 +1,46 @@
 package main
 
 import (
+	"time"
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/truc9/racket/db"
+	database "github.com/truc9/racket/db"
 	"github.com/truc9/racket/handler"
+	"go.uber.org/zap"
 )
 
 func main() {
-	route := gin.Default()
-	db := db.CreateDB()
-	matchHandler := handler.Match{Db: db}
-	playerHandler := handler.Player{Db: db}
-	regHandler := handler.Reg{Db: db}
+	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowMethods:     []string{"PUT", "POST", "GET", "DELETE", "PATCH"},
+		AllowHeaders:     []string{"*"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
-	route.GET("/health", func(ctx *gin.Context) {
+	db := database.CreateDB()
+	logger, _ := zap.NewDevelopment()
+	defer logger.Sync()
+	sugar := logger.Sugar()
+
+	matchHandler := handler.NewMatchHandler(db, sugar)
+	playerHandler := handler.NewPlayerHandler(db, sugar)
+	regHandler := handler.NewRegHandler(db, sugar)
+
+	// Healthcheck
+	router.GET("/health", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
 			"message": "ok",
 		})
 	})
 
-	v1 := route.Group("/api/v1")
+	// API v1
+	v1 := router.Group("/api/v1")
 	{
+		v1.GET("/players", playerHandler.GetAll)
 		v1.POST("/players", playerHandler.Create)
 		v1.POST("/matches", matchHandler.Create)
 		v1.GET("/matches", matchHandler.GetAll)
@@ -28,5 +48,5 @@ func main() {
 		v1.POST("/registrations", regHandler.Create)
 	}
 
-	route.Run()
+	router.Run()
 }

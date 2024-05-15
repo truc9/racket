@@ -5,23 +5,41 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/truc9/racket/domain"
-	"github.com/truc9/racket/dto"
+	"github.com/truc9/racket/handler/dto"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
-type Player struct {
-	Db *gorm.DB
+type playerHandler struct {
+	db    *gorm.DB
+	sugar *zap.SugaredLogger
 }
 
-func (h Player) Create(ctx *gin.Context) {
-	dto := dto.PlayerDto{}
-	if err := ctx.ShouldBindJSON(&dto); err != nil {
-		p := &domain.Player{
-			FirstName: dto.FirstName,
-			LastName:  dto.LastName,
-		}
-		h.Db.Create(p)
-		ctx.JSON(http.StatusCreated, p)
+func NewPlayerHandler(db *gorm.DB, sugar *zap.SugaredLogger) *playerHandler {
+	return &playerHandler{
+		db:    db,
+		sugar: sugar,
 	}
-	ctx.JSON(http.StatusBadRequest, nil)
+}
+
+func (h playerHandler) Create(ctx *gin.Context) {
+	dto := dto.PlayerDto{}
+	var err error
+	if err = ctx.BindJSON(&dto); err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	p := &domain.Player{
+		FirstName: dto.FirstName,
+		LastName:  dto.LastName,
+	}
+	h.db.Create(p)
+	ctx.JSON(http.StatusCreated, p)
+}
+
+func (h playerHandler) GetAll(ctx *gin.Context) {
+	var result []domain.Player
+	h.db.Find(&result)
+	ctx.JSON(http.StatusOK, result)
 }

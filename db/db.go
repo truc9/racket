@@ -32,7 +32,7 @@ func CreateDB() *gorm.DB {
 			&domain.Match{},
 			&domain.Registration{},
 		)
-		db = dbCtx
+		db = dbCtx.Debug()
 	})
 
 	return db
