@@ -23,7 +23,7 @@ func NewRegHandler(db *gorm.DB, sugar *zap.SugaredLogger) *registrationHandler {
 	}
 }
 
-func (h registrationHandler) Create(ctx *gin.Context) {
+func (h registrationHandler) Register(ctx *gin.Context) {
 	dto := dto.RegistrationDto{}
 	var err error
 	if err = ctx.BindJSON(&dto); err != nil {
@@ -31,13 +31,28 @@ func (h registrationHandler) Create(ctx *gin.Context) {
 		return
 	}
 
-	p := &domain.Registration{
-		PlayerId: dto.PlayerId,
-		MatchId:  dto.MatchId,
-		IsPaid:   false,
+	var count int64
+	h.db.Model(&domain.Registration{}).
+		Where("player_id = ? AND match_id = ?", dto.PlayerId, dto.MatchId).
+		Count(&count)
+
+	if count > 0 {
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Player already registered this match"})
+	} else {
+		p := &domain.Registration{
+			PlayerId: dto.PlayerId,
+			MatchId:  dto.MatchId,
+			IsPaid:   false,
+		}
+		h.db.Create(p)
+		ctx.JSON(http.StatusCreated, p)
 	}
-	h.db.Create(p)
-	ctx.JSON(http.StatusCreated, p)
+}
+
+func (h registrationHandler) Unregister(ctx *gin.Context) {
+	id, _ := ctx.Params.Get("id")
+	h.db.Model(&domain.Registration{}).Delete(id)
+	ctx.JSON(http.StatusOK, id)
 }
 
 func (h registrationHandler) GetAll(ctx *gin.Context) {

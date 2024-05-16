@@ -44,8 +44,10 @@ func main() {
 		v1.POST("/players", playerHandler.Create)
 		v1.POST("/matches", matchHandler.Create)
 		v1.GET("/matches", matchHandler.GetAll)
+		v1.GET("/matches/:matchId/registrations", matchHandler.GetRegistrationsByMatch)
 		v1.GET("/registrations", regHandler.GetAll)
-		v1.POST("/registrations", regHandler.Create)
+		v1.POST("/registrations", regHandler.Register)
+		v1.DELETE("/registrations/:id", regHandler.Unregister)
 	}
 
 	router.Run()

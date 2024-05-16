@@ -18,6 +18,7 @@ var (
 func CreateDB() *gorm.DB {
 	once.Do(func() {
 		dbCtx, err := gorm.Open(postgres.Open("postgres://postgres:admin@localhost:5432/racket?sslmode=disable"), &gorm.Config{
+			PrepareStmt: true,
 			NowFunc: func() time.Time {
 				return time.Now().UTC()
 			},

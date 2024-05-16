@@ -53,3 +53,27 @@ func (h matchHandler) Create(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusCreated, m)
 }
+
+func (h matchHandler) GetRegistrationsByMatch(ctx *gin.Context) {
+	var result []dto.RegistrationOverviewDto
+	matchId, _ := ctx.Params.Get("matchId")
+	h.sugar.Infof("getting match id %s", matchId)
+	h.db.Raw(`
+	SELECT 
+		m.id AS match_id, 
+		m.location, 
+		m.start, 
+		m.end, 
+		p.id AS player_id, 
+		CONCAT(p.first_name, ' ', p.last_name) AS player_name,
+		r.is_paid AS is_paid
+	FROM "matches" m 
+	JOIN "registrations" r on m.id = r.match_id
+	JOIN "players" p on p.id = r.player_id
+	WHERE m.id = ?
+	`, matchId).Scan(&result)
+
+	h.sugar.Info(result)
+
+	ctx.JSON(http.StatusOK, result)
+}
