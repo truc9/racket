@@ -15,7 +15,7 @@ interface NavItemProps {
 const NavItem: FC<NavItemProps> = ({ label, path, icon, showLabel = true }) => {
   return (
     <NavLink
-      className="hover:bg-gradient-to-r hover:font-bold [&.active]:bg-gradient-to-r [&.active]:font-bold from-green-300 to-green-400 px-4 py-3 rounded flex items-center gap-2"
+      className="flex items-center gap-2 rounded from-green-300 to-green-400 px-4 py-3 hover:bg-gradient-to-r hover:font-bold [&.active]:bg-gradient-to-r [&.active]:font-bold"
       to={path}
     >
       <span className="text-xl">{icon}</span>
@@ -26,27 +26,27 @@ const NavItem: FC<NavItemProps> = ({ label, path, icon, showLabel = true }) => {
 
 function Layout() {
   const APP_NAME = "RACKET";
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
 
   function toggleSideNav() {
     setCollapsed(!collapsed);
   }
 
   return (
-    <div className="flex w-screen h-screen">
+    <div className="flex h-screen w-screen">
       <div
         className={cx(
-          "group transition-all delay-100 relative h-full bg-green-400 text-white flex-shrink-0 flex-grow-0 border-r",
+          "group relative h-full flex-shrink-0 flex-grow-0 border-r bg-green-400 text-white transition-all delay-100",
           !collapsed && "w-[250px]",
-          collapsed && "w-16"
+          collapsed && "w-16",
         )}
       >
         {collapsed ? (
-          <div className="text-2xl font-bold p-2 text-center">
+          <div className="p-2 text-center text-2xl font-bold">
             {APP_NAME.substring(0, 1)}
           </div>
         ) : (
-          <div className="text-2xl font-bold p-2 text-center">{APP_NAME}</div>
+          <div className="p-2 text-center text-2xl font-bold">{APP_NAME}</div>
         )}
         <div className="flex flex-col p-2">
           <NavItem
@@ -76,7 +76,7 @@ function Layout() {
         </div>
         <button
           onClick={toggleSideNav}
-          className="hidden group-hover:block absolute top-2 -right-2 text-lg rounded-full ring-green-500 bg-white text-green-500 shadow border border-green-500"
+          className="absolute -right-2 top-2 hidden rounded-full border border-green-500 bg-white text-lg text-green-500 shadow ring-green-500 group-hover:block"
         >
           <FiChevronLeft className={cx(collapsed && "rotate-180")} />
         </button>

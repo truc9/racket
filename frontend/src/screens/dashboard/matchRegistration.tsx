@@ -44,13 +44,13 @@ const MatchRegistration: React.FC<Prop> = ({ match }) => {
   });
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col">
       {registrations &&
         registrations.map((reg) => {
           return (
             <div
               key={reg.playerId}
-              className="grid h-16 grid-cols-3 items-center gap-5"
+              className="grid grid-cols-3 items-center gap-2"
             >
               <span>{reg.playerName}</span>
               <div>

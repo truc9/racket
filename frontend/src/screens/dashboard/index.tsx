@@ -27,14 +27,7 @@ function Dashboard() {
             <Accordion variant="separated" value={`${todayMatch.id}`}>
               <Accordion.Item key={todayMatch.id} value={`${todayMatch.id}`}>
                 <Accordion.Control icon={<FiMapPin />}>
-                  <div
-                    className={clsx(
-                      dayjs(todayMatch.start).isSame(new Date(), "date")
-                        ? "text-red-500"
-                        : "text-slate-300",
-                      "flex items-center justify-between px-5",
-                    )}
-                  >
+                  <div className="flex items-center justify-between px-5">
                     <div className="flex items-center gap-2">
                       <span>
                         {dayjs(todayMatch.start).format("dddd")} -{" "}
