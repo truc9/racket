@@ -24,7 +24,7 @@ func NewMatchHandler(db *gorm.DB, sugar *zap.SugaredLogger) *matchHandler {
 
 func (h matchHandler) GetAll(ctx *gin.Context) {
 	var result []domain.Match
-	h.db.Find(&result)
+	h.db.Order("start DESC").Find(&result)
 	ctx.JSON(http.StatusOK, result)
 }
 
@@ -62,6 +62,7 @@ func (h matchHandler) GetRegistrationsByMatch(ctx *gin.Context) {
 		SELECT pl.id AS player_id, CONCAT(pl.first_name, ' ', pl.last_name) AS player_name, re.id AS registration_id, re.match_id, re.is_paid
 		FROM "players" pl
 		LEFT JOIN "registrations" re ON pl.id = re.player_id AND re.deleted_at IS NULL AND re.match_id = ?
+		ORDER BY pl.first_name ASC
 	`, matchId).Scan(&result)
 
 	h.sugar.Info(result)

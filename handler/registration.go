@@ -55,6 +55,26 @@ func (h registrationHandler) Unregister(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, id)
 }
 
+func (h registrationHandler) MarkPaid(ctx *gin.Context) {
+	registrationId, _ := ctx.Params.Get("registrationId")
+	entity := domain.Registration{}
+	h.db.Find(&entity, registrationId)
+
+	entity.MarkPaid()
+	h.db.Save(&entity)
+	ctx.JSON(http.StatusOK, entity)
+}
+
+func (h registrationHandler) MarkUnPaid(ctx *gin.Context) {
+	registrationId, _ := ctx.Params.Get("registrationId")
+	entity := domain.Registration{}
+	h.db.Find(&entity, registrationId)
+
+	entity.MarkUnpaid()
+	h.db.Save(&entity)
+	ctx.JSON(http.StatusOK, entity)
+}
+
 func (h registrationHandler) GetAll(ctx *gin.Context) {
 	var result []dto.RegistrationOverviewDto
 	h.sugar.Info("querying registration report")

@@ -40,6 +40,6 @@ func (h playerHandler) Create(ctx *gin.Context) {
 
 func (h playerHandler) GetAll(ctx *gin.Context) {
 	var result []domain.Player
-	h.db.Find(&result)
+	h.db.Order("first_name ASC").Find(&result)
 	ctx.JSON(http.StatusOK, result)
 }

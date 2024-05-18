@@ -42,11 +42,15 @@ func main() {
 	{
 		v1.GET("/players", playerHandler.GetAll)
 		v1.POST("/players", playerHandler.Create)
+
 		v1.POST("/matches", matchHandler.Create)
 		v1.GET("/matches", matchHandler.GetAll)
 		v1.GET("/matches/:matchId/registrations", matchHandler.GetRegistrationsByMatch)
+
 		v1.GET("/registrations", regHandler.GetAll)
 		v1.POST("/registrations", regHandler.Register)
+		v1.PUT("/registrations/:registrationId/paid", regHandler.MarkPaid)
+		v1.PUT("/registrations/:registrationId/unpaid", regHandler.MarkUnPaid)
 		v1.DELETE("/registrations/:registrationId", regHandler.Unregister)
 	}
 
