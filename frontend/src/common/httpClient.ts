@@ -1,7 +1,8 @@
 import axios from "axios"
 
 function buildUrl(resource: string) {
-    return `http://localhost:8080/${resource}`
+    const HOST = import.meta.env.VITE_API_HOST
+    return `${HOST}/${resource}`
 }
 
 function get<T = any>(resource: string) {
