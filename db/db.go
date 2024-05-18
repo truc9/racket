@@ -2,9 +2,11 @@ package db
 
 import (
 	"log"
+	"os"
 	"sync"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/truc9/racket/domain"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -17,7 +19,14 @@ var (
 
 func CreateDB() *gorm.DB {
 	once.Do(func() {
-		dbCtx, err := gorm.Open(postgres.Open("postgres://postgres:admin@localhost:5432/racket?sslmode=disable"), &gorm.Config{
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
+
+		DB_CONN := os.Getenv("DB")
+
+		dbCtx, err := gorm.Open(postgres.Open(DB_CONN), &gorm.Config{
 			NowFunc: func() time.Time {
 				return time.Now().UTC()
 			},
