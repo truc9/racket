@@ -16,7 +16,7 @@ const ToggleButton: React.FC<Prop> = ({
   ...props
 }) => {
   return disabled ? (
-    <div className="flex w-full items-center justify-center gap-1 rounded bg-gradient-to-r from-orange-500 to-orange-300 px-3 py-2 text-center text-white ring-1 ring-slate-300 ring-offset-2 active:ring-2 active:ring-green-500">
+    <div className="flex w-full items-center justify-center gap-1 rounded bg-gradient-to-r from-orange-500 to-orange-300 px-3 py-2 text-center text-white">
       Not Available
     </div>
   ) : (
@@ -24,7 +24,7 @@ const ToggleButton: React.FC<Prop> = ({
       {...props}
       className={clsx(
         isActive ? "bg-green-500" : "bg-slate-300",
-        "flex w-full items-center justify-center gap-1 rounded px-3 py-2 text-center text-white ring-1 ring-slate-300 ring-offset-2 active:ring-2 active:ring-green-500",
+        "flex w-full items-center justify-center gap-1 rounded px-3 py-2 text-center text-white",
       )}
     >
       {icon}

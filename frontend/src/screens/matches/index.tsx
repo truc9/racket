@@ -36,9 +36,9 @@ function Matches() {
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
-      start: new Date(),
-      end: dayjs(new Date()).add(3, "hour").toDate(),
-      location: "",
+      start: dayjs(new Date()).set("hour", 9).set("minute", 0).toDate(),
+      end: dayjs(new Date()).set("hour", 11).set("minute", 0).toDate(),
+      location: "Stechford Leisure Center",
     },
     validate: zodResolver(schema),
   });
@@ -131,7 +131,11 @@ function Matches() {
             required
             {...form.getInputProps("end")}
           />
-          <TextInput label="Location" {...form.getInputProps("location")} />
+          <TextInput
+            defaultValue={form.getInputProps("location")}
+            label="Location"
+            {...form.getInputProps("location")}
+          />
 
           <Button variant="default" leftSection={<FaSave />} type="submit">
             Save changes
