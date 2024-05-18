@@ -1,0 +1,49 @@
+{
+  "name": "sport-team",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.7.19",
+    "@hello-pangea/dnd": "^16.6.0",
+    "@mantine/core": "^7.9.1",
+    "@mantine/dates": "^7.9.1",
+    "@mantine/form": "^7.9.1",
+    "@mantine/hooks": "^7.9.1",
+    "@mantine/modals": "^7.9.1",
+    "@mantine/notifications": "^7.9.1",
+    "@tanstack/react-query": "^5.35.1",
+    "axios": "^1.6.8",
+    "clsx": "^2.1.1",
+    "dayjs": "^1.11.11",
+    "localforage": "^1.10.0",
+    "mantine-form-zod-resolver": "^1.1.0",
+    "match-sorter": "^6.3.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.2.1",
+    "react-router-dom": "^6.23.0",
+    "react-spinners": "^0.13.8",
+    "sort-by": "^1.2.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^3.1.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "postcss-preset-mantine": "^1.15.0",
+    "postcss-simple-vars": "^7.0.1",
+    "prettier": "^3.2.5",
+    "prettier-plugin-tailwindcss": "^0.5.14",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^4.9.5",
+    "vite": "^4.5.3"
+  }
+}
