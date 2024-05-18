@@ -1,10 +1,11 @@
 import httpClient from "../../common/httpClient";
-import React from "react";
+import React, { useMemo } from "react";
 import ToggleButton from "../../components/toggleButton";
 import { IoCash, IoWalk } from "react-icons/io5";
 import { MatchModel, RegistrationModel } from "../../models";
 import { useMutation } from "@tanstack/react-query";
 import { useRegistrationsByMatchQuery } from "../../hooks/queries";
+import { Badge } from "@mantine/core";
 
 interface Prop {
   match: MatchModel;
@@ -14,6 +15,14 @@ const MatchRegistration: React.FC<Prop> = ({ match }) => {
   const { data: registrations, refetch } = useRegistrationsByMatchQuery(
     match.id,
   );
+
+  const attendantPercentage = useMemo(() => {
+    return Math.round(
+      ((registrations?.filter((r) => !!r.registrationId).length ?? 0) /
+        (registrations?.length ?? 0)) *
+        100,
+    );
+  }, [registrations]);
 
   const registerMut = useMutation({
     onSuccess: refetch,
@@ -50,9 +59,11 @@ const MatchRegistration: React.FC<Prop> = ({ match }) => {
           return (
             <div
               key={reg.playerId}
-              className="grid grid-cols-3 items-center gap-2"
+              className="my-1 grid grid-cols-3 items-center justify-center gap-x-2 rounded px-2 py-2 align-middle transition-all odd:bg-violet-50 hover:bg-violet-200"
             >
-              <span>{reg.playerName}</span>
+              <span className="font-bold text-violet-500">
+                {reg.playerName}
+              </span>
               <div>
                 {!!reg.registrationId ? (
                   <ToggleButton
@@ -92,11 +103,37 @@ const MatchRegistration: React.FC<Prop> = ({ match }) => {
               ) : (
                 <ToggleButton disabled={true} />
               )}
-
-              <div className="flex items-center justify-center gap-2 text-center"></div>
             </div>
           );
         })}
+
+      <div className="flex justify-between">
+        <div className="flex items-center gap-2 p-2 font-bold">
+          <div>Total Player</div>
+          <Badge color="grape">
+            {registrations?.filter((r) => !!r.registrationId).length}
+          </Badge>
+        </div>
+
+        <div className="flex items-center gap-2 p-2 font-bold">
+          <div>Paid</div>
+          <Badge color="orange">
+            {registrations?.filter((r) => !!r.isPaid).length}
+          </Badge>
+        </div>
+        <div className="flex items-center gap-2 p-2 font-bold">
+          <div>Unpaid</div>
+          <Badge color="red">
+            {registrations?.filter((r) => !r.isPaid).length}
+          </Badge>
+        </div>
+        <div className="flex items-center gap-2 p-2 font-bold">
+          <div>Attendant Percentage</div>
+          <Badge color={attendantPercentage > 50 ? "violet" : "red"}>
+            {attendantPercentage}%
+          </Badge>
+        </div>
+      </div>
     </div>
   );
 };
