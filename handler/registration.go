@@ -50,8 +50,8 @@ func (h registrationHandler) Register(ctx *gin.Context) {
 }
 
 func (h registrationHandler) Unregister(ctx *gin.Context) {
-	id, _ := ctx.Params.Get("id")
-	h.db.Model(&domain.Registration{}).Delete(id)
+	id, _ := ctx.Params.Get("registrationId")
+	h.db.Unscoped().Delete(&domain.Registration{}, id)
 	ctx.JSON(http.StatusOK, id)
 }
 
@@ -59,17 +59,19 @@ func (h registrationHandler) GetAll(ctx *gin.Context) {
 	var result []dto.RegistrationOverviewDto
 	h.sugar.Info("querying registration report")
 	h.db.Raw(`
-	select 
-		m.id as matchId, 
-		m.location, 
-		m.start, 
-		m.end, 
-		p.id as playerId, 
-		CONCAT(p.first_name, p.last_name) as playerName,
-		r.is_paid as isPaid
-	from "matches" m 
-	left join "registrations" r on m.id = r.match_id
-	left join "players" p on p.id = r.player_id
+		SELECT	
+			r.id as registration_id,
+			m.id as match_id, 
+			p.id as player_id,
+			m.location, 
+			m.start, 
+			m.end, 
+			CONCAT(p.first_name, p.last_name) as player_name,
+			r.is_paid
+		FROM "matches" m 
+		LEFT JOIN "registrations" r ON m.id = r.match_id
+		LEFT JOIN "players" p ON p.id = r.player_id
+		WHERE r.deleted_at IS NULL
 	`).Scan(&result)
 
 	log.Print(result)

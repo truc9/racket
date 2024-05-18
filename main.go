@@ -47,7 +47,7 @@ func main() {
 		v1.GET("/matches/:matchId/registrations", matchHandler.GetRegistrationsByMatch)
 		v1.GET("/registrations", regHandler.GetAll)
 		v1.POST("/registrations", regHandler.Register)
-		v1.DELETE("/registrations/:id", regHandler.Unregister)
+		v1.DELETE("/registrations/:registrationId", regHandler.Unregister)
 	}
 
 	router.Run()

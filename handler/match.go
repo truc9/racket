@@ -59,18 +59,9 @@ func (h matchHandler) GetRegistrationsByMatch(ctx *gin.Context) {
 	matchId, _ := ctx.Params.Get("matchId")
 	h.sugar.Infof("getting match id %s", matchId)
 	h.db.Raw(`
-	SELECT 
-		m.id AS match_id, 
-		m.location, 
-		m.start, 
-		m.end, 
-		p.id AS player_id, 
-		CONCAT(p.first_name, ' ', p.last_name) AS player_name,
-		r.is_paid AS is_paid
-	FROM "matches" m 
-	JOIN "registrations" r on m.id = r.match_id
-	JOIN "players" p on p.id = r.player_id
-	WHERE m.id = ?
+		SELECT pl.id AS player_id, CONCAT(pl.first_name, ' ', pl.last_name) AS player_name, re.id AS registration_id, re.match_id, re.is_paid
+		FROM "players" pl
+		LEFT JOIN "registrations" re ON pl.id = re.player_id AND re.deleted_at IS NULL AND re.match_id = ?
 	`, matchId).Scan(&result)
 
 	h.sugar.Info(result)
