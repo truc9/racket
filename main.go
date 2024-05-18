@@ -13,7 +13,7 @@ import (
 func main() {
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowOrigins:     []string{"http://localhost:5173", "https://goodracket.vercel.app"},
 		AllowMethods:     []string{"PUT", "POST", "GET", "DELETE", "PATCH"},
 		AllowHeaders:     []string{"*"},
 		ExposeHeaders:    []string{"Content-Length"},
