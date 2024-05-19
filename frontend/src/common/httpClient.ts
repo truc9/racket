@@ -5,9 +5,10 @@ function buildUrl(resource: string) {
     return `${HOST}/${resource}`
 }
 
-function get<T = any>(resource: string) {
+async function get<T = any>(resource: string) {
     const url = buildUrl(resource)
-    return fetch(url).then(res => res.json()) as T
+    const res = await axios.get(url)
+    return res.data as T
 }
 
 async function post<T = any>(resource: string, body: T) {

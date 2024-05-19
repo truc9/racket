@@ -17,7 +17,7 @@ var (
 	db   *gorm.DB
 )
 
-func CreateDB() *gorm.DB {
+func NewDatabase() *gorm.DB {
 	once.Do(func() {
 		err := godotenv.Load()
 		if err != nil {

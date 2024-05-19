@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	database "github.com/truc9/racket/db"
+	"github.com/truc9/racket/db"
 	"github.com/truc9/racket/handler"
 	"go.uber.org/zap"
 )
@@ -21,16 +21,18 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	db := database.CreateDB()
+	database := db.NewDatabase()
+	sqldb, _ := database.DB()
+	defer sqldb.Close()
 	logger, _ := zap.NewDevelopment()
 	defer logger.Sync()
 	sugar := logger.Sugar()
 
-	matchHandler := handler.NewMatchHandler(db, sugar)
-	playerHandler := handler.NewPlayerHandler(db, sugar)
-	regHandler := handler.NewRegHandler(db, sugar)
+	matchHandler := handler.NewMatchHandler(database, sugar)
+	playerHandler := handler.NewPlayerHandler(database, sugar)
+	regHandler := handler.NewRegHandler(database, sugar)
 
-	// Healthcheck
+	// Health Check
 	router.GET("/health", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
 			"message": "ok",

@@ -1,7 +1,7 @@
 import httpClient from "../../common/httpClient";
 import Page from "../../components/page";
 import { ActionIcon, Button, Drawer, Table, TextInput } from "@mantine/core";
-import { FaPlusSquare, FaSave, FaTrash } from "react-icons/fa";
+import { FaPlusSquare, FaSave, FaTrash, FaUserEdit } from "react-icons/fa";
 import { PlayerModel } from "./models";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm, zodResolver } from "@mantine/form";
@@ -60,8 +60,11 @@ function Players() {
                 <Table.Tr key={item.id}>
                   <Table.Td>{item.firstName}</Table.Td>
                   <Table.Td>{item.lastName}</Table.Td>
-                  <Table.Td className="text-right">
-                    <ActionIcon color="red">
+                  <Table.Td className="flex items-center justify-end gap-2">
+                    <ActionIcon>
+                      <FaUserEdit />
+                    </ActionIcon>
+                    <ActionIcon color="orange">
                       <FaTrash />
                     </ActionIcon>
                   </Table.Td>
