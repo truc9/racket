@@ -1,31 +1,26 @@
 import axios from "axios"
 
-function buildUrl(resource: string) {
-    const HOST = import.meta.env.VITE_API_HOST
-    return `${HOST}/${resource}`
-}
+const client = axios.create({
+    baseURL: import.meta.env.VITE_API_HOST
+})
 
-async function get<T = any>(resource: string) {
-    const url = buildUrl(resource)
-    const res = await axios.get(url)
+async function get<T = any>(url: string) {
+    const res = await client.get(url)
     return res.data as T
 }
 
-async function post<T = any>(resource: string, body: T) {
-    const url = buildUrl(resource)
-    const res = await axios.post(url, body)
+async function post<T = any>(url: string, body: T) {
+    const res = await client.post(url, body)
     return res.data
 }
 
-async function put<T = any>(resource: string, body: T) {
-    const url = buildUrl(resource)
-    const res = await axios.put(url, body)
+async function put<T = any>(url: string, body: T) {
+    const res = await client.put(url, body)
     return res.data
 }
 
-async function del(resource: string) {
-    const url = buildUrl(resource)
-    const res = await axios.delete(url)
+async function del(url: string) {
+    const res = await client.delete(url)
     return res.data
 }
 
