@@ -86,7 +86,7 @@ func (h registrationHandler) GetAll(ctx *gin.Context) {
 			m.location, 
 			m.start, 
 			m.end, 
-			CONCAT(p.first_name, p.last_name) as player_name,
+			CONCAT(p.first_name, ' ', p.last_name) as player_name,
 			r.is_paid
 		FROM "matches" m 
 		LEFT JOIN "registrations" r ON m.id = r.match_id
