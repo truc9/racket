@@ -40,9 +40,9 @@ func (h playerHandler) Create(c *gin.Context) {
 }
 
 func (h playerHandler) GetAll(c *gin.Context) {
-	var p []domain.Player
-	h.db.Order("first_name ASC").Find(&p)
-	c.JSON(http.StatusOK, p)
+	var result []domain.Player
+	h.db.Order("first_name ASC").Find(&result)
+	c.JSON(http.StatusOK, result)
 }
 
 func (h playerHandler) Update(c *gin.Context) {

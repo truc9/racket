@@ -1,10 +1,15 @@
 import cx from "clsx";
 import Loading from "../components/loading";
-import { FaChartArea, FaCog, FaFighterJet, FaUserClock } from "react-icons/fa";
 import { FC, ReactNode, useState } from "react";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FiChevronLeft } from "react-icons/fi";
 import { NavLink, Outlet } from "react-router-dom";
 import { Suspense } from "react";
+import {
+  FaChartArea,
+  FaFighterJet,
+  FaHeartbeat,
+  FaUserClock,
+} from "react-icons/fa";
 
 interface NavItemProps {
   label?: string;
@@ -69,9 +74,9 @@ function Layout() {
           />
           <NavItem
             showLabel={!collapsed}
-            path="/settings"
-            label="Settings"
-            icon={<FaCog />}
+            path="/health"
+            label="Health"
+            icon={<FaHeartbeat />}
           />
         </div>
         <button

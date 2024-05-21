@@ -15,7 +15,7 @@ func main() {
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173", "https://goodracket.vercel.app"},
 		AllowMethods:     []string{"PUT", "POST", "GET", "DELETE", "PATCH"},
-		AllowHeaders:     []string{"*"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
@@ -43,24 +43,24 @@ func main() {
 		})
 	})
 
+	router.GET("/health/origins", func(ctx *gin.Context) {
+		ctx.JSON(200, ctx.Request.Header.Get("Origin"))
+	})
+
 	// API v1
 	v1 := router.Group("/api/v1")
-	{
-		v1.GET("/players", playerHandler.GetAll)
-		v1.POST("/players", playerHandler.Create)
-		v1.DELETE("/players/:playerId", playerHandler.Delete)
-		v1.PUT("/players/:playerId", playerHandler.Update)
-
-		v1.POST("/matches", matchHandler.Create)
-		v1.GET("/matches", matchHandler.GetAll)
-		v1.GET("/matches/:matchId/registrations", matchHandler.GetRegistrationsByMatch)
-
-		v1.GET("/registrations", regHandler.GetAll)
-		v1.POST("/registrations", regHandler.Register)
-		v1.PUT("/registrations/:registrationId/paid", regHandler.MarkPaid)
-		v1.PUT("/registrations/:registrationId/unpaid", regHandler.MarkUnPaid)
-		v1.DELETE("/registrations/:registrationId", regHandler.Unregister)
-	}
+	v1.GET("/players", playerHandler.GetAll)
+	v1.POST("/players", playerHandler.Create)
+	v1.DELETE("/players/:playerId", playerHandler.Delete)
+	v1.PUT("/players/:playerId", playerHandler.Update)
+	v1.POST("/matches", matchHandler.Create)
+	v1.GET("/matches", matchHandler.GetAll)
+	v1.GET("/matches/:matchId/registrations", matchHandler.GetRegistrationsByMatch)
+	v1.GET("/registrations", regHandler.GetAll)
+	v1.POST("/registrations", regHandler.Register)
+	v1.PUT("/registrations/:registrationId/paid", regHandler.MarkPaid)
+	v1.PUT("/registrations/:registrationId/unpaid", regHandler.MarkUnPaid)
+	v1.DELETE("/registrations/:registrationId", regHandler.Unregister)
 
 	router.Run()
 }
