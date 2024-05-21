@@ -38,7 +38,7 @@ function Players() {
   const {
     isPending,
     data: players,
-    refetch: refetchPlayers,
+    refetch,
   } = useQuery({
     queryKey: ["getPlayers"],
     queryFn: () => httpClient.get<PlayerModel[]>("api/v1/players"),
@@ -53,8 +53,17 @@ function Players() {
     },
     onSuccess(data, variables, context) {
       form.reset();
-      refetchPlayers();
+      refetch();
       closeDrawer();
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (model: PlayerModel) => {
+      return httpClient.del(`api/v1/players/${model.id}`);
+    },
+    onSuccess(data, variables, context) {
+      refetch();
     },
   });
 
@@ -63,7 +72,9 @@ function Players() {
     openDrawer();
   };
 
-  const deleteClick = (model: PlayerModel) => {};
+  const deleteClick = (model: PlayerModel) => {
+    deleteMutation.mutate(model);
+  };
 
   return (
     <>
