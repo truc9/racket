@@ -9,9 +9,12 @@ const Health = () => {
     load();
 
     async function load() {
-      const res = await httpClient.get("health");
-      console.log(res);
-      setStatus(res);
+      try {
+        const res = await httpClient.get("health");
+        setStatus(res);
+      } catch (err) {
+        setStatus(null);
+      }
     }
   }, []);
 
@@ -19,7 +22,12 @@ const Health = () => {
     <Page title="Health">
       <div className="flex items-center gap-3">
         <span>API Health: </span>
-        <Badge className="uppercase">{status && status.message}</Badge>
+        {status && <Badge className="uppercase">{status.message}</Badge>}
+        {!status && (
+          <Badge className="uppercase" color="orange">
+            Unhealthy
+          </Badge>
+        )}
       </div>
     </Page>
   );
