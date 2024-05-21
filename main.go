@@ -46,29 +46,20 @@ func main() {
 	// API v1
 	v1 := router.Group("/api/v1")
 	{
-		player := v1.Group("/players")
-		{
-			player.GET("", playerHandler.GetAll)
-			player.POST("", playerHandler.Create)
-			player.PUT("/:playerId", playerHandler.Update)
-			player.DELETE("/:playerId", playerHandler.Delete)
-		}
+		v1.GET("/players", playerHandler.GetAll)
+		v1.POST("/players", playerHandler.Create)
+		v1.DELETE("/players/:playerId", playerHandler.Delete)
+		v1.PUT("/players/:playerId", playerHandler.Update)
 
-		match := v1.Group("/matches")
-		{
-			match.POST("", matchHandler.Create)
-			match.GET("", matchHandler.GetAll)
-			match.GET("/:matchId/registrations", matchHandler.GetRegistrationsByMatch)
-		}
+		v1.POST("/matches", matchHandler.Create)
+		v1.GET("/matches", matchHandler.GetAll)
+		v1.GET("/matches/:matchId/registrations", matchHandler.GetRegistrationsByMatch)
 
-		reg := v1.Group("/registrations")
-		{
-			reg.GET("", regHandler.GetAll)
-			reg.POST("", regHandler.Register)
-			reg.PUT("/:registrationId/paid", regHandler.MarkPaid)
-			reg.PUT("/:registrationId/unpaid", regHandler.MarkUnPaid)
-			reg.DELETE("/:registrationId", regHandler.Unregister)
-		}
+		v1.GET("/registrations", regHandler.GetAll)
+		v1.POST("/registrations", regHandler.Register)
+		v1.PUT("/registrations/:registrationId/paid", regHandler.MarkPaid)
+		v1.PUT("/registrations/:registrationId/unpaid", regHandler.MarkUnPaid)
+		v1.DELETE("/registrations/:registrationId", regHandler.Unregister)
 	}
 
 	router.Run()

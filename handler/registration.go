@@ -90,7 +90,7 @@ func (h registrationHandler) GetAll(ctx *gin.Context) {
 			r.is_paid
 		FROM "matches" m 
 		LEFT JOIN "registrations" r ON m.id = r.match_id
-		LEFT JOIN "players" p ON p.id = r.player_id
+		LEFT JOIN "players" p ON p.id = r.player_id AND p.deleted_at IS NULL
 		WHERE r.deleted_at IS NULL
 	`).Scan(&result)
 

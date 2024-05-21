@@ -62,7 +62,8 @@ func (h matchHandler) GetRegistrationsByMatch(ctx *gin.Context) {
 		SELECT pl.id AS player_id, CONCAT(pl.first_name, ' ', pl.last_name) AS player_name, re.id AS registration_id, re.match_id, re.is_paid
 		FROM "players" pl
 		LEFT JOIN "registrations" re ON pl.id = re.player_id AND re.deleted_at IS NULL AND re.match_id = ?
-		ORDER BY pl.first_name ASC
+		WHERE pl.deleted_at IS NULL
+		ORDER BY pl.first_name ASC		
 	`, matchId).Scan(&result)
 
 	h.sugar.Info(result)
