@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/truc9/racket/domain"
 	"github.com/truc9/racket/handler/dto"
+	"github.com/truc9/racket/params"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -22,17 +23,17 @@ func NewMatchHandler(db *gorm.DB, sugar *zap.SugaredLogger) *matchHandler {
 	}
 }
 
-func (h matchHandler) GetAll(ctx *gin.Context) {
+func (h matchHandler) GetAll(c *gin.Context) {
 	var result []domain.Match
 	h.db.Order("start DESC").Find(&result)
-	ctx.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, result)
 }
 
-func (h matchHandler) Create(ctx *gin.Context) {
+func (h matchHandler) Create(c *gin.Context) {
 	dto := dto.MatchDto{}
 	var err error
-	if err = ctx.BindJSON(&dto); err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
+	if err = c.BindJSON(&dto); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
@@ -47,16 +48,16 @@ func (h matchHandler) Create(ctx *gin.Context) {
 	h.sugar.Debug(m)
 
 	if err = h.db.Create(m).Error; err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
+		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, m)
+	c.JSON(http.StatusCreated, m)
 }
 
-func (h matchHandler) GetRegistrationsByMatch(ctx *gin.Context) {
+func (h matchHandler) GetRegistrationsByMatch(c *gin.Context) {
 	var result []dto.RegistrationOverviewDto
-	matchId, _ := ctx.Params.Get("matchId")
+	matchId, _ := c.Params.Get("matchId")
 	h.sugar.Infof("getting match id %s", matchId)
 	h.db.Raw(`
 		SELECT pl.id AS player_id, CONCAT(pl.first_name, ' ', pl.last_name) AS player_name, re.id AS registration_id, re.match_id, re.is_paid
@@ -68,5 +69,24 @@ func (h matchHandler) GetRegistrationsByMatch(ctx *gin.Context) {
 
 	h.sugar.Info(result)
 
-	ctx.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, result)
+}
+
+func (h matchHandler) UpdateCost(c *gin.Context) {
+	matchId := params.Get(c, "matchId")
+	dto := dto.MatchCostDto{}
+	if err := c.BindJSON(&dto); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	match := domain.Match{}
+	if err := h.db.Find(&match, matchId).Error; err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	match.UpdateCost(dto.Cost)
+	h.db.Save(&match)
+	c.JSON(http.StatusOK, match)
 }

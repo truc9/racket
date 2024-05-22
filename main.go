@@ -49,13 +49,20 @@ func main() {
 
 	// API v1
 	v1 := router.Group("/api/v1")
+
+	// Players API
 	v1.GET("/players", playerHandler.GetAll)
 	v1.POST("/players", playerHandler.Create)
 	v1.DELETE("/players/:playerId", playerHandler.Delete)
 	v1.PUT("/players/:playerId", playerHandler.Update)
+
+	// Matches API
 	v1.POST("/matches", matchHandler.Create)
 	v1.GET("/matches", matchHandler.GetAll)
 	v1.GET("/matches/:matchId/registrations", matchHandler.GetRegistrationsByMatch)
+	v1.PUT("/matches/:matchId/costs", matchHandler.UpdateCost)
+
+	// Registrations API
 	v1.GET("/registrations", regHandler.GetAll)
 	v1.POST("/registrations", regHandler.Register)
 	v1.PUT("/registrations/:registrationId/paid", regHandler.MarkPaid)

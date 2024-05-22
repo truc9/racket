@@ -36,4 +36,8 @@ type (
 		PlayerName     string `json:"playerName"`
 		IsPaid         bool   `json:"isPaid"`
 	}
+
+	MatchCostDto struct {
+		Cost float64 `json:"cost"`
+	}
 )
