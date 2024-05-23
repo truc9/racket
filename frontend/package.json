@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@clerk/clerk-react": "^5.2.0",
+    "@auth0/auth0-react": "^2.2.4",
     "@headlessui/react": "^1.7.19",
     "@hello-pangea/dnd": "^16.6.0",
     "@mantine/core": "^7.9.2",
