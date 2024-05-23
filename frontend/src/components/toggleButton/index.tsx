@@ -16,16 +16,14 @@ const ToggleButton: React.FC<Prop> = ({
   ...props
 }) => {
   return disabled ? (
-    <div className="flex w-full items-center justify-center gap-1 rounded bg-gradient-to-r from-orange-500 to-orange-300 px-3 py-2 text-center text-white">
+    <div className="flex w-full items-center justify-center gap-1 rounded bg-slate-300 px-3 py-2 text-center text-white">
       Not Available
     </div>
   ) : (
     <button
       {...props}
       className={clsx(
-        isActive
-          ? "bg-gradient-to-r from-green-500 to-green-300"
-          : "bg-slate-300",
+        isActive ? "bg-emerald-500" : "bg-slate-300",
         "flex w-full items-center justify-center gap-1 rounded px-3 py-2 text-center text-white",
       )}
     >

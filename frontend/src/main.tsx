@@ -1,13 +1,13 @@
+import App from "./App";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
-import "./index.css";
 import { BrowserRouter } from "react-router-dom";
+import { createTheme, MantineProvider } from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "./index.css";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
-import { createTheme, MantineProvider } from "@mantine/core";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ModalsProvider } from "@mantine/modals";
 
 const queryClient = new QueryClient();
 
@@ -27,5 +27,5 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         </MantineProvider>
       </QueryClientProvider>
     </BrowserRouter>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
