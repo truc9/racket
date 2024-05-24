@@ -13,7 +13,7 @@ import "@mantine/dates/styles.css";
 const queryClient = new QueryClient();
 
 const theme = createTheme({
-  primaryColor: "pink",
+  primaryColor: "blue",
   fontFamily: "Inter",
 });
 

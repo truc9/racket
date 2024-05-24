@@ -1,9 +1,9 @@
-import { ScaleLoader } from "react-spinners";
+import { MoonLoader } from "react-spinners";
 
 export default function Loading() {
   return (
-    <div className="w-full h-full flex justify-center items-center">
-      <ScaleLoader />
+    <div className="flex h-full w-full items-center justify-center">
+      <MoonLoader />
     </div>
   );
 }

@@ -1,11 +1,11 @@
 import httpClient from "../../common/httpClient";
 import React, { useMemo } from "react";
 import ToggleButton from "../../components/toggleButton";
-import { IoCash, IoWalk } from "react-icons/io5";
+import { Badge } from "@mantine/core";
+import { FaBan, FaMoneyBillWave, FaWalking } from "react-icons/fa";
 import { MatchModel, RegistrationModel } from "../../models";
 import { useMutation } from "@tanstack/react-query";
 import { useRegistrationsByMatchQuery } from "../../hooks/queries";
-import { Badge } from "@mantine/core";
 
 interface Prop {
   match: MatchModel;
@@ -59,22 +59,20 @@ const MatchRegistration: React.FC<Prop> = ({ match }) => {
           return (
             <div
               key={reg.playerId}
-              className="my-1 grid grid-cols-3 items-center justify-center gap-x-2 rounded px-2 py-2 align-middle transition-all odd:bg-violet-50 hover:bg-violet-200"
+              className="my-1 grid grid-cols-3 items-center justify-center gap-x-2 rounded from-green-300 to-green-50 px-2 py-2 align-middle transition-all odd:bg-violet-50 hover:bg-gradient-to-r"
             >
-              <span className="font-bold text-violet-500">
-                {reg.playerName}
-              </span>
+              <span className="font-bold">{reg.playerName}</span>
               <div>
                 {!!reg.registrationId ? (
                   <ToggleButton
                     label="Attend"
                     isActive={true}
                     onClick={() => unregisterMut.mutate(reg.registrationId)}
-                    icon={<IoWalk />}
+                    icon={<FaWalking />}
                   />
                 ) : (
                   <ToggleButton
-                    label="Not attend"
+                    label="Not interested"
                     isActive={false}
                     onClick={() =>
                       registerMut.mutate({
@@ -82,7 +80,7 @@ const MatchRegistration: React.FC<Prop> = ({ match }) => {
                         playerId: reg.playerId,
                       })
                     }
-                    icon={<IoWalk />}
+                    icon={<FaBan />}
                   />
                 )}
               </div>
@@ -90,14 +88,14 @@ const MatchRegistration: React.FC<Prop> = ({ match }) => {
               {!!reg.registrationId ? (
                 <div>
                   <ToggleButton
-                    label={reg.isPaid ? "Paid" : "Not pay yet"}
+                    label={reg.isPaid ? "Paid" : "Debt"}
                     isActive={reg.isPaid}
                     onClick={() =>
                       reg.isPaid
                         ? unPaidMutation.mutate(reg.registrationId)
                         : paidMutation.mutate(reg.registrationId)
                     }
-                    icon={<IoCash />}
+                    icon={<FaMoneyBillWave />}
                   />
                 </div>
               ) : (

@@ -13,6 +13,7 @@ import {
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from "../components/logoutButton";
 import Profile from "../components/profile";
+import FullScreenLoading from "../components/fullScreenLoading";
 
 interface NavItemProps {
   label?: string;
@@ -23,7 +24,7 @@ interface NavItemProps {
 const NavItem: FC<NavItemProps> = ({ label, path, icon, showLabel = true }) => {
   return (
     <NavLink
-      className="flex items-center gap-2 rounded px-4 py-3 hover:bg-pink-400 [&.active]:bg-pink-400"
+      className="flex items-center gap-2 rounded px-4 py-3 hover:bg-blue-600 [&.active]:bg-blue-600"
       to={path}
     >
       <span className="text-xl">{icon}</span>
@@ -43,7 +44,7 @@ function Layout() {
   }
 
   if (isLoading) {
-    return <Loading />;
+    return <FullScreenLoading />;
   }
 
   if (!isAuthenticated && !user) {
@@ -55,19 +56,22 @@ function Layout() {
     <div className="flex h-screen w-screen">
       <div
         className={cx(
-          "group relative flex h-full flex-shrink-0 flex-grow-0 flex-col border-r bg-pink-500 text-white transition-all delay-100",
-          !collapsed && "w-[250px]",
+          "group relative flex h-full flex-shrink-0 flex-grow-0 flex-col border-r bg-blue-700 text-white transition-all delay-100",
+          !collapsed && "w-[300px]",
           collapsed && "w-16",
         )}
       >
-        <div className="flex flex-1 flex-col text-center">
+        <div className="flex flex-1 flex-col">
           {collapsed ? (
-            <div className="p-2 text-2xl font-bold">
+            <div className="p-2 text-center text-2xl font-bold">
               {APP_NAME.substring(0, 1)}
             </div>
           ) : (
             <div className="p-2 text-2xl font-bold">{APP_NAME}</div>
           )}
+          <div className={cx("flex flex-col p-2", collapsed && "items-center")}>
+            <Profile showLabel={!collapsed} />
+          </div>
           <div className="flex flex-col p-2">
             <NavItem
               showLabel={!collapsed}
@@ -96,16 +100,13 @@ function Layout() {
           </div>
           <button
             onClick={toggleSideNav}
-            className="absolute -right-2 top-2 hidden rounded-full border border-pink-500 bg-white text-lg text-pink-500 shadow ring-pink-500 group-hover:block"
+            className="absolute -right-2 top-2 hidden rounded-full border border-blue-500 bg-white text-lg text-blue-500 shadow ring-blue-500 group-hover:block"
           >
             <FiChevronLeft className={cx(collapsed && "rotate-180")} />
           </button>
         </div>
-        <div className="flex p-2">
-          <div className="flex w-full flex-col gap-3 rounded bg-pink-400 p-3 shadow">
-            <Profile />
-            <LogoutButton />
-          </div>
+        <div className="p-2">
+          <LogoutButton showLabel={!collapsed} />
         </div>
       </div>
       <div className="flex w-full flex-1 bg-slate-300">

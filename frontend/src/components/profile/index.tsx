@@ -1,7 +1,11 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import React from "react";
+import { FC } from "react";
 
-const Profile = () => {
+interface Prop {
+  showLabel: boolean;
+}
+
+const Profile: FC<Prop> = ({ showLabel }) => {
   const { user, isAuthenticated, isLoading } = useAuth0();
 
   if (isLoading) {
@@ -10,18 +14,20 @@ const Profile = () => {
 
   return (
     isAuthenticated && (
-      <div className="flex flex-col">
+      <div className="flex items-center justify-start gap-2">
         <img
           className="rounded-full"
           src={user!.picture}
           alt={user!.name}
-          height={80}
-          width={80}
+          height={40}
+          width={40}
         />
-        <div className="flex flex-col">
-          <h2>{user!.name}</h2>
-          <p>{user!.email}</p>
-        </div>
+        {showLabel && (
+          <div className="flex flex-col items-start justify-start">
+            <h2 className="font-bold">{user!.name}</h2>
+            <h5>Administrator</h5>
+          </div>
+        )}
       </div>
     )
   );

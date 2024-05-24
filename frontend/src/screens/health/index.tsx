@@ -22,7 +22,11 @@ const Health = () => {
     <Page title="Health">
       <div className="flex items-center gap-3">
         <span>API Health: </span>
-        {status && <Badge className="uppercase">{status.message}</Badge>}
+        {status && (
+          <Badge color="green" className="uppercase">
+            {status.message}
+          </Badge>
+        )}
         {!status && (
           <Badge className="uppercase" color="orange">
             Unhealthy

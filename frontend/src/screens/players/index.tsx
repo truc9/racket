@@ -105,11 +105,12 @@ function Players() {
                     <Table.Td>{item.firstName}</Table.Td>
                     <Table.Td>{item.lastName}</Table.Td>
                     <Table.Td className="flex items-center justify-end gap-2">
-                      <ActionIcon onClick={() => editClick(item)}>
+                      <ActionIcon onClick={() => editClick(item)} size="lg">
                         <FaUserEdit />
                       </ActionIcon>
                       <ActionIcon
-                        color="orange"
+                        size="lg"
+                        color="red"
                         onClick={() => deleteClick(item)}
                       >
                         <FaTrash />

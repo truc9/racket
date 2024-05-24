@@ -68,7 +68,7 @@ function Dashboard() {
                         <div
                           className={clsx(
                             dayjs(match.start).isSame(new Date(), "date")
-                              ? "text-pink-500"
+                              ? "text-blue-500"
                               : "text-slate-300",
                             "flex items-center justify-between px-5",
                           )}

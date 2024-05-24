@@ -94,6 +94,7 @@ function Matches() {
                   </Table.Td>
                   <Table.Td className="text-right">
                     <ActionIcon
+                      size="lg"
                       onClick={() => deleteMatch(item.matchId!)}
                       color="red"
                     >

@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import React from "react";
+import { FaBan } from "react-icons/fa";
 
 interface Prop extends React.HTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode;
@@ -17,13 +18,14 @@ const ToggleButton: React.FC<Prop> = ({
 }) => {
   return disabled ? (
     <div className="flex w-full items-center justify-center gap-1 rounded bg-slate-300 px-3 py-2 text-center text-white">
-      Not Available
+      <FaBan />
+      <span>Not Available</span>
     </div>
   ) : (
     <button
       {...props}
       className={clsx(
-        isActive ? "bg-emerald-500" : "bg-slate-300",
+        isActive ? "bg-green-500" : "bg-slate-300",
         "flex w-full items-center justify-center gap-1 rounded px-3 py-2 text-center text-white",
       )}
     >
