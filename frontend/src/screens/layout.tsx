@@ -12,7 +12,7 @@ import {
 } from "react-icons/fa";
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from "../components/logoutButton";
-import Profile from "../components/profile";
+import UserProfile from "../components/profile";
 import FullScreenLoading from "../components/fullScreenLoading";
 
 interface NavItemProps {
@@ -70,7 +70,7 @@ function Layout() {
             <div className="p-2 text-2xl font-bold">{APP_NAME}</div>
           )}
           <div className={cx("flex flex-col p-2", collapsed && "items-center")}>
-            <Profile showLabel={!collapsed} />
+            <UserProfile showLabel={!collapsed} />
           </div>
           <div className="flex flex-col p-2">
             <NavItem
