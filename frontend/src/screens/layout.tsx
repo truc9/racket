@@ -1,6 +1,6 @@
 import cx from "clsx";
 import Loading from "../components/loading";
-import { FC, ReactNode, useState } from "react";
+import React, { FC, ReactNode, useState } from "react";
 import { FiChevronLeft } from "react-icons/fi";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Suspense } from "react";
@@ -49,7 +49,7 @@ function Layout() {
 
   if (!isAuthenticated && !user) {
     navigate("/login", { replace: true });
-    return;
+    return <div></div>;
   }
 
   return (
