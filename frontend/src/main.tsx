@@ -3,17 +3,36 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { BrowserRouter } from "react-router-dom";
-import { createTheme, MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
+import {
+  createTheme,
+  MantineColorsTuple,
+  MantineProvider,
+} from "@mantine/core";
 
 const queryClient = new QueryClient();
 
+const myColor: MantineColorsTuple = [
+  "#eaf1ff",
+  "#d4dffc",
+  "#a7bbf3",
+  "#7896ec",
+  "#5076e5",
+  "#3762e2",
+  "#2857e1",
+  "#1b48c8",
+  "#1240b4",
+  "#00369f",
+];
+
 const theme = createTheme({
-  primaryColor: "blue",
+  colors: {
+    myColor,
+  },
   fontFamily: "Inter",
 });
 

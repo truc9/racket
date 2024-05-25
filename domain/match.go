@@ -23,3 +23,13 @@ func (m *Match) UpdateCost(cost float64) error {
 
 	return nil
 }
+
+func (m *Match) AddCost(description string, amount float64) error {
+	cost, err := NewCost(m.ID, description, amount)
+	if err != nil {
+		return err
+	}
+
+	m.AdditionalCosts = append(m.AdditionalCosts, *cost)
+	return nil
+}

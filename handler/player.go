@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/truc9/racket/domain"
-	"github.com/truc9/racket/handler/dto"
+	"github.com/truc9/racket/dto"
 	"github.com/truc9/racket/params"
 	"go.uber.org/zap"
 	"gorm.io/gorm"

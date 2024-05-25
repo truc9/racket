@@ -61,6 +61,7 @@ func main() {
 	v1.GET("/matches", matchHandler.GetAll)
 	v1.GET("/matches/:matchId/registrations", matchHandler.GetRegistrationsByMatch)
 	v1.PUT("/matches/:matchId/costs", matchHandler.UpdateCost)
+	v1.PUT("/matches/:matchId/additional-costs", matchHandler.CreateAdditionalCost)
 
 	// Registrations API
 	v1.GET("/registrations", regHandler.GetAll)

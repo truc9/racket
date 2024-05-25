@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/truc9/racket/domain"
-	"github.com/truc9/racket/handler/dto"
+	"github.com/truc9/racket/dto"
 	"github.com/truc9/racket/params"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -23,13 +23,13 @@ func NewMatchHandler(db *gorm.DB, sugar *zap.SugaredLogger) *matchHandler {
 	}
 }
 
-func (h matchHandler) GetAll(c *gin.Context) {
+func (h *matchHandler) GetAll(c *gin.Context) {
 	var result []domain.Match
 	h.db.Order("start DESC").Find(&result)
 	c.JSON(http.StatusOK, result)
 }
 
-func (h matchHandler) Create(c *gin.Context) {
+func (h *matchHandler) Create(c *gin.Context) {
 	dto := dto.MatchDto{}
 	var err error
 	if err = c.BindJSON(&dto); err != nil {
@@ -55,7 +55,7 @@ func (h matchHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, m)
 }
 
-func (h matchHandler) GetRegistrationsByMatch(c *gin.Context) {
+func (h *matchHandler) GetRegistrationsByMatch(c *gin.Context) {
 	var result []dto.RegistrationOverviewDto
 	matchId, _ := c.Params.Get("matchId")
 	h.sugar.Infof("getting match id %s", matchId)
@@ -72,7 +72,7 @@ func (h matchHandler) GetRegistrationsByMatch(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-func (h matchHandler) UpdateCost(c *gin.Context) {
+func (h *matchHandler) UpdateCost(c *gin.Context) {
 	matchId := params.Get(c, "matchId")
 	dto := dto.MatchCostDto{}
 	if err := c.BindJSON(&dto); err != nil {
@@ -87,6 +87,27 @@ func (h matchHandler) UpdateCost(c *gin.Context) {
 	}
 
 	match.UpdateCost(dto.Cost)
+	h.db.Save(&match)
+	c.JSON(http.StatusOK, match)
+}
+
+func (h *matchHandler) CreateAdditionalCost(c *gin.Context) {
+	matchId := params.Get(c, "matchId")
+	dto := dto.AdditionalCostDto{}
+	if err := c.BindJSON(&dto); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	match := domain.Match{}
+	if err := h.db.Find(&match, matchId).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+			"error": "match not found",
+		})
+		return
+	}
+
+	match.AddCost(dto.Description, dto.Amount)
 	h.db.Save(&match)
 	c.JSON(http.StatusOK, match)
 }
