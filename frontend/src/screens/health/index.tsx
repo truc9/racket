@@ -1,4 +1,4 @@
-import httpClient from "../../common/httpClient";
+import httpService from "../../common/http-service";
 import Page from "../../components/page";
 import { Badge } from "@mantine/core";
 import { useEffect, useState } from "react";
@@ -10,7 +10,7 @@ const Health = () => {
 
     async function load() {
       try {
-        const res = await httpClient.get("health");
+        const res = await httpService.get("health");
         setStatus(res);
       } catch (err) {
         setStatus(null);

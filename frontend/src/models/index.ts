@@ -4,7 +4,7 @@ export interface PlayerModel {
     lastName: string
 }
 
-export interface MatchModel {
+export interface MatchSummaryModel {
     id: number
     location: string
     start: Date

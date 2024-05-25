@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import httpClient from "../../common/httpClient";
+import httpService from "../../common/http-service";
 import Page from "../../components/page";
 import { DateTimePicker } from "@mantine/dates";
 import { FaPlusSquare, FaSave, FaTrash } from "react-icons/fa";
@@ -30,7 +30,7 @@ function Matches() {
 
   const { data: matches, refetch } = useQuery({
     queryKey: ["get_matches"],
-    queryFn: () => httpClient.get<MatchModel[]>("api/v1/matches"),
+    queryFn: () => httpService.get<MatchModel[]>("api/v1/matches"),
   });
 
   const form = useForm({
@@ -56,7 +56,7 @@ function Matches() {
       labels: { confirm: "Delete Match", cancel: "No don't delete it" },
       confirmProps: { color: "red" },
       onConfirm: async () => {
-        await httpClient.del(`api/v1/matches/${matchId}`);
+        await httpService.del(`api/v1/matches/${matchId}`);
         refetch();
       },
     });
@@ -115,7 +115,7 @@ function Matches() {
       >
         <form
           onSubmit={form.onSubmit(async (model) => {
-            await httpClient.post("api/v1/matches", model);
+            await httpService.post("api/v1/matches", model);
             refetch();
             form.reset();
             close();

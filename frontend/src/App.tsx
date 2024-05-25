@@ -1,4 +1,4 @@
-import Layout from "./screens/layout";
+import AppLayout from "./screens/app-layout";
 import { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 
@@ -7,12 +7,12 @@ const MatchesScreen = lazy(() => import("./screens/matches"));
 const PlayerScreen = lazy(() => import("./screens/players"));
 const HealthScreen = lazy(() => import("./screens/health"));
 const LoginScreen = lazy(() => import("./screens/auth/login"));
-const PageNotFound = lazy(() => import("./screens/pageNotFound"));
+const PageNotFound = lazy(() => import("./screens/page-not-found"));
 
 function App() {
   return (
     <Routes>
-      <Route element={<Layout />}>
+      <Route element={<AppLayout />}>
         <Route path="/" element={<DashboardScreen />} />
         <Route path="/players" element={<PlayerScreen />} />
         <Route path="/matches" element={<MatchesScreen />} />

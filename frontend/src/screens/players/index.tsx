@@ -1,4 +1,4 @@
-import httpClient from "../../common/httpClient";
+import httpService from "../../common/http-service";
 import Page from "../../components/page";
 import { FaPlusSquare, FaSave, FaTrash, FaUserEdit } from "react-icons/fa";
 import { PlayerModel } from "./models";
@@ -41,15 +41,15 @@ function Players() {
     refetch,
   } = useQuery({
     queryKey: ["getPlayers"],
-    queryFn: () => httpClient.get<PlayerModel[]>("api/v1/players"),
+    queryFn: () => httpService.get<PlayerModel[]>("api/v1/players"),
   });
 
   const createOrUpdateMutation = useMutation({
     mutationFn: (model: PlayerModel) => {
       if (model.id) {
-        return httpClient.put(`api/v1/players/${model.id}`, model);
+        return httpService.put(`api/v1/players/${model.id}`, model);
       }
-      return httpClient.post("api/v1/players", model);
+      return httpService.post("api/v1/players", model);
     },
     onSuccess(data, variables, context) {
       form.reset();
@@ -60,7 +60,7 @@ function Players() {
 
   const deleteMutation = useMutation({
     mutationFn: (model: PlayerModel) => {
-      return httpClient.del(`api/v1/players/${model.id}`);
+      return httpService.del(`api/v1/players/${model.id}`);
     },
     onSuccess(data, variables, context) {
       refetch();

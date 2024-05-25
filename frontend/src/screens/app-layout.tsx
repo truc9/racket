@@ -11,9 +11,9 @@ import {
   FaUserClock,
 } from "react-icons/fa";
 import { useAuth0 } from "@auth0/auth0-react";
-import LogoutButton from "../components/logoutButton";
+import LogoutButton from "../components/logout-button";
 import UserProfile from "../components/profile";
-import FullScreenLoading from "../components/fullScreenLoading";
+import FullScreenLoading from "../components/fullscreen-loading";
 
 interface NavItemProps {
   label?: string;
@@ -33,7 +33,7 @@ const NavItem: FC<NavItemProps> = ({ label, path, icon, showLabel = true }) => {
   );
 };
 
-function Layout() {
+function AppLayout() {
   const APP_NAME = "RACKET";
   const [collapsed, setCollapsed] = useState(false);
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -118,4 +118,4 @@ function Layout() {
   );
 }
 
-export default Layout;
+export default AppLayout;

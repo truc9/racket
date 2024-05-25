@@ -19,7 +19,7 @@ const ToggleButton: React.FC<Prop> = ({
   return disabled ? (
     <div className="flex w-full items-center justify-center gap-1 rounded bg-slate-300 px-3 py-2 text-center text-white">
       <FaBan />
-      <span>Not Available</span>
+      <span>N/A</span>
     </div>
   ) : (
     <button

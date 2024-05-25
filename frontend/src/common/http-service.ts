@@ -24,11 +24,11 @@ async function del(url: string) {
     return res.data
 }
 
-const httpClient = {
+const httpService = {
     get,
     post,
     put,
     del,
 }
 
-export default httpClient
+export default httpService

@@ -1,17 +1,17 @@
-import httpClient from "../../common/httpClient";
+import httpService from "../../common/http-service";
 import React, { useMemo } from "react";
-import ToggleButton from "../../components/toggleButton";
+import ToggleButton from "../../components/toggle-button";
 import { Badge } from "@mantine/core";
 import { FaBan, FaMoneyBillWave, FaWalking } from "react-icons/fa";
-import { MatchModel, RegistrationModel } from "../../models";
+import { MatchSummaryModel, RegistrationModel } from "../../models";
 import { useMutation } from "@tanstack/react-query";
 import { useRegistrationsByMatchQuery } from "../../hooks/queries";
 
 interface Prop {
-  match: MatchModel;
+  match: MatchSummaryModel;
 }
 
-const MatchRegistration: React.FC<Prop> = ({ match }) => {
+const MatchListItem: React.FC<Prop> = ({ match }) => {
   const { data: registrations, refetch } = useRegistrationsByMatchQuery(
     match.id,
   );
@@ -27,25 +27,25 @@ const MatchRegistration: React.FC<Prop> = ({ match }) => {
   const registerMut = useMutation({
     onSuccess: refetch,
     mutationFn: (model: RegistrationModel) =>
-      httpClient.post("api/v1/registrations", model),
+      httpService.post("api/v1/registrations", model),
   });
 
   const unregisterMut = useMutation({
     onSuccess: refetch,
-    mutationFn: (id: number) => httpClient.del(`api/v1/registrations/${id}`),
+    mutationFn: (id: number) => httpService.del(`api/v1/registrations/${id}`),
   });
 
   const paidMutation = useMutation({
     onSuccess: refetch,
     mutationFn: (registrationId: number) => {
-      return httpClient.put(`api/v1/registrations/${registrationId}/paid`, {});
+      return httpService.put(`api/v1/registrations/${registrationId}/paid`, {});
     },
   });
 
   const unPaidMutation = useMutation({
     onSuccess: refetch,
     mutationFn: (registrationId: number) => {
-      return httpClient.put(
+      return httpService.put(
         `api/v1/registrations/${registrationId}/unpaid`,
         {},
       );
@@ -65,7 +65,7 @@ const MatchRegistration: React.FC<Prop> = ({ match }) => {
               <div>
                 {!!reg.registrationId ? (
                   <ToggleButton
-                    label="Attend"
+                    label="Interested"
                     isActive={true}
                     onClick={() => unregisterMut.mutate(reg.registrationId)}
                     icon={<FaWalking />}
@@ -88,7 +88,7 @@ const MatchRegistration: React.FC<Prop> = ({ match }) => {
               {!!reg.registrationId ? (
                 <div>
                   <ToggleButton
-                    label={reg.isPaid ? "Paid" : "Debt"}
+                    label={reg.isPaid ? "Paid" : "Unpaid"}
                     isActive={reg.isPaid}
                     onClick={() =>
                       reg.isPaid
@@ -136,4 +136,4 @@ const MatchRegistration: React.FC<Prop> = ({ match }) => {
   );
 };
 
-export default MatchRegistration;
+export default MatchListItem;
