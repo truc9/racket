@@ -4,29 +4,25 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/truc9/racket/domain"
 	"github.com/truc9/racket/dto"
 	"github.com/truc9/racket/params"
-	"go.uber.org/zap"
-	"gorm.io/gorm"
+	"github.com/truc9/racket/service"
 )
 
 type SportCenterHandler struct {
-	db     *gorm.DB
-	logger *zap.SugaredLogger
+	service *service.SportCenterService
 }
 
-func NewSportCenterHandler(db *gorm.DB, logger *zap.SugaredLogger) *SportCenterHandler {
+func NewSportCenterHandler(service *service.SportCenterService) *SportCenterHandler {
 	return &SportCenterHandler{
-		db:     db,
-		logger: logger,
+		service: service,
 	}
 }
 
 func (h *SportCenterHandler) GetAll(c *gin.Context) {
-	var result []dto.SportCenterDto
-	if err := h.db.Find(&result); err != nil {
-		c.AbortWithStatus(http.StatusInternalServerError)
+	result, err := h.service.GetAll()
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
 		return
 	}
 	c.JSON(http.StatusOK, result)
@@ -35,14 +31,16 @@ func (h *SportCenterHandler) GetAll(c *gin.Context) {
 func (h *SportCenterHandler) Create(c *gin.Context) {
 	dto := dto.SportCenterDto{}
 	if err := c.BindJSON(&dto); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		c.AbortWithStatusJSON(http.StatusBadRequest, err)
 		return
 	}
 
-	h.db.Create(&domain.SportCenter{
-		Name:     dto.Name,
-		Location: dto.Location,
-	})
+	err := h.service.Create(dto.Name, dto.Location)
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, err)
+		return
+	}
 
 	c.Status(http.StatusOK)
 }
@@ -56,15 +54,11 @@ func (h *SportCenterHandler) Update(c *gin.Context) {
 		return
 	}
 
-	entity := domain.SportCenter{}
-	if err := h.db.Find(&entity, id).Error; err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+	err := h.service.Update(id, dto.Name, dto.Location)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
 		return
 	}
 
-	entity.Name = dto.Name
-	entity.Location = dto.Location
-
-	h.db.Save(entity)
 	c.Status(http.StatusOK)
 }
