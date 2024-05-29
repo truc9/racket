@@ -7,6 +7,7 @@ const MatchesScreen = lazy(() => import("./screens/matches"));
 const PlayerScreen = lazy(() => import("./screens/players"));
 const HealthScreen = lazy(() => import("./screens/health"));
 const LoginScreen = lazy(() => import("./screens/auth/login"));
+const SportCenters = lazy(() => import("./screens/sportcenter"));
 const PageNotFound = lazy(() => import("./screens/page-not-found"));
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<DashboardScreen />} />
         <Route path="/players" element={<PlayerScreen />} />
         <Route path="/matches" element={<MatchesScreen />} />
+        <Route path="/sportcenters" element={<SportCenters />} />
         <Route path="/health" element={<HealthScreen />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>

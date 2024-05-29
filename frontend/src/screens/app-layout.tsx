@@ -5,6 +5,7 @@ import { FiChevronLeft } from "react-icons/fi";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Suspense } from "react";
 import {
+  FaBuilding,
   FaChartArea,
   FaFighterJet,
   FaHeartbeat,
@@ -90,6 +91,12 @@ function AppLayout() {
               path="/players"
               label="Players"
               icon={<FaUserClock />}
+            />
+            <NavItem
+              showLabel={!collapsed}
+              path="/sportcenters"
+              label="Sport Centers"
+              icon={<FaBuilding />}
             />
             <NavItem
               showLabel={!collapsed}
