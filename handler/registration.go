@@ -11,19 +11,19 @@ import (
 	"gorm.io/gorm"
 )
 
-type registrationHandler struct {
-	db    *gorm.DB
-	sugar *zap.SugaredLogger
+type RegistrationHandler struct {
+	db     *gorm.DB
+	logger *zap.SugaredLogger
 }
 
-func NewRegHandler(db *gorm.DB, sugar *zap.SugaredLogger) *registrationHandler {
-	return &registrationHandler{
-		db:    db,
-		sugar: sugar,
+func NewRegHandler(db *gorm.DB, logger *zap.SugaredLogger) *RegistrationHandler {
+	return &RegistrationHandler{
+		db:     db,
+		logger: logger,
 	}
 }
 
-func (h registrationHandler) Register(ctx *gin.Context) {
+func (h RegistrationHandler) Register(ctx *gin.Context) {
 	dto := dto.RegistrationDto{}
 	var err error
 	if err = ctx.BindJSON(&dto); err != nil {
@@ -49,13 +49,13 @@ func (h registrationHandler) Register(ctx *gin.Context) {
 	}
 }
 
-func (h registrationHandler) Unregister(ctx *gin.Context) {
+func (h RegistrationHandler) Unregister(ctx *gin.Context) {
 	id, _ := ctx.Params.Get("registrationId")
 	h.db.Unscoped().Delete(&domain.Registration{}, id)
 	ctx.JSON(http.StatusOK, id)
 }
 
-func (h registrationHandler) MarkPaid(ctx *gin.Context) {
+func (h RegistrationHandler) MarkPaid(ctx *gin.Context) {
 	registrationId, _ := ctx.Params.Get("registrationId")
 	entity := domain.Registration{}
 	h.db.Find(&entity, registrationId)
@@ -65,7 +65,7 @@ func (h registrationHandler) MarkPaid(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, entity)
 }
 
-func (h registrationHandler) MarkUnPaid(ctx *gin.Context) {
+func (h RegistrationHandler) MarkUnPaid(ctx *gin.Context) {
 	registrationId, _ := ctx.Params.Get("registrationId")
 	entity := domain.Registration{}
 	h.db.Find(&entity, registrationId)
@@ -75,9 +75,9 @@ func (h registrationHandler) MarkUnPaid(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, entity)
 }
 
-func (h registrationHandler) GetAll(ctx *gin.Context) {
+func (h RegistrationHandler) GetAll(ctx *gin.Context) {
 	var result []dto.RegistrationOverviewDto
-	h.sugar.Info("querying registration report")
+	h.logger.Info("querying registration report")
 	h.db.Raw(`
 		SELECT	
 			r.id as registration_id,

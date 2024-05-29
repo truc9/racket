@@ -5,14 +5,17 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/truc9/racket/db"
+	"github.com/truc9/racket/di"
 	"github.com/truc9/racket/handler"
-	"go.uber.org/zap"
 )
 
 func main() {
-	router := gin.Default()
-	router.Use(cors.New(cors.Config{
+	// Register Container
+	c := di.Register()
+
+	// Gin Router
+	r := gin.Default()
+	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173", "https://goodracket.vercel.app"},
 		AllowMethods:     []string{"PUT", "POST", "GET", "DELETE", "PATCH"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
@@ -21,54 +24,52 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	database := db.NewDatabase()
-	sqldb, _ := database.DB()
-	defer sqldb.Close()
-
-	var logger *zap.Logger
-
-	logger, _ = zap.NewDevelopment()
-
-	defer logger.Sync()
-	sugar := logger.Sugar()
-
-	matchHandler := handler.NewMatchHandler(database, sugar)
-	playerHandler := handler.NewPlayerHandler(database, sugar)
-	regHandler := handler.NewRegHandler(database, sugar)
-
 	// Health Check
-	router.GET("/health", func(ctx *gin.Context) {
+	r.GET("/health", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
 			"message": "ok",
 		})
 	})
 
-	router.GET("/health/origins", func(ctx *gin.Context) {
+	r.GET("/health/origins", func(ctx *gin.Context) {
 		ctx.JSON(200, ctx.Request.Header.Get("Origin"))
 	})
 
 	// API v1
-	v1 := router.Group("/api/v1")
+	v1 := r.Group("/api/v1")
 
-	// Players API
-	v1.GET("/players", playerHandler.GetAll)
-	v1.POST("/players", playerHandler.Create)
-	v1.DELETE("/players/:playerId", playerHandler.Delete)
-	v1.PUT("/players/:playerId", playerHandler.Update)
+	c.Invoke(func(handler *handler.MatchHandler) {
+		// Matches API
+		v1.POST("/matches", handler.Create)
+		v1.GET("/matches", handler.GetAll)
+		v1.GET("/matches/:matchId/registrations", handler.GetRegistrationsByMatch)
+		v1.PUT("/matches/:matchId/costs", handler.UpdateCost)
+		v1.PUT("/matches/:matchId/additional-costs", handler.CreateAdditionalCost)
+	})
 
-	// Matches API
-	v1.POST("/matches", matchHandler.Create)
-	v1.GET("/matches", matchHandler.GetAll)
-	v1.GET("/matches/:matchId/registrations", matchHandler.GetRegistrationsByMatch)
-	v1.PUT("/matches/:matchId/costs", matchHandler.UpdateCost)
-	v1.PUT("/matches/:matchId/additional-costs", matchHandler.CreateAdditionalCost)
+	c.Invoke(func(handler *handler.PlayerHandler) {
+		// Players API
+		v1.GET("/players", handler.GetAll)
+		v1.POST("/players", handler.Create)
+		v1.DELETE("/players/:playerId", handler.Delete)
+		v1.PUT("/players/:playerId", handler.Update)
+	})
 
-	// Registrations API
-	v1.GET("/registrations", regHandler.GetAll)
-	v1.POST("/registrations", regHandler.Register)
-	v1.PUT("/registrations/:registrationId/paid", regHandler.MarkPaid)
-	v1.PUT("/registrations/:registrationId/unpaid", regHandler.MarkUnPaid)
-	v1.DELETE("/registrations/:registrationId", regHandler.Unregister)
+	c.Invoke(func(handler *handler.RegistrationHandler) {
+		// Registrations API
+		v1.GET("/registrations", handler.GetAll)
+		v1.POST("/registrations", handler.Register)
+		v1.PUT("/registrations/:registrationId/paid", handler.MarkPaid)
+		v1.PUT("/registrations/:registrationId/unpaid", handler.MarkUnPaid)
+		v1.DELETE("/registrations/:registrationId", handler.Unregister)
+	})
 
-	router.Run()
+	c.Invoke(func(handler *handler.SportCenterHandler) {
+		// Sport Centers API
+		v1.GET("/sportcenters", handler.GetAll)
+		v1.POST("/sportcenters", handler.Create)
+		v1.PUT("/sportcenters/:sportCenterId", handler.Update)
+	})
+
+	r.Run()
 }

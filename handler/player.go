@@ -11,19 +11,19 @@ import (
 	"gorm.io/gorm"
 )
 
-type playerHandler struct {
-	db    *gorm.DB
-	sugar *zap.SugaredLogger
+type PlayerHandler struct {
+	db     *gorm.DB
+	logger *zap.SugaredLogger
 }
 
-func NewPlayerHandler(db *gorm.DB, sugar *zap.SugaredLogger) *playerHandler {
-	return &playerHandler{
-		db:    db,
-		sugar: sugar,
+func NewPlayerHandler(db *gorm.DB, logger *zap.SugaredLogger) *PlayerHandler {
+	return &PlayerHandler{
+		db:     db,
+		logger: logger,
 	}
 }
 
-func (h playerHandler) Create(c *gin.Context) {
+func (h PlayerHandler) Create(c *gin.Context) {
 	dto := dto.PlayerDto{}
 	var err error
 	if err = c.BindJSON(&dto); err != nil {
@@ -39,13 +39,13 @@ func (h playerHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, p)
 }
 
-func (h playerHandler) GetAll(c *gin.Context) {
+func (h PlayerHandler) GetAll(c *gin.Context) {
 	var result []domain.Player
 	h.db.Order("first_name ASC").Find(&result)
 	c.JSON(http.StatusOK, result)
 }
 
-func (h playerHandler) Update(c *gin.Context) {
+func (h PlayerHandler) Update(c *gin.Context) {
 	var model dto.PlayerDto
 	id := params.Get(c, "playerId")
 	if err := c.BindJSON(&model); err != nil {
@@ -61,7 +61,7 @@ func (h playerHandler) Update(c *gin.Context) {
 	c.JSON(http.StatusOK, p)
 }
 
-func (h playerHandler) Delete(c *gin.Context) {
+func (h PlayerHandler) Delete(c *gin.Context) {
 	id := params.Get(c, "playerId")
 	h.db.Delete(&domain.Player{}, id)
 	c.Status(http.StatusOK)
