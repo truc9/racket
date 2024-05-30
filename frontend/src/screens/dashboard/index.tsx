@@ -1,10 +1,8 @@
 import dayjs from "dayjs";
 import MatchList from "./match-list";
 import Page from "../../components/page";
-import { lazy, useMemo } from "react";
+import { useMemo } from "react";
 import { useMatchesQuery } from "../../hooks/queries";
-
-const MatchListItem = lazy(() => import("./match-list-item"));
 
 function Dashboard() {
   const { data: matches } = useMatchesQuery();

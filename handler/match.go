@@ -76,7 +76,7 @@ func (h *MatchHandler) GetRegistrationsByMatch(c *gin.Context) {
 		FROM "players" pl
 		LEFT JOIN "registrations" re ON pl.id = re.player_id AND re.deleted_at IS NULL AND re.match_id = ?
 		WHERE pl.deleted_at IS NULL
-		ORDER BY pl.first_name ASC		
+		ORDER BY pl.first_name ASC	
 	`, matchId).Scan(&result)
 
 	h.logger.Info(result)

@@ -1,6 +1,6 @@
 import httpService from "../../common/http-service";
 import Page from "../../components/page";
-import { FaPlusSquare, FaSave, FaTrash, FaUserEdit } from "react-icons/fa";
+import { IoAdd, IoPencil, IoSave, IoTrash } from "react-icons/io5";
 import { PlayerModel } from "./models";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm, zodResolver } from "@mantine/form";
@@ -51,7 +51,7 @@ function Players() {
       }
       return httpService.post("api/v1/players", model);
     },
-    onSuccess(data, variables, context) {
+    onSuccess(_data, _variables, _context) {
       form.reset();
       refetch();
       closeDrawer();
@@ -62,7 +62,7 @@ function Players() {
     mutationFn: (model: PlayerModel) => {
       return httpService.del(`api/v1/players/${model.id}`);
     },
-    onSuccess(data, variables, context) {
+    onSuccess(_data, _variables, _context) {
       refetch();
     },
   });
@@ -81,7 +81,7 @@ function Players() {
       <Page title="Players Management">
         <div>
           <Button
-            leftSection={<FaPlusSquare />}
+            leftSection={<IoAdd />}
             variant="default"
             onClick={openDrawer}
           >
@@ -106,14 +106,14 @@ function Players() {
                     <Table.Td>{item.lastName}</Table.Td>
                     <Table.Td className="flex items-center justify-end gap-2">
                       <ActionIcon onClick={() => editClick(item)} size="lg">
-                        <FaUserEdit />
+                        <IoPencil />
                       </ActionIcon>
                       <ActionIcon
                         size="lg"
                         color="red"
                         onClick={() => deleteClick(item)}
                       >
-                        <FaTrash />
+                        <IoTrash />
                       </ActionIcon>
                     </Table.Td>
                   </Table.Tr>
@@ -136,7 +136,7 @@ function Players() {
         >
           <TextInput label="First name" {...form.getInputProps("firstName")} />
           <TextInput label="Last name" {...form.getInputProps("lastName")} />
-          <Button leftSection={<FaSave />} type="submit">
+          <Button leftSection={<IoSave />} type="submit">
             Save changes
           </Button>
         </form>

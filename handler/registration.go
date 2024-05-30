@@ -93,6 +93,7 @@ func (h RegistrationHandler) GetAll(ctx *gin.Context) {
 		LEFT JOIN "players" p ON p.id = r.player_id AND p.deleted_at IS NULL
 		LEFT JOIN "sport_centers" sc ON sc.id = m.sport_center_id
 		WHERE r.deleted_at IS NULL
+		ORDER BY p.first_name ASC
 	`).Scan(&result)
 
 	log.Print(result)

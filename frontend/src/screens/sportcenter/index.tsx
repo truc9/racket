@@ -1,6 +1,6 @@
 import httpService from "../../common/http-service";
 import Page from "../../components/page";
-import { FaEdit, FaPlusSquare, FaSave } from "react-icons/fa";
+import { IoAdd, IoPencil, IoSave } from "react-icons/io5";
 import { SportCenterModel } from "../../models";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm, zodResolver } from "@mantine/form";
@@ -65,11 +65,7 @@ export default function SportCenter() {
     <>
       <Page title="Sport Center Management">
         <div>
-          <Button
-            leftSection={<FaPlusSquare />}
-            variant="default"
-            onClick={openModal}
-          >
+          <Button leftSection={<IoAdd />} variant="default" onClick={openModal}>
             Create Sport Center
           </Button>
         </div>
@@ -91,7 +87,7 @@ export default function SportCenter() {
                     <Table.Td>{item.location}</Table.Td>
                     <Table.Td className="flex items-center justify-end gap-2">
                       <ActionIcon onClick={() => editClick(item)} size="lg">
-                        <FaEdit />
+                        <IoPencil />
                       </ActionIcon>
                     </Table.Td>
                   </Table.Tr>
@@ -108,7 +104,7 @@ export default function SportCenter() {
         >
           <TextInput label="Name" {...form.getInputProps("name")} />
           <TextInput label="Location" {...form.getInputProps("location")} />
-          <Button leftSection={<FaSave />} type="submit">
+          <Button leftSection={<IoSave />} type="submit">
             Save changes
           </Button>
         </form>

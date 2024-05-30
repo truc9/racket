@@ -3,7 +3,6 @@ import httpService from "../../common/http-service";
 import Page from "../../components/page";
 import { ActionIcon, Button, Drawer, Select, Table, Text } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
-import { FaPlusSquare, FaSave, FaTrash } from "react-icons/fa";
 import { MatchModel } from "./models";
 import { modals } from "@mantine/modals";
 import { useDisclosure } from "@mantine/hooks";
@@ -12,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSportCenterValueLabelQuery } from "../../hooks/queries";
 import { z } from "zod";
 import { zodResolver } from "mantine-form-zod-resolver";
+import { IoAdd, IoSave, IoTrash } from "react-icons/io5";
 
 const schema = z.object({
   start: z.date({ message: "Start date is required" }),
@@ -61,11 +61,7 @@ function Matches() {
     <>
       <Page title="Matches Management">
         <div>
-          <Button
-            leftSection={<FaPlusSquare />}
-            variant="default"
-            onClick={open}
-          >
+          <Button leftSection={<IoAdd />} variant="default" onClick={open}>
             Create Match
           </Button>
         </div>
@@ -94,7 +90,7 @@ function Matches() {
                       onClick={() => deleteMatch(item.matchId!)}
                       color="red"
                     >
-                      <FaTrash />
+                      <IoTrash />
                     </ActionIcon>
                   </Table.Td>
                 </Table.Tr>
@@ -139,7 +135,7 @@ function Matches() {
             {...form.getInputProps("sportCenterId")}
           />
 
-          <Button variant="default" leftSection={<FaSave />} type="submit">
+          <Button variant="default" leftSection={<IoSave />} type="submit">
             Save changes
           </Button>
         </form>

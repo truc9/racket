@@ -4,18 +4,19 @@ import Loading from "../components/loading";
 import LogoutButton from "../components/logout-button";
 import UserProfile from "../components/profile";
 import { FC, ReactNode, useState } from "react";
-import { FiChevronLeft } from "react-icons/fi";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Suspense } from "react";
 import { Tooltip } from "@mantine/core";
 import { useAuth0 } from "@auth0/auth0-react";
+
 import {
-  FaBuilding,
-  FaChartArea,
-  FaFighterJet,
-  FaHeartbeat,
-  FaUserClock,
-} from "react-icons/fa";
+  IoBarChart,
+  IoBasketball,
+  IoChevronBackCircle,
+  IoHeart,
+  IoPersonAdd,
+  IoStorefront,
+} from "react-icons/io5";
 
 interface NavItemProps {
   label?: string;
@@ -85,38 +86,38 @@ function AppLayout() {
               showLabel={!collapsed}
               path="/"
               label="Dashboard"
-              icon={<FaChartArea />}
+              icon={<IoBarChart />}
             />
             <NavItem
               showLabel={!collapsed}
               path="/matches"
               label="Matches"
-              icon={<FaFighterJet />}
+              icon={<IoBasketball />}
             />
             <NavItem
               showLabel={!collapsed}
               path="/players"
               label="Players"
-              icon={<FaUserClock />}
+              icon={<IoPersonAdd />}
             />
             <NavItem
               showLabel={!collapsed}
               path="/sportcenters"
               label="Sport Centers"
-              icon={<FaBuilding />}
+              icon={<IoStorefront />}
             />
             <NavItem
               showLabel={!collapsed}
               path="/health"
               label="Health"
-              icon={<FaHeartbeat />}
+              icon={<IoHeart />}
             />
           </div>
           <button
             onClick={toggleSideNav}
             className="absolute -right-2 top-2 hidden rounded-full border border-blue-500 bg-white text-lg text-blue-500 shadow ring-blue-500 group-hover:block"
           >
-            <FiChevronLeft className={cx(collapsed && "rotate-180")} />
+            <IoChevronBackCircle className={cx(collapsed && "rotate-180")} />
           </button>
         </div>
         <div className="p-2">
