@@ -1,5 +1,5 @@
 import httpService from '../common/http-service'
-import { MatchSummaryModel, PlayerModel, RegistrationDetailModel, RegistrationModel } from '../models'
+import { MatchSummaryModel, PlayerModel, RegistrationDetailModel, RegistrationModel, ValueLabel } from '../models'
 import { useQuery } from '@tanstack/react-query'
 
 export const usePlayersQuery = () => useQuery({
@@ -21,4 +21,9 @@ export const useRegistrationsQuery = () => useQuery({
 export const useRegistrationsByMatchQuery = (matchId: number) => useQuery({
     queryKey: ['getRegistrationsByMatch', matchId],
     queryFn: () => httpService.get<RegistrationDetailModel[]>(`api/v1/matches/${matchId}/registrations`)
+})
+
+export const useSportCenterValueLabelQuery = () => useQuery({
+    queryKey: ['getSportCenterSelectOptions'],
+    queryFn: () => httpService.get<ValueLabel[]>('api/v1/sportcenters/options')
 })

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/samber/lo"
 	"github.com/truc9/racket/domain"
 	"github.com/truc9/racket/dto"
 	"github.com/truc9/racket/params"
@@ -24,8 +25,19 @@ func NewMatchHandler(db *gorm.DB, logger *zap.SugaredLogger) *MatchHandler {
 }
 
 func (h *MatchHandler) GetAll(c *gin.Context) {
-	var result []domain.Match
-	h.db.Order("start DESC").Find(&result)
+	var matches []domain.Match
+	h.db.Preload("SportCenter").Order("start DESC").Find(&matches)
+
+	result := lo.Map(matches, func(m domain.Match, _ int) dto.MatchDto {
+		return dto.MatchDto{
+			MatchId:         m.ID,
+			Start:           m.Start,
+			End:             m.End,
+			SportCenterId:   m.SportCenterId,
+			SportCenterName: m.SportCenter.Name,
+		}
+	})
+
 	c.JSON(http.StatusOK, result)
 }
 
@@ -40,9 +52,9 @@ func (h *MatchHandler) Create(c *gin.Context) {
 	h.logger.Debug(dto)
 
 	m := &domain.Match{
-		Start:    dto.Start,
-		End:      dto.End,
-		Location: dto.Location,
+		Start:         dto.Start,
+		End:           dto.End,
+		SportCenterId: dto.SportCenterId,
 	}
 
 	h.logger.Debug(m)

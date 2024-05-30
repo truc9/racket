@@ -13,7 +13,7 @@ interface Prop {
 
 const MatchListItem: React.FC<Prop> = ({ match }) => {
   const { data: registrations, refetch } = useRegistrationsByMatchQuery(
-    match.id,
+    match.matchId,
   );
 
   const attendantPercentage = useMemo(() => {
@@ -76,7 +76,7 @@ const MatchListItem: React.FC<Prop> = ({ match }) => {
                     isActive={false}
                     onClick={() =>
                       registerMut.mutate({
-                        matchId: match.id,
+                        matchId: match.matchId,
                         playerId: reg.playerId,
                       })
                     }

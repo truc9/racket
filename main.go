@@ -67,6 +67,7 @@ func main() {
 	c.Invoke(func(handler *handler.SportCenterHandler) {
 		// Sport Centers API
 		v1.GET("/sportcenters", handler.GetAll)
+		v1.GET("/sportcenters/options", handler.GetOptions)
 		v1.POST("/sportcenters", handler.Create)
 		v1.PUT("/sportcenters/:sportCenterId", handler.Update)
 	})

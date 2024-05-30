@@ -4,16 +4,17 @@ import "time"
 
 type (
 	MatchDto struct {
-		MatchId  int64     `json:"matchId"`
-		Start    time.Time `json:"start"`
-		End      time.Time `json:"end"`
-		Location string    `json:"location"`
+		MatchId         uint      `json:"matchId"`
+		Start           time.Time `json:"start"`
+		End             time.Time `json:"end"`
+		SportCenterName string    `json:"sportCenterName"`
+		SportCenterId   uint      `json:"sportCenterId"`
 	}
 
 	AttendantDto struct {
 		Name     string `json:"name"`
-		MatchId  int64  `json:"matchId"`
-		PlayerId int64  `json:"playerId"`
+		MatchId  uint   `json:"matchId"`
+		PlayerId uint   `json:"playerId"`
 		IsJoined bool   `json:"isJoined"`
 		IsPaid   bool   `json:"isPaid"`
 	}

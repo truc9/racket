@@ -80,10 +80,10 @@ func (h RegistrationHandler) GetAll(ctx *gin.Context) {
 	h.logger.Info("querying registration report")
 	h.db.Raw(`
 		SELECT	
-			r.id as registration_id,
-			m.id as match_id, 
-			p.id as player_id,
-			m.location, 
+			r.id AS registration_id,
+			m.id AS match_id, 
+			p.id AS player_id,
+			COALESCE(sc.name,'N/A') AS location,
 			m.start, 
 			m.end, 
 			CONCAT(p.first_name, ' ', p.last_name) as player_name,
@@ -91,6 +91,7 @@ func (h RegistrationHandler) GetAll(ctx *gin.Context) {
 		FROM "matches" m 
 		LEFT JOIN "registrations" r ON m.id = r.match_id
 		LEFT JOIN "players" p ON p.id = r.player_id AND p.deleted_at IS NULL
+		LEFT JOIN "sport_centers" sc ON sc.id = m.sport_center_id
 		WHERE r.deleted_at IS NULL
 	`).Scan(&result)
 

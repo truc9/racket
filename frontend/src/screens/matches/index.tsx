@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import httpService from "../../common/http-service";
 import Page from "../../components/page";
+import { ActionIcon, Button, Drawer, Select, Table, Text } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
 import { FaPlusSquare, FaSave, FaTrash } from "react-icons/fa";
 import { MatchModel } from "./models";
@@ -8,21 +9,14 @@ import { modals } from "@mantine/modals";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { useQuery } from "@tanstack/react-query";
+import { useSportCenterValueLabelQuery } from "../../hooks/queries";
 import { z } from "zod";
 import { zodResolver } from "mantine-form-zod-resolver";
-import {
-  ActionIcon,
-  Button,
-  Drawer,
-  Table,
-  Text,
-  TextInput,
-} from "@mantine/core";
 
 const schema = z.object({
   start: z.date({ message: "Start date is required" }),
   end: z.date({ message: "End date is required" }),
-  location: z.string({ message: "Location is required" }).min(1),
+  sportCenterId: z.string({ message: "Sport center is required" }),
 });
 
 function Matches() {
@@ -33,12 +27,14 @@ function Matches() {
     queryFn: () => httpService.get<MatchModel[]>("api/v1/matches"),
   });
 
+  const { data: sportCenterOptions } = useSportCenterValueLabelQuery();
+
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
       start: dayjs(new Date()).set("hour", 9).set("minute", 0).toDate(),
       end: dayjs(new Date()).set("hour", 11).set("minute", 0).toDate(),
-      location: "Stechford Leisure Center",
+      sportCenterId: "0",
     },
     validate: zodResolver(schema),
   });
@@ -76,7 +72,7 @@ function Matches() {
         <Table striped withRowBorders={false}>
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Location</Table.Th>
+              <Table.Th>Sport Center</Table.Th>
               <Table.Th>Start Date</Table.Th>
               <Table.Th>End Date</Table.Th>
             </Table.Tr>
@@ -85,7 +81,7 @@ function Matches() {
             {matches?.map((item) => {
               return (
                 <Table.Tr key={item.matchId}>
-                  <Table.Td>{item.location}</Table.Td>
+                  <Table.Td>{item.sportCenterName || "N/A"}</Table.Td>
                   <Table.Td>
                     {dayjs(item.start).format("DD/MM/YYYY hh:mm:ss")}
                   </Table.Td>
@@ -115,7 +111,10 @@ function Matches() {
       >
         <form
           onSubmit={form.onSubmit(async (model) => {
-            await httpService.post("api/v1/matches", model);
+            await httpService.post("api/v1/matches", {
+              ...model,
+              sportCenterId: +model.sportCenterId,
+            });
             refetch();
             form.reset();
             close();
@@ -132,10 +131,12 @@ function Matches() {
             required
             {...form.getInputProps("end")}
           />
-          <TextInput
-            defaultValue={form.getInputProps("location")}
-            label="Location"
-            {...form.getInputProps("location")}
+          <Select
+            defaultValue={form.getInputProps("sportCenterId")}
+            label="Sport center"
+            placeholder="Pick value"
+            data={sportCenterOptions}
+            {...form.getInputProps("sportCenterId")}
           />
 
           <Button variant="default" leftSection={<FaSave />} type="submit">

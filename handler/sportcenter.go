@@ -28,6 +28,15 @@ func (h *SportCenterHandler) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
+func (h *SportCenterHandler) GetOptions(c *gin.Context) {
+	result, err := h.service.GetOptions()
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, result)
+}
+
 func (h *SportCenterHandler) Create(c *gin.Context) {
 	dto := dto.SportCenterDto{}
 	if err := c.BindJSON(&dto); err != nil {

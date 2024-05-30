@@ -9,9 +9,10 @@ type Match struct {
 	BaseModel
 	Start           time.Time        `json:"start"`
 	End             time.Time        `json:"end"`
-	Location        string           `json:"location"`
+	SportCenterId   uint             `json:"sportCenterId"`
 	Cost            float64          `json:"cost"`
 	AdditionalCosts []AdditionalCost `json:"additionalCosts"`
+	SportCenter     SportCenter      `json:"sportCenter"`
 }
 
 func (m *Match) UpdateCost(cost float64) error {

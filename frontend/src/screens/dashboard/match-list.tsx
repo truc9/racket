@@ -6,7 +6,7 @@ import { Accordion } from "@mantine/core";
 import { FiClock, FiMapPin } from "react-icons/fi";
 import { MatchSummaryModel } from "../../models";
 
-const MatchRegistration = lazy(() => import("./match-list-item"));
+const MatchListItem = lazy(() => import("./match-list-item"));
 
 interface Prop {
   matches: MatchSummaryModel[];
@@ -23,13 +23,12 @@ const MatchList: React.FC<Prop> = ({ matches }) => {
           return !m ? (
             <span>Match not available</span>
           ) : (
-            <Accordion.Item key={m.id} value={`${m.id}`}>
+            <Accordion.Item key={m.matchId} value={`${m.matchId}`}>
               <Accordion.Control icon={<FiMapPin />}>
                 <div className="flex items-center justify-between px-5">
                   <div className="flex items-center gap-2">
-                    <span>
-                      {dayjs(m.start).format("dddd")} - {m.location}
-                    </span>
+                    <span>{dayjs(m.start).format("dddd")} -</span>
+                    <span>{m.sportCenterName || "N/A"}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <FiClock />
@@ -39,7 +38,7 @@ const MatchList: React.FC<Prop> = ({ matches }) => {
               </Accordion.Control>
               <Accordion.Panel>
                 <Suspense fallback={<Loading />}>
-                  <MatchRegistration match={m} />
+                  <MatchListItem match={m} />
                 </Suspense>
               </Accordion.Panel>
             </Accordion.Item>

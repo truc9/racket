@@ -1,3 +1,8 @@
+export interface ValueLabel {
+    value: string
+    label: string
+}
+
 export interface PlayerModel {
     id: number
     firstName: string
@@ -5,8 +10,9 @@ export interface PlayerModel {
 }
 
 export interface MatchSummaryModel {
-    id: number
-    location: string
+    matchId: number
+    sportCenterName: string
+    sportCenterId: number
     start: Date
     end: Date
 }
@@ -22,4 +28,10 @@ export interface RegistrationDetailModel {
 export interface RegistrationModel {
     playerId: number
     matchId: number
+}
+
+export interface SportCenterModel {
+    id: number
+    name: string
+    location: string
 }
