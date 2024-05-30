@@ -2,7 +2,7 @@ import httpService from "../../common/http-service";
 import MatchFigure from "./match-figure";
 import React, { useMemo } from "react";
 import ToggleButton from "../../components/toggle-button";
-import { Alert, Modal, NumberInput } from "@mantine/core";
+import { Alert, Button, Modal, NumberInput } from "@mantine/core";
 import { FaCashRegister } from "react-icons/fa";
 import { FiDollarSign } from "react-icons/fi";
 import { MatchSummaryModel, RegistrationModel } from "../../models";
@@ -20,12 +20,15 @@ import {
   useMatchCostQuery,
   useRegistrationsByMatchQuery,
 } from "../../hooks/queries";
+import { useState } from "react";
 
 interface Prop {
   match: MatchSummaryModel;
 }
 
 const MatchListContent: React.FC<Prop> = ({ match }) => {
+  const [currentCost, setCurrentCost] = useState(0);
+
   const [costOpened, { open: openCost, close: closeCost }] =
     useDisclosure(false);
 
@@ -34,11 +37,10 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
     { open: openAdditionalCost, close: closeAdditionalCost },
   ] = useDisclosure(false);
 
-  const { data: registrations, refetch } = useRegistrationsByMatchQuery(
-    match.matchId,
-  );
+  const { data: registrations, refetch: refetchRegistrations } =
+    useRegistrationsByMatchQuery(match.matchId);
 
-  const { data: cost } = useMatchCostQuery(match.matchId);
+  const { data: cost, refetch: refetchCost } = useMatchCostQuery(match.matchId);
   const { data: additionalCost } = useMatchAdditionalCostQuery(match.matchId);
 
   const statPercentage = useMemo(() => {
@@ -61,31 +63,51 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
     return registrations?.filter((r) => !!r.registrationId).length;
   }, [registrations]);
 
+  const individualCost = useMemo(() => {
+    const total = (cost ?? 0) + (additionalCost ?? 0);
+    const totalPlayer =
+      registrations?.filter((r) => !!r.registrationId)?.length ?? 0;
+    return totalPlayer === 0 ? 0 : total / totalPlayer;
+  }, [cost, additionalCost, registrations]);
+
   const registerMut = useMutation({
-    onSuccess: refetch,
+    onSuccess: refetchRegistrations,
     mutationFn: (model: RegistrationModel) =>
       httpService.post("api/v1/registrations", model),
   });
 
   const unregisterMut = useMutation({
-    onSuccess: refetch,
-    mutationFn: (id: number) => httpService.del(`api/v1/registrations/${id}`),
+    onSuccess: refetchRegistrations,
+    mutationFn: (registrationId: number) =>
+      httpService.del(`api/v1/registrations/${registrationId}`),
   });
 
-  const paidMutation = useMutation({
-    onSuccess: refetch,
+  const paidMut = useMutation({
+    onSuccess: refetchRegistrations,
     mutationFn: (registrationId: number) => {
       return httpService.put(`api/v1/registrations/${registrationId}/paid`, {});
     },
   });
 
-  const unPaidMutation = useMutation({
-    onSuccess: refetch,
+  const unpaidMut = useMutation({
+    onSuccess: refetchRegistrations,
     mutationFn: (registrationId: number) => {
       return httpService.put(
         `api/v1/registrations/${registrationId}/unpaid`,
         {},
       );
+    },
+  });
+
+  const updateCostMut = useMutation({
+    onSuccess() {
+      refetchCost();
+      closeCost();
+    },
+    mutationFn: (model: { matchId: number; cost: number }) => {
+      return httpService.put(`api/v1/matches/${model.matchId}/costs`, {
+        cost: model.cost,
+      });
     },
   });
 
@@ -100,8 +122,9 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
               title="Cost Notification"
               icon={<FiDollarSign />}
             >
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. At
-              officiis, quae tempore necessitatibus placeat saepe.
+              Hey, today match cost is £{cost}, with additional costs is £
+              {additionalCost}. We have {statTotalPlayer} players, so we each
+              player need to pay £{individualCost}
             </Alert>
           </div>
 
@@ -185,8 +208,8 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
                         isActive={reg.isPaid}
                         onClick={() =>
                           reg.isPaid
-                            ? unPaidMutation.mutate(reg.registrationId)
-                            : paidMutation.mutate(reg.registrationId)
+                            ? unpaidMut.mutate(reg.registrationId)
+                            : paidMut.mutate(reg.registrationId)
                         }
                         icon={<IoCash />}
                       />
@@ -201,7 +224,19 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
       </div>
 
       <Modal opened={costOpened} onClose={closeCost} title="Update Cost">
-        <NumberInput />
+        <div className="flex flex-col gap-2">
+          <NumberInput onChange={(val) => setCurrentCost(+val)} />
+          <Button
+            onClick={() =>
+              updateCostMut.mutate({
+                matchId: match.matchId,
+                cost: currentCost,
+              })
+            }
+          >
+            Save
+          </Button>
+        </div>
       </Modal>
 
       <Modal

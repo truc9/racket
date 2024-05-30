@@ -43,7 +43,7 @@ func main() {
 		v1.POST("/matches", handler.Create)
 		v1.GET("/matches", handler.GetAll)
 		v1.GET("/matches/:matchId/registrations", handler.GetRegistrationsByMatch)
-		v1.GET("/matches/:matchId/costs", handler.GetCost)
+		v1.GET("/matches/:matchId/cost", handler.GetCost)
 		v1.GET("/matches/:matchId/additional-costs", handler.GetAdditionalCost)
 		v1.PUT("/matches/:matchId/costs", handler.UpdateCost)
 		v1.PUT("/matches/:matchId/additional-costs", handler.CreateAdditionalCost)
