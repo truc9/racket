@@ -101,7 +101,7 @@ export default function SportCenter() {
         </Table>
       </Page>
 
-      <Modal opened={opened} onClose={close} title="Sport Center">
+      <Modal opened={opened} onClose={closeModal} title="Sport Center">
         <form
           onSubmit={form.onSubmit((model) => mutation.mutate(model))}
           className="flex flex-col gap-2"
