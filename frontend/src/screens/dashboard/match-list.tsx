@@ -3,10 +3,10 @@ import formatter from "../../common/formatter";
 import Loading from "../../components/loading";
 import React, { lazy, Suspense } from "react";
 import { Accordion } from "@mantine/core";
-import { FiClock, FiMapPin } from "react-icons/fi";
+import { FiMapPin } from "react-icons/fi";
 import { MatchSummaryModel } from "../../models";
 
-const MatchListItem = lazy(() => import("./match-list-item"));
+const MatchListContent = lazy(() => import("./match-list-content"));
 
 interface Prop {
   matches: MatchSummaryModel[];
@@ -31,14 +31,13 @@ const MatchList: React.FC<Prop> = ({ matches }) => {
                     <span>{m.sportCenterName || "N/A"}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <FiClock />
                     <span>{formatter.formatDateRange(m.start, m.end)}</span>
                   </div>
                 </div>
               </Accordion.Control>
               <Accordion.Panel>
                 <Suspense fallback={<Loading />}>
-                  <MatchListItem match={m} />
+                  <MatchListContent match={m} />
                 </Suspense>
               </Accordion.Panel>
             </Accordion.Item>

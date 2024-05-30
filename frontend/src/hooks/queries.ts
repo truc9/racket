@@ -13,6 +13,16 @@ export const useMatchesQuery = () => useQuery({
     queryFn: () => httpService.get<MatchSummaryModel[]>("api/v1/matches"),
 })
 
+export const useMatchCostQuery = (id: number) => useQuery({
+    queryKey: ["getMatchCost"],
+    queryFn: () => httpService.get<number>(`api/v1/matches/${id}/cost`),
+})
+
+export const useMatchAdditionalCostQuery = (id: number) => useQuery({
+    queryKey: ["getMatchAdditionalCost"],
+    queryFn: () => httpService.get<number>(`api/v1/matches/${id}/additional-costs`),
+})
+
 export const useRegistrationsQuery = () => useQuery({
     queryKey: ['getRegistrations'],
     queryFn: () => httpService.get<RegistrationModel[]>("api/v1/registrations")

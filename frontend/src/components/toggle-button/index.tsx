@@ -23,7 +23,7 @@ const ToggleButton: React.FC<Prop> = ({
   };
 
   return disabled ? (
-    <div className="flex h-10 w-10 items-center justify-center gap-1 rounded-full bg-slate-300 text-center text-white">
+    <div className="flex h-8 w-8 items-center justify-center gap-1 rounded-full bg-slate-300 text-center text-white">
       <IoBan />
     </div>
   ) : (
@@ -31,10 +31,10 @@ const ToggleButton: React.FC<Prop> = ({
       {...props}
       className={clsx(
         isActive ? activeBg[activeColor] : "bg-slate-300",
-        "flex h-10 w-10 items-center justify-center gap-1 rounded-full text-center text-white",
+        "flex h-8 w-8 items-center justify-center gap-1 rounded-full text-center text-white",
       )}
     >
-      <span className="text-xl">{icon}</span>
+      <span className="text-lg">{icon}</span>
     </button>
   );
 };

@@ -103,6 +103,29 @@ func (h *MatchHandler) UpdateCost(c *gin.Context) {
 	c.JSON(http.StatusOK, match)
 }
 
+func (h *MatchHandler) GetCost(c *gin.Context) {
+	matchId := params.Get(c, "matchId")
+	var cost float64
+	if err := h.db.Select("cost").Find(&domain.Match{}, matchId).Scan(&cost).Error; err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+	c.JSON(http.StatusOK, cost)
+}
+
+func (h *MatchHandler) GetAdditionalCost(c *gin.Context) {
+	matchId := params.Get(c, "matchId")
+	var costs []float64
+	if err := h.db.Model(&domain.AdditionalCost{}).Where("match_id = ?", matchId).Select("cost").Scan(&costs).Error; err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	additionalCost := lo.Sum(costs)
+
+	c.JSON(http.StatusOK, additionalCost)
+}
+
 func (h *MatchHandler) CreateAdditionalCost(c *gin.Context) {
 	matchId := params.Get(c, "matchId")
 	dto := dto.AdditionalCostDto{}
