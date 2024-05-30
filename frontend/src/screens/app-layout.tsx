@@ -1,9 +1,14 @@
 import cx from "clsx";
+import FullScreenLoading from "../components/fullscreen-loading";
 import Loading from "../components/loading";
-import React, { FC, ReactNode, useState } from "react";
+import LogoutButton from "../components/logout-button";
+import UserProfile from "../components/profile";
+import { FC, ReactNode, useState } from "react";
 import { FiChevronLeft } from "react-icons/fi";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Suspense } from "react";
+import { Tooltip } from "@mantine/core";
+import { useAuth0 } from "@auth0/auth0-react";
 import {
   FaBuilding,
   FaChartArea,
@@ -11,10 +16,6 @@ import {
   FaHeartbeat,
   FaUserClock,
 } from "react-icons/fa";
-import { useAuth0 } from "@auth0/auth0-react";
-import LogoutButton from "../components/logout-button";
-import UserProfile from "../components/profile";
-import FullScreenLoading from "../components/fullscreen-loading";
 
 interface NavItemProps {
   label?: string;
@@ -28,7 +29,13 @@ const NavItem: FC<NavItemProps> = ({ label, path, icon, showLabel = true }) => {
       className="flex items-center gap-2 rounded px-4 py-3 hover:bg-blue-600 [&.active]:bg-blue-600"
       to={path}
     >
-      <span className="text-xl">{icon}</span>
+      {showLabel ? (
+        <span className="text-xl">{icon}</span>
+      ) : (
+        <Tooltip label={label} position="right-end">
+          <span className="text-xl">{icon}</span>
+        </Tooltip>
+      )}
       {label && showLabel && <span>{label}</span>}
     </NavLink>
   );
@@ -36,7 +43,7 @@ const NavItem: FC<NavItemProps> = ({ label, path, icon, showLabel = true }) => {
 
 function AppLayout() {
   const APP_NAME = "RACKET";
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const { user, isAuthenticated, isLoading } = useAuth0();
   const navigate = useNavigate();
 
