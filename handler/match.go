@@ -128,21 +128,25 @@ func (h *MatchHandler) GetAdditionalCost(c *gin.Context) {
 
 func (h *MatchHandler) CreateAdditionalCost(c *gin.Context) {
 	matchId := params.Get(c, "matchId")
-	dto := dto.AdditionalCostDto{}
-	if err := c.BindJSON(&dto); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+	costs := []dto.AdditionalCostDto{}
+	if err := c.BindJSON(&costs); err != nil {
+		h.logger.Debugf("error parse dto: %v", err.Error())
+		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
 	match := domain.Match{}
-	if err := h.db.Find(&match, matchId).Error; err != nil {
+	if err := h.db.Preload("AdditionalCosts").Find(&match, matchId).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
 			"error": "match not found",
 		})
 		return
 	}
 
-	match.AddCost(dto.Description, dto.Amount)
+	for _, c := range costs {
+		match.AddCost(c.Description, c.Amount)
+	}
+
 	h.db.Save(&match)
 	c.JSON(http.StatusOK, match)
 }

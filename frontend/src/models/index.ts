@@ -35,3 +35,6 @@ export interface SportCenterModel {
     name: string
     location: string
 }
+
+
+export type { AdditionalCost } from './cost/additional-cost'

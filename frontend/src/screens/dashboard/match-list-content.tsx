@@ -1,13 +1,25 @@
 import httpService from "../../common/http-service";
 import MatchFigure from "./match-figure";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import ToggleButton from "../../components/toggle-button";
-import { Alert, Button, Modal, NumberInput } from "@mantine/core";
 import { FaCashRegister } from "react-icons/fa";
-import { FiDollarSign } from "react-icons/fi";
-import { MatchSummaryModel, RegistrationModel } from "../../models";
+import { FiDollarSign, FiTrash2 } from "react-icons/fi";
 import { useDisclosure } from "@mantine/hooks";
 import { useMutation } from "@tanstack/react-query";
+import {
+  ActionIcon,
+  Alert,
+  Button,
+  Modal,
+  NumberInput,
+  Table,
+  TextInput,
+} from "@mantine/core";
+import {
+  AdditionalCost,
+  MatchSummaryModel,
+  RegistrationModel,
+} from "../../models";
 import {
   IoBan,
   IoBaseball,
@@ -20,7 +32,7 @@ import {
   useMatchCostQuery,
   useRegistrationsByMatchQuery,
 } from "../../hooks/queries";
-import { useState } from "react";
+import AdditionalCostEditor from "./additional-cost-editor";
 
 interface Prop {
   match: MatchSummaryModel;
@@ -28,7 +40,6 @@ interface Prop {
 
 const MatchListContent: React.FC<Prop> = ({ match }) => {
   const [currentCost, setCurrentCost] = useState(0);
-
   const [costOpened, { open: openCost, close: closeCost }] =
     useDisclosure(false);
 
@@ -37,11 +48,13 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
     { open: openAdditionalCost, close: closeAdditionalCost },
   ] = useDisclosure(false);
 
-  const { data: registrations, refetch: refetchRegistrations } =
-    useRegistrationsByMatchQuery(match.matchId);
+  const { data: registrations, refetch: reload } = useRegistrationsByMatchQuery(
+    match.matchId,
+  );
 
-  const { data: cost, refetch: refetchCost } = useMatchCostQuery(match.matchId);
-  const { data: additionalCost } = useMatchAdditionalCostQuery(match.matchId);
+  const { data: cost, refetch: reloadCost } = useMatchCostQuery(match.matchId);
+  const { data: additionalCost, refetch: reloadAdditionalCost } =
+    useMatchAdditionalCostQuery(match.matchId);
 
   const statPercentage = useMemo(() => {
     return Math.round(
@@ -70,27 +83,36 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
     return totalPlayer === 0 ? 0 : total / totalPlayer;
   }, [cost, additionalCost, registrations]);
 
+  const handleSaveAdditionalCosts = async (costs: AdditionalCost[]) => {
+    await httpService.put(
+      `api/v1/matches/${match.matchId}/additional-costs`,
+      costs,
+    );
+    closeAdditionalCost();
+    reloadAdditionalCost();
+  };
+
   const registerMut = useMutation({
-    onSuccess: refetchRegistrations,
+    onSuccess: reload,
     mutationFn: (model: RegistrationModel) =>
       httpService.post("api/v1/registrations", model),
   });
 
   const unregisterMut = useMutation({
-    onSuccess: refetchRegistrations,
+    onSuccess: reload,
     mutationFn: (registrationId: number) =>
       httpService.del(`api/v1/registrations/${registrationId}`),
   });
 
   const paidMut = useMutation({
-    onSuccess: refetchRegistrations,
+    onSuccess: reload,
     mutationFn: (registrationId: number) => {
       return httpService.put(`api/v1/registrations/${registrationId}/paid`, {});
     },
   });
 
   const unpaidMut = useMutation({
-    onSuccess: refetchRegistrations,
+    onSuccess: reload,
     mutationFn: (registrationId: number) => {
       return httpService.put(
         `api/v1/registrations/${registrationId}/unpaid`,
@@ -101,7 +123,7 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
 
   const updateCostMut = useMutation({
     onSuccess() {
-      refetchCost();
+      reloadCost();
       closeCost();
     },
     mutationFn: (model: { matchId: number; cost: number }) => {
@@ -113,8 +135,8 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex gap-3">
-        <div className="flex w-1/2 flex-col gap-3">
+      <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
+        <div className="flex flex-col gap-3">
           <div>
             <Alert
               variant="light"
@@ -128,7 +150,7 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
             </Alert>
           </div>
 
-          <div className="grid grid-cols-4 justify-between gap-3">
+          <div className="grid grid-cols-2 justify-between gap-3 md:grid-cols-3 xl:grid-cols-4">
             <MatchFigure
               icon={<IoPersonSharp />}
               label="Total players"
@@ -157,19 +179,19 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
               icon={<FiDollarSign />}
               label="Cost"
               figure={`£${cost ?? 0}`}
-              onEdit={openCost}
+              onActionClick={openCost}
             ></MatchFigure>
 
             <MatchFigure
               icon={<FaCashRegister />}
-              label="Addtional Cost"
+              label="Addtional cost"
               figure={`£${additionalCost ?? 0}`}
-              onEdit={openAdditionalCost}
+              onActionClick={openAdditionalCost}
             ></MatchFigure>
           </div>
         </div>
 
-        <div className="flex w-1/2 flex-col">
+        <div className="flex flex-col">
           {registrations &&
             registrations.map((reg) => {
               return (
@@ -242,9 +264,9 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
       <Modal
         opened={additionalCostOpened}
         onClose={closeAdditionalCost}
-        title="Update Additional Costs"
+        title="Add Additional Cost"
       >
-        <NumberInput />
+        <AdditionalCostEditor onSaveClick={handleSaveAdditionalCosts} />
       </Modal>
     </div>
   );
