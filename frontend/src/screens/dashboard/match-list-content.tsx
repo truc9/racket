@@ -163,7 +163,7 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
             <MatchFigure
               icon={<FaCashRegister />}
               label="Addtional Cost"
-              figure={`£${additionalCost}`}
+              figure={`£${additionalCost ?? 0}`}
               onEdit={openAdditionalCost}
             ></MatchFigure>
           </div>
