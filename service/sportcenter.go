@@ -31,28 +31,46 @@ func (s *SportCenterService) GetAll() ([]dto.SportCenterDto, error) {
 
 	result := lo.Map(sportCenters, func(item domain.SportCenter, _ int) dto.SportCenterDto {
 		return dto.SportCenterDto{
-			ID:       item.ID,
-			Name:     item.Name,
-			Location: item.Location,
+			ID:               item.ID,
+			Name:             item.Name,
+			Location:         item.Location,
+			CostPerSection:   item.CostPerSection,
+			MinutePerSection: item.MinutePerSection,
 		}
 	})
 	return result, nil
 }
 
-func (s *SportCenterService) Create(name, location string) error {
-	center := domain.NewSportCenter(name, location)
+func (s *SportCenterService) Create(
+	name,
+	location string,
+	costPerSection float64,
+	minutePerSection uint,
+) error {
+	center := domain.NewSportCenter(name, location, costPerSection, minutePerSection)
 	err := s.db.Create(center).Error
 	return err
 }
 
-func (s *SportCenterService) Update(id, name, location string) error {
+func (s *SportCenterService) Update(
+	id,
+	name,
+	location string,
+	costPerSection float64,
+	minutePerSection uint,
+) error {
 	entity := domain.SportCenter{}
 
 	if err := s.db.Find(&entity, id).Error; err != nil {
 		return err
 	}
 
-	return nil
+	entity.Name = name
+	entity.Location = location
+	entity.CostPerSection = costPerSection
+	entity.MinutePerSection = minutePerSection
+
+	return s.db.Save(entity).Error
 }
 
 func (s *SportCenterService) GetOptions() ([]dto.SelectOption, error) {

@@ -4,14 +4,18 @@ import "errors"
 
 type SportCenter struct {
 	BaseModel
-	Name     string `json:"name"`
-	Location string `json:"location"`
+	Name             string  `json:"name"`
+	Location         string  `json:"location"`
+	CostPerSection   float64 `json:"costPerSection"`
+	MinutePerSection uint    `json:"minutePerSection"`
 }
 
-func NewSportCenter(name, location string) *SportCenter {
+func NewSportCenter(name, location string, costPerSection float64, minutePerSection uint) *SportCenter {
 	return &SportCenter{
-		Name:     name,
-		Location: location,
+		Name:             name,
+		Location:         location,
+		CostPerSection:   costPerSection,
+		MinutePerSection: minutePerSection,
 	}
 }
 

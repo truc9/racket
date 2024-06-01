@@ -1,4 +1,5 @@
 import dayjs from "dayjs"
+import { format } from "numerable"
 
 function formatDate(value: Date, withTime: boolean = true) {
     const format = withTime ? 'DD/MM/YYYY hh:mm:ss' : 'DD/MM/YYYY'
@@ -16,8 +17,18 @@ function formatDateRange(start: Date, end: Date) {
     return `${formatDate(start)} - ${formatDate(end)}`
 }
 
+function currency(val: number) {
+    return format(val, '$0.00', { currency: 'GBP' })
+}
+
+function minute(val: number) {
+    return `${val} ${val > 1 ? 'mins' : 'min'}`
+}
+
 export default {
     formatDate,
     formatTime,
-    formatDateRange
+    formatDateRange,
+    currency,
+    minute
 }

@@ -4,4 +4,7 @@ export interface MatchModel {
     end: Date
     sportCenterName: string
     sportCenterId: number
+    costPerSection: number
+    minutePerSection: number
+    sectionCost: number
 }

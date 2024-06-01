@@ -34,6 +34,8 @@ export interface SportCenterModel {
     id: number
     name: string
     location: string
+    costPerSection: number
+    minutePerSection: number
 }
 
 

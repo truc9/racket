@@ -1,17 +1,17 @@
-import dayjs from "dayjs";
-import httpService from "../../common/http-service";
-import Page from "../../components/page";
 import { ActionIcon, Button, Drawer, Select, Table, Text } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
-import { MatchModel } from "./models";
-import { modals } from "@mantine/modals";
-import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
+import { useDisclosure } from "@mantine/hooks";
+import { modals } from "@mantine/modals";
 import { useQuery } from "@tanstack/react-query";
-import { useSportCenterValueLabelQuery } from "../../hooks/queries";
-import { z } from "zod";
+import dayjs from "dayjs";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { IoAdd, IoSave, IoTrash } from "react-icons/io5";
+import { z } from "zod";
+import httpService from "../../common/http-service";
+import Page from "../../components/page";
+import { useSportCenterValueLabelQuery } from "../../hooks/queries";
+import { MatchModel } from "./models";
 
 const schema = z.object({
   start: z.date({ message: "Start date is required" }),
@@ -69,8 +69,8 @@ function Matches() {
           <Table.Thead>
             <Table.Tr>
               <Table.Th>Sport Center</Table.Th>
-              <Table.Th>Start Date</Table.Th>
-              <Table.Th>End Date</Table.Th>
+              <Table.Th>Start</Table.Th>
+              <Table.Th>End</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>

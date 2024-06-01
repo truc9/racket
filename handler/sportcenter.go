@@ -44,7 +44,12 @@ func (h *SportCenterHandler) Create(c *gin.Context) {
 		return
 	}
 
-	err := h.service.Create(dto.Name, dto.Location)
+	err := h.service.Create(
+		dto.Name,
+		dto.Location,
+		dto.CostPerSection,
+		dto.MinutePerSection,
+	)
 
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, err)
@@ -63,7 +68,14 @@ func (h *SportCenterHandler) Update(c *gin.Context) {
 		return
 	}
 
-	err := h.service.Update(id, dto.Name, dto.Location)
+	err := h.service.Update(
+		id,
+		dto.Name,
+		dto.Location,
+		dto.CostPerSection,
+		dto.MinutePerSection,
+	)
+
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
 		return

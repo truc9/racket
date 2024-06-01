@@ -2,6 +2,7 @@ package domain
 
 import (
 	"errors"
+	"math"
 	"time"
 )
 
@@ -13,6 +14,25 @@ type Match struct {
 	Cost            float64          `json:"cost"`
 	AdditionalCosts []AdditionalCost `json:"additionalCosts"`
 	SportCenter     SportCenter      `json:"sportCenter"`
+}
+
+func NewMatch(
+	start,
+	end time.Time,
+	sportCenterId uint,
+	costPerSection float64,
+	minutePerSection float64,
+) *Match {
+	totalMinutes := math.Abs(end.Sub(start).Minutes())
+	sectionCount := totalMinutes / minutePerSection
+	cost := sectionCount * costPerSection
+
+	return &Match{
+		SportCenterId: sportCenterId,
+		Start:         start,
+		End:           end,
+		Cost:          cost,
+	}
 }
 
 func (m *Match) UpdateCost(cost float64) error {

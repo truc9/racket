@@ -1,25 +1,9 @@
-import httpService from "../../common/http-service";
-import MatchFigure from "./match-figure";
-import React, { useMemo, useState } from "react";
-import ToggleButton from "../../components/toggle-button";
-import { FaCashRegister } from "react-icons/fa";
-import { FiDollarSign, FiTrash2 } from "react-icons/fi";
+import { Alert, Button, Modal, NumberInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useMutation } from "@tanstack/react-query";
-import {
-  ActionIcon,
-  Alert,
-  Button,
-  Modal,
-  NumberInput,
-  Table,
-  TextInput,
-} from "@mantine/core";
-import {
-  AdditionalCost,
-  MatchSummaryModel,
-  RegistrationModel,
-} from "../../models";
+import React, { useMemo, useState } from "react";
+import { FaCashRegister } from "react-icons/fa";
+import { FiDollarSign } from "react-icons/fi";
 import {
   IoBan,
   IoBaseball,
@@ -27,12 +11,21 @@ import {
   IoHeartCircle,
   IoPersonSharp,
 } from "react-icons/io5";
+import formatter from "../../common/formatter";
+import httpService from "../../common/http-service";
+import ToggleButton from "../../components/toggle-button";
 import {
   useMatchAdditionalCostQuery,
   useMatchCostQuery,
   useRegistrationsByMatchQuery,
 } from "../../hooks/queries";
+import {
+  AdditionalCost,
+  MatchSummaryModel,
+  RegistrationModel,
+} from "../../models";
 import AdditionalCostEditor from "./additional-cost-editor";
+import MatchFigure from "./match-figure";
 
 interface Prop {
   match: MatchSummaryModel;
@@ -178,14 +171,14 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
             <MatchFigure
               icon={<FiDollarSign />}
               label="Cost"
-              figure={`£${cost ?? 0}`}
+              figure={formatter.currency(cost ?? 0)}
               onActionClick={openCost}
             ></MatchFigure>
 
             <MatchFigure
               icon={<FaCashRegister />}
               label="Addtional cost"
-              figure={`£${additionalCost ?? 0}`}
+              figure={formatter.currency(additionalCost ?? 0)}
               onActionClick={openAdditionalCost}
             ></MatchFigure>
           </div>

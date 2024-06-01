@@ -30,11 +30,14 @@ func (h *MatchHandler) GetAll(c *gin.Context) {
 
 	result := lo.Map(matches, func(m domain.Match, _ int) dto.MatchDto {
 		return dto.MatchDto{
-			MatchId:         m.ID,
-			Start:           m.Start,
-			End:             m.End,
-			SportCenterId:   m.SportCenterId,
-			SportCenterName: m.SportCenter.Name,
+			MatchId:          m.ID,
+			Start:            m.Start,
+			End:              m.End,
+			SportCenterId:    m.SportCenterId,
+			SportCenterName:  m.SportCenter.Name,
+			CostPerSection:   m.SportCenter.CostPerSection,
+			MinutePerSection: m.SportCenter.MinutePerSection,
+			Cost:             m.Cost,
 		}
 	})
 
@@ -51,11 +54,10 @@ func (h *MatchHandler) Create(c *gin.Context) {
 
 	h.logger.Debug(dto)
 
-	m := &domain.Match{
-		Start:         dto.Start,
-		End:           dto.End,
-		SportCenterId: dto.SportCenterId,
-	}
+	sc := domain.SportCenter{}
+	h.db.Find(&sc, dto.SportCenterId)
+
+	m := domain.NewMatch(dto.Start, dto.End, dto.SportCenterId, sc.CostPerSection, float64(sc.MinutePerSection))
 
 	h.logger.Debug(m)
 

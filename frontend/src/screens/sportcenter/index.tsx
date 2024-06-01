@@ -1,24 +1,28 @@
-import httpService from "../../common/http-service";
-import Page from "../../components/page";
-import { IoAdd, IoPencil, IoSave } from "react-icons/io5";
-import { SportCenterModel } from "../../models";
-import { useDisclosure } from "@mantine/hooks";
-import { useForm, zodResolver } from "@mantine/form";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { z } from "zod";
 import {
   ActionIcon,
   Button,
   Modal,
+  NumberInput,
   Skeleton,
   Table,
   TextInput,
 } from "@mantine/core";
+import { useForm, zodResolver } from "@mantine/form";
+import { useDisclosure } from "@mantine/hooks";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { IoAdd, IoPencil, IoSave } from "react-icons/io5";
+import { z } from "zod";
+import httpService from "../../common/http-service";
+import Page from "../../components/page";
+import { SportCenterModel } from "../../models";
+import formatter from "../../common/formatter";
 
 const schema = z.object({
   id: z.number().nullable(),
   name: z.string({ message: "Name is required" }).min(1),
   location: z.string({ message: "Location is required" }).min(1),
+  costPerSection: z.number({ message: "Cost per section is required" }),
+  minutePerSection: z.number({ message: "Minute per section is required" }),
 });
 
 export default function SportCenter() {
@@ -29,6 +33,8 @@ export default function SportCenter() {
       id: 0,
       name: "",
       location: "",
+      costPerSection: 0,
+      minutePerSection: 0,
     },
     validate: zodResolver(schema),
   });
@@ -74,7 +80,14 @@ export default function SportCenter() {
             <Table.Tr>
               <Table.Th>Name</Table.Th>
               <Table.Th>Location</Table.Th>
-              <Table.Th>Action</Table.Th>
+              <Table.Th>Cost per section</Table.Th>
+              <Table.Th>Minute per section</Table.Th>
+              <Table.Th
+                align="center"
+                className="flex items-center justify-center"
+              >
+                Action
+              </Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
@@ -85,7 +98,13 @@ export default function SportCenter() {
                   <Table.Tr key={item.id}>
                     <Table.Td>{item.name}</Table.Td>
                     <Table.Td>{item.location}</Table.Td>
-                    <Table.Td className="flex items-center justify-end gap-2">
+                    <Table.Td>
+                      {formatter.currency(item.costPerSection)}
+                    </Table.Td>
+                    <Table.Td>
+                      {formatter.minute(item.minutePerSection)}
+                    </Table.Td>
+                    <Table.Td className="flex items-center justify-center gap-2">
                       <ActionIcon onClick={() => editClick(item)} size="lg">
                         <IoPencil />
                       </ActionIcon>
@@ -103,9 +122,21 @@ export default function SportCenter() {
           className="flex flex-col gap-2"
         >
           <TextInput label="Name" {...form.getInputProps("name")} />
+
           <TextInput label="Location" {...form.getInputProps("location")} />
+
+          <NumberInput
+            label="Cost per section"
+            {...form.getInputProps("costPerSection")}
+          />
+
+          <NumberInput
+            label="Minute per section"
+            {...form.getInputProps("minutePerSection")}
+          />
+
           <Button leftSection={<IoSave />} type="submit">
-            Save changes
+            Save
           </Button>
         </form>
       </Modal>
