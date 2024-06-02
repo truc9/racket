@@ -30,10 +30,13 @@ docker compose up
 - [ ] Mobile Apps
 
 ## Demo
-|                                                    |                                                           |
-| :------------------------------------------------: | :-------------------------------------------------------: |
-| ![demo](art/iPad-PRO-11-dashboard.png "Dashboard") |      ![demo](art/iPad-PRO-11-players.png "Players")       |
-|   ![demo](art/iPad-PRO-11-matches.png "Matches")   | ![demo](art/iPad-PRO-11-sportcenters.png "Sport Centers") |
+![demo](art/iPad-PRO-11-dashboard.png "Dashboard")
+
+![demo](art/iPad-PRO-11-players.png "Players")
+
+![demo](art/iPad-PRO-11-matches.png "Matches")
+
+![demo](art/iPad-PRO-11-sportcenters.png "Sport Centers")
 
 ## Stack
 - Golang Gin
