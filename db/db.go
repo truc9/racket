@@ -43,6 +43,7 @@ func NewDatabase() *gorm.DB {
 			&domain.AdditionalCost{},
 			&domain.SportCenter{},
 		)
+
 		db = dbCtx.Debug()
 	})
 
