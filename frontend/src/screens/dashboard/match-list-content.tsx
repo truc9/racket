@@ -99,9 +99,9 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
     };
 
     return bindTemplate(messageTemplate ?? "", {
-      cost,
-      additionalCost,
-      individualCost,
+      cost: cost?.toFixed(2),
+      additionalCost: additionalCost?.toFixed(2),
+      individualCost: individualCost?.toFixed(2),
       totalPlayer:
         registrations?.filter((r) => !!r.registrationId)?.length ?? 0,
     });
