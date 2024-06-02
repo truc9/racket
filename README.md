@@ -47,4 +47,3 @@ docker compose up
 - Dayjs
 - Mantine UI
 - Numerable
-=======
