@@ -22,7 +22,7 @@ docker compose up
 
 ## Roadmap
 - [ ] Better database migration
-- [ ] Backend authentication
+- [ ] Backend authorization
 - [x] Docker support
 - [ ] Testing
 - [x] Support cost management
