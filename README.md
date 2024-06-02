@@ -22,9 +22,10 @@ docker compose up
 
 ## Roadmap
 - [ ] Better database migration
-- [ ] Docker support
+- [ ] Backend authentication
+- [x] Docker support
 - [ ] Testing
-- [ ] Support cost management
+- [x] Support cost management
 - [ ] Support notification (Facebook Messenger, Email, Push Notification)
 - [ ] Mobile Apps
 
@@ -43,3 +44,4 @@ docker compose up
 - Dayjs
 - Mantine UI
 - Numerable
+=======
