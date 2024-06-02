@@ -118,7 +118,7 @@ func (h *MatchHandler) GetCost(c *gin.Context) {
 func (h *MatchHandler) GetAdditionalCost(c *gin.Context) {
 	matchId := params.Get(c, "matchId")
 	var costs []float64
-	if err := h.db.Model(&domain.AdditionalCost{}).Where("match_id = ?", matchId).Select("cost").Scan(&costs).Error; err != nil {
+	if err := h.db.Model(&domain.AdditionalCost{}).Where("match_id = ?", matchId).Select("amount").Scan(&costs).Error; err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
