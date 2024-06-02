@@ -15,6 +15,7 @@ import {
   IoChevronBackCircle,
   IoHeart,
   IoPersonAdd,
+  IoSettings,
   IoStorefront,
 } from "react-icons/io5";
 
@@ -111,6 +112,12 @@ function AppLayout() {
               path="/health"
               label="Health"
               icon={<IoHeart />}
+            />
+            <NavItem
+              showLabel={!collapsed}
+              path="/settings"
+              label="Settings"
+              icon={<IoSettings />}
             />
           </div>
           <button

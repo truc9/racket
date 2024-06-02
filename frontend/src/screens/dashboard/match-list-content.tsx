@@ -8,6 +8,7 @@ import {
   IoBan,
   IoBaseball,
   IoCash,
+  IoChatbox,
   IoHeartCircle,
   IoPersonSharp,
 } from "react-icons/io5";
@@ -26,6 +27,8 @@ import {
 } from "../../models";
 import AdditionalCostEditor from "./additional-cost-editor";
 import MatchFigure from "./match-figure";
+import Markdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 
 interface Prop {
   match: MatchSummaryModel;
@@ -85,6 +88,16 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
     reloadAdditionalCost();
   };
 
+  const costMessage = useMemo(() => {
+    return `Chào mọi người, cảm ơn mọi người đã đến tham gia trận cầu hôm nay!<br/><br/>
+    Hôm nay có ${statTotalPlayer} người đánh.<br/><br/>
+    Tiền sân: £${cost ?? 0}<br/>
+    Tiền cầu: £${additionalCost}<br/>
+    Mỗi người là: £${individualCost}.<br/><br/>
+    Hi vọng mọi người sẽ đến chơi trận tiếp theo!
+    `;
+  }, [cost, additionalCost, individualCost]);
+
   const registerMut = useMutation({
     onSuccess: reload,
     mutationFn: (model: RegistrationModel) =>
@@ -133,13 +146,11 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
           <div>
             <Alert
               variant="light"
-              color="pink"
-              title="Cost Notification"
-              icon={<FiDollarSign />}
+              color="green"
+              title="Message"
+              icon={<IoChatbox />}
             >
-              Hey, today match cost is £{cost}, with additional costs is £
-              {additionalCost}. We have {statTotalPlayer} players, so we each
-              player need to pay £{individualCost}
+              <Markdown rehypePlugins={[rehypeRaw]}>{costMessage}</Markdown>
             </Alert>
           </div>
 
