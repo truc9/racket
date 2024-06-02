@@ -10,8 +10,8 @@ This project for personal hobby and learning purpose
 
 ## Roadmap
 - [ ] Better database migration
-- [ ] Docker support
+- [x] Docker support
 - [ ] Testing
-- [ ] Support cost management
+- [x] Support cost management
 - [ ] Support notification (Facebook Messenger, Email, Push Notification)
 - [ ] Mobile Apps
