@@ -18,7 +18,7 @@ const MatchFigure: React.FC<Prop> = ({
   actionIcon,
 }) => {
   return (
-    <div className="relative flex h-28 w-full items-end justify-end gap-2 rounded bg-slate-100 p-5 ring-rose-500 ring-offset-2 hover:ring-2">
+    <div className="relative flex h-28 w-full items-end justify-end gap-2 rounded bg-slate-100 from-green-300 to-green-100 p-5 transition-all hover:translate-x-1 hover:translate-y-1 hover:bg-gradient-to-r">
       <div className="absolute left-2 top-2 flex items-center gap-2">
         {icon}
         {label}
