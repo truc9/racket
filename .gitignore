@@ -21,6 +21,11 @@
 go.work
 go.work.sum
 
+# Ignore output directories
 /tmp
 /build
 /dist
+
+# Ignore local & overrride config
+*.local.yml
+*.override.yml

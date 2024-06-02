@@ -1,0 +1,39 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DB=postgres://postgres:admin@db:5432/racket?sslmode=disable
+      - AUTH0_DOMAIN=
+      - AUTH0_CLIENTID=
+      - AUTH0_CLIENTSECRET=
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_HOST=http://localhost:8080
+      - VITE_AUTH0_DOMAIN=
+      - VITE_AUTH0_CLIENTID=
+
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=racket
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
