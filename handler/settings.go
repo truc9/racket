@@ -42,5 +42,8 @@ func (h *SettingsHandler) CreateMessageTemplate(c *gin.Context) {
 		MessageTemplate: dto.Template,
 	})
 
+	settings.MessageTemplate = dto.Template
+	h.db.Save(&settings)
+
 	c.JSON(http.StatusOK, settings)
 }

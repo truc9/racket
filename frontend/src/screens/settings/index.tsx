@@ -1,15 +1,15 @@
 import { Alert, Button, Tabs } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { Link, RichTextEditor } from "@mantine/tiptap";
-import { useQuery } from "@tanstack/react-query";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useState } from "react";
-import { IoChatboxOutline } from "react-icons/io5";
+import { IoChatboxOutline, IoNotificationsCircle } from "react-icons/io5";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import httpService from "../../common/http-service";
 import Page from "../../components/page";
+import { useMesssageTemplateQuery } from "../../hooks/queries";
 
 export default function Setting() {
   const [template, setTemplate] = useState("");
@@ -20,12 +20,9 @@ export default function Setting() {
     },
   });
 
-  const { data: messageTemplate } = useQuery({
-    queryKey: ["getMessageTemplate"],
-    queryFn: () => httpService.get<string>("api/v1/settings/message-template"),
-  });
+  const { data: messageTemplate, refetch } = useMesssageTemplateQuery();
 
-  const saveMessageTemplate = () => {
+  const saveMessageTemplate = async () => {
     if (!template) {
       notifications.show({
         title: "Error",
@@ -35,8 +32,16 @@ export default function Setting() {
       return;
     }
 
-    httpService.post(`api/v1/settings/message-template`, {
+    await httpService.post(`api/v1/settings/message-template`, {
       template,
+    });
+
+    refetch();
+
+    notifications.show({
+      title: "Success",
+      message: "Update template success",
+      color: "green",
     });
   };
 
@@ -50,7 +55,9 @@ export default function Setting() {
         </Tabs.List>
 
         <Tabs.Panel value="alert" className="py-5">
-          <Alert>{messageTemplate}</Alert>
+          <Alert icon={<IoNotificationsCircle />} title="Message template">
+            <Markdown>{messageTemplate}</Markdown>
+          </Alert>
           <div className="grid grid-cols-2 gap-3 py-5">
             <div className="flex flex-col gap-2">
               <RichTextEditor editor={editor}>
@@ -102,11 +109,13 @@ export default function Setting() {
                 <RichTextEditor.Content className="min-h-[300px]" />
               </RichTextEditor>
             </div>
-            <div className="rounded border border-green-200 bg-green-50 p-3 text-sm">
+            <div className="rounded border border-blue-100 bg-blue-50 p-3 text-sm">
               <Markdown rehypePlugins={[rehypeRaw]}>{template}</Markdown>
             </div>
           </div>
-          <Button variant="outline">Save Template</Button>
+          <Button variant="outline" onClick={saveMessageTemplate}>
+            Save Template
+          </Button>
         </Tabs.Panel>
       </Tabs>
     </Page>

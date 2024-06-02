@@ -37,3 +37,8 @@ export const useSportCenterValueLabelQuery = () => useQuery({
     queryKey: ['getSportCenterSelectOptions'],
     queryFn: () => httpService.get<ValueLabel[]>('api/v1/sportcenters/options')
 })
+
+export const useMesssageTemplateQuery = () => useQuery({
+    queryKey: ["getMessageTemplate"],
+    queryFn: () => httpService.get<string>("api/v1/settings/message-template"),
+})

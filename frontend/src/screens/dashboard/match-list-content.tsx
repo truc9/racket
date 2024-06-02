@@ -12,12 +12,16 @@ import {
   IoHeartCircle,
   IoPersonSharp,
 } from "react-icons/io5";
+import Markdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 import formatter from "../../common/formatter";
 import httpService from "../../common/http-service";
 import ToggleButton from "../../components/toggle-button";
 import {
   useMatchAdditionalCostQuery,
   useMatchCostQuery,
+  useMesssageTemplateQuery,
   useRegistrationsByMatchQuery,
 } from "../../hooks/queries";
 import {
@@ -27,8 +31,6 @@ import {
 } from "../../models";
 import AdditionalCostEditor from "./additional-cost-editor";
 import MatchFigure from "./match-figure";
-import Markdown from "react-markdown";
-import rehypeRaw from "rehype-raw";
 
 interface Prop {
   match: MatchSummaryModel;
@@ -49,8 +51,11 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
   );
 
   const { data: cost, refetch: reloadCost } = useMatchCostQuery(match.matchId);
+
   const { data: additionalCost, refetch: reloadAdditionalCost } =
     useMatchAdditionalCostQuery(match.matchId);
+
+  const { data: messageTemplate } = useMesssageTemplateQuery();
 
   const statPercentage = useMemo(() => {
     return Math.round(
@@ -89,14 +94,18 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
   };
 
   const costMessage = useMemo(() => {
-    return `Chào mọi người, cảm ơn mọi người đã đến tham gia trận cầu hôm nay!<br/><br/>
-    Hôm nay có ${statTotalPlayer} người đánh.<br/><br/>
-    Tiền sân: £${cost ?? 0}<br/>
-    Tiền cầu: £${additionalCost}<br/>
-    Mỗi người là: £${individualCost}.<br/><br/>
-    Hi vọng mọi người sẽ đến chơi trận tiếp theo!
-    `;
-  }, [cost, additionalCost, individualCost]);
+    const bindTemplate = (template: string, data: any) => {
+      return template.replace(/{{(.*?)}}/g, (_, key) => data[key.trim()]);
+    };
+
+    return bindTemplate(messageTemplate ?? "", {
+      cost,
+      additionalCost,
+      individualCost,
+      totalPlayer:
+        registrations?.filter((r) => !!r.registrationId)?.length ?? 0,
+    });
+  }, [cost, additionalCost, individualCost, registrations]);
 
   const registerMut = useMutation({
     onSuccess: reload,
@@ -150,7 +159,9 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
               title="Message"
               icon={<IoChatbox />}
             >
-              <Markdown rehypePlugins={[rehypeRaw]}>{costMessage}</Markdown>
+              <Markdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
+                {costMessage}
+              </Markdown>
             </Alert>
           </div>
 
