@@ -1,7 +1,7 @@
 import { Alert, Button, Modal, NumberInput } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useClipboard, useDisclosure } from "@mantine/hooks";
 import { useMutation } from "@tanstack/react-query";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { FaCashRegister } from "react-icons/fa";
 import { FiDollarSign } from "react-icons/fi";
 import {
@@ -9,6 +9,7 @@ import {
   IoBaseball,
   IoCash,
   IoChatbox,
+  IoCopy,
   IoHeartCircle,
   IoPersonSharp,
 } from "react-icons/io5";
@@ -38,6 +39,8 @@ interface Prop {
 
 const MatchListContent: React.FC<Prop> = ({ match }) => {
   const [currentCost, setCurrentCost] = useState(0);
+  const clipboard = useClipboard({ timeout: 500 });
+  const clipboardRef = useRef<HTMLDivElement>(null!);
   const [costOpened, { open: openCost, close: closeCost }] =
     useDisclosure(false);
 
@@ -154,18 +157,33 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
         <div className="flex flex-col gap-3">
           <div>
             <Alert
+              className="relative"
               variant="light"
               color="green"
               title="Message"
               icon={<IoChatbox />}
             >
-              <Markdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
-                {costMessage}
-              </Markdown>
+              <div ref={clipboardRef}>
+                <Markdown
+                  rehypePlugins={[rehypeRaw]}
+                  remarkPlugins={[remarkGfm]}
+                >
+                  {costMessage}
+                </Markdown>
+              </div>
+              <Button
+                className="absolute right-2 top-2"
+                variant="light"
+                leftSection={<IoCopy />}
+                color={clipboard.copied ? "red" : "green"}
+                onClick={() => clipboard.copy(clipboardRef.current.innerText)}
+              >
+                {clipboard.copied ? "Copied" : "Copy"}
+              </Button>
             </Alert>
           </div>
 
-          <div className="grid grid-cols-2 justify-between gap-3 md:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 justify-between gap-3 md:grid-cols-2 xl:grid-cols-3">
             <MatchFigure
               icon={<IoPersonSharp />}
               label="Total players"

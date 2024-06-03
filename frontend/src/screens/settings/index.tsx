@@ -56,7 +56,7 @@ export default function Setting() {
 
         <Tabs.Panel value="alert" className="py-5">
           <Alert icon={<IoNotificationsCircle />} title="Message template">
-            <Markdown>{messageTemplate}</Markdown>
+            <Markdown rehypePlugins={[rehypeRaw]}>{messageTemplate}</Markdown>
           </Alert>
           <div className="grid grid-cols-2 gap-3 py-5">
             <div className="flex flex-col gap-2">
