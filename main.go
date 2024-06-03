@@ -42,6 +42,7 @@ func main() {
 		v1.GET("/matches/:matchId/additional-costs", handler.GetAdditionalCost)
 		v1.PUT("/matches/:matchId/costs", handler.UpdateCost)
 		v1.PUT("/matches/:matchId/additional-costs", handler.CreateAdditionalCost)
+		v1.DELETE("/matches/:matchId", handler.Delete)
 	})
 
 	c.Invoke(func(handler *handler.PlayerHandler) {

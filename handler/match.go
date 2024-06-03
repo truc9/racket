@@ -44,6 +44,15 @@ func (h *MatchHandler) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
+func (h *MatchHandler) Delete(c *gin.Context) {
+	matchId := params.Get(c, "matchId")
+	if err := h.db.Delete(&domain.Match{}, matchId).Error; err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+	c.Status(http.StatusOK)
+}
+
 func (h *MatchHandler) Create(c *gin.Context) {
 	dto := dto.MatchDto{}
 	var err error
