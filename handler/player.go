@@ -49,7 +49,7 @@ func (h PlayerHandler) GetExternalUserAttendantRequests(c *gin.Context) {
 	var result []dto.PlayerAttendantRequestDto
 	externalUserId := params.Get(c, "externalUserId")
 	h.db.Raw(`
-	SELECT
+	SELECT DISTINCT
 		m.id AS match_id,
 		pl.id AS player_id,
 		m.start,
