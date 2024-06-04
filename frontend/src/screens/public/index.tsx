@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import FullScreenLoading from "../../components/fullscreen-loading";
 import Loading from "../../components/loading";
+import LogoutButton from "../../components/logout-button";
 
 function Public() {
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -26,6 +27,7 @@ function Public() {
           width={60}
         />
         <h3>Welcome {user!.name}</h3>
+        <LogoutButton showLabel={true} />
       </div>
       <Suspense fallback={<Loading />}>
         <Outlet />
