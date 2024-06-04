@@ -2,15 +2,23 @@ package dto
 
 type (
 	RegistrationOverviewDto struct {
-		RegistrationId int64  `json:"registrationId"`
-		MatchId        int64  `json:"matchId"`
-		PlayerId       int64  `json:"playerId"`
+		RegistrationId uint   `json:"registrationId"`
+		MatchId        uint   `json:"matchId"`
+		PlayerId       uint   `json:"playerId"`
 		PlayerName     string `json:"playerName"`
 		IsPaid         bool   `json:"isPaid"`
 	}
 
 	RegistrationDto struct {
-		PlayerId int64 `json:"playerId"`
-		MatchId  int64 `json:"matchId"`
+		PlayerId uint `json:"playerId"`
+		MatchId  uint `json:"matchId"`
+	}
+
+	AttendantRequestDto struct {
+		FirstName      string `json:"firstName"`
+		LastName       string `json:"lastName"`
+		Email          string `json:"email"`
+		ExternalUserId string `json:"externalUserId"`
+		MatchId        uint   `json:"matchId"`
 	}
 )

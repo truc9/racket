@@ -55,6 +55,7 @@ func main() {
 	c.Invoke(func(handler *handler.RegistrationHandler) {
 		v1.GET("/registrations", handler.GetAll)
 		v1.POST("/registrations", handler.Register)
+		v1.POST("/registrations/attendant-requests", handler.AttendantRequest)
 		v1.PUT("/registrations/:registrationId/paid", handler.MarkPaid)
 		v1.PUT("/registrations/:registrationId/unpaid", handler.MarkUnPaid)
 		v1.DELETE("/registrations/:registrationId", handler.Unregister)

@@ -1,7 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { Button } from "@mantine/core";
-import React from "react";
-import { FiLogIn } from "react-icons/fi";
+import { FaSignInAlt } from "react-icons/fa";
 
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
@@ -9,7 +8,8 @@ const LoginButton = () => {
   return (
     <Button
       fullWidth
-      leftSection={<FiLogIn />}
+      color="green"
+      leftSection={<FaSignInAlt />}
       size="lg"
       onClick={() => loginWithRedirect()}
     >

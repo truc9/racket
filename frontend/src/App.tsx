@@ -11,6 +11,9 @@ const HealthScreen = lazy(() => import("./screens/health"));
 const SportCentersScreen = lazy(() => import("./screens/sportcenter"));
 const SettingsScreen = lazy(() => import("./screens/settings"));
 const PageNotFoundScreen = lazy(() => import("./screens/page-not-found"));
+const AttendantRequestScreen = lazy(
+  () => import("./screens/public/attendant-request"),
+);
 
 function App() {
   return (
@@ -25,7 +28,7 @@ function App() {
         <Route path="*" element={<PageNotFoundScreen />} />
       </Route>
       <Route path="/public" element={<Public />}>
-        <Route path="request" element={<DashboardScreen />} />
+        <Route index element={<AttendantRequestScreen />} />
       </Route>
       <Route path="/login" element={<Login />} />
     </Routes>

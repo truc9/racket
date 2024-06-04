@@ -1,6 +1,7 @@
 import React from "react";
 import Loading from "../loading";
 import { useAuth0 } from "@auth0/auth0-react";
+import { Navigate } from "react-router-dom";
 
 interface UserProfileProp {
   showLabel: boolean;
@@ -14,7 +15,7 @@ const UserProfile: React.FC<UserProfileProp> = ({ showLabel }) => {
   }
 
   if (!isAuthenticated) {
-    return <span>Unauthenticated</span>;
+    return <Navigate to="/login" replace={true} />;
   }
 
   return (
@@ -29,7 +30,7 @@ const UserProfile: React.FC<UserProfileProp> = ({ showLabel }) => {
       {showLabel && (
         <div className="flex flex-col items-start justify-start">
           <h2 className="font-bold">{user!.name}</h2>
-          <h5>Administrator</h5>
+          {user?.email && <small>{user?.email}</small>}
         </div>
       )}
     </div>

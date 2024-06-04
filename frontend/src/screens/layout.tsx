@@ -4,7 +4,7 @@ import Loading from "../components/loading";
 import LogoutButton from "../components/logout-button";
 import UserProfile from "../components/profile";
 import { FC, ReactNode, useState } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Navigate, NavLink, Outlet } from "react-router-dom";
 import { Suspense } from "react";
 import { Tooltip } from "@mantine/core";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -48,7 +48,6 @@ const NavItem: FC<NavItemProps> = ({ label, path, icon, showLabel = true }) => {
 function Layout() {
   const APP_NAME = "RACKET";
   const [collapsed, setCollapsed] = useState(true);
-  const navigate = useNavigate();
 
   const {
     user,
@@ -75,14 +74,12 @@ function Layout() {
   }
 
   if (!isAuthenticated && !user) {
-    navigate("/login", { replace: true });
-    return <div></div>;
+    return <Navigate to="/login" replace={true} />;
   }
 
   // Not an admin, redirect to public layout
   if (!isAdmin) {
-    navigate("/public", { replace: true });
-    return <div></div>;
+    return <Navigate to="/public" replace={true} />;
   }
 
   return (
