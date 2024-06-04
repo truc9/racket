@@ -1,8 +1,4 @@
 import cx from "clsx";
-import FullScreenLoading from "../components/fullscreen-loading";
-import Loading from "../components/loading";
-import LogoutButton from "../components/logout-button";
-import UserProfile from "../components/profile";
 import { FC, ReactNode, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Suspense } from "react";
@@ -19,7 +15,10 @@ import {
   IoStorefront,
 } from "react-icons/io5";
 import { useQuery } from "@tanstack/react-query";
-import constant from "../common/constant";
+import FullScreenLoading from "../../components/fullscreen-loading";
+import UserProfile from "../../components/profile";
+import LogoutButton from "../../components/logout-button";
+import Loading from "../../components/loading";
 
 interface NavItemProps {
   label?: string;
@@ -45,43 +44,23 @@ const NavItem: FC<NavItemProps> = ({ label, path, icon, showLabel = true }) => {
   );
 };
 
-function Layout() {
+function Public() {
   const APP_NAME = "RACKET";
   const [collapsed, setCollapsed] = useState(true);
   const navigate = useNavigate();
 
-  const {
-    user,
-    isAuthenticated,
-    isLoading: isCheckingUser,
-    getIdTokenClaims,
-  } = useAuth0();
-
-  const { data: isAdmin, isLoading: isCheckingRole } = useQuery({
-    queryKey: ["getUserRoles"],
-    queryFn: async () => {
-      const res: any = await getIdTokenClaims();
-      const roles = res["https://api.tns.com/roles"] as string[];
-      return roles.includes(constant.roles.admin);
-    },
-  });
+  const { user, isAuthenticated, isLoading: isCheckingUser } = useAuth0();
 
   function toggleSideNav() {
     setCollapsed(!collapsed);
   }
 
-  if (isCheckingUser || isCheckingRole) {
+  if (isCheckingUser) {
     return <FullScreenLoading />;
   }
 
   if (!isAuthenticated && !user) {
     navigate("/login", { replace: true });
-    return <div></div>;
-  }
-
-  // Not an admin, redirect to public layout
-  if (!isAdmin) {
-    navigate("/public", { replace: true });
     return <div></div>;
   }
 
@@ -108,39 +87,9 @@ function Layout() {
           <div className="flex flex-col p-2">
             <NavItem
               showLabel={!collapsed}
-              path="/"
-              label="Dashboard"
+              path="/public"
+              label="Attendant Request"
               icon={<IoBarChart />}
-            />
-            <NavItem
-              showLabel={!collapsed}
-              path="/matches"
-              label="Matches"
-              icon={<IoBasketball />}
-            />
-            <NavItem
-              showLabel={!collapsed}
-              path="/players"
-              label="Players"
-              icon={<IoPersonAdd />}
-            />
-            <NavItem
-              showLabel={!collapsed}
-              path="/sportcenters"
-              label="Sport Centers"
-              icon={<IoStorefront />}
-            />
-            <NavItem
-              showLabel={!collapsed}
-              path="/health"
-              label="Health"
-              icon={<IoHeart />}
-            />
-            <NavItem
-              showLabel={!collapsed}
-              path="/settings"
-              label="Settings"
-              icon={<IoSettings />}
             />
           </div>
           <button
@@ -163,4 +112,4 @@ function Layout() {
   );
 }
 
-export default Layout;
+export default Public;
