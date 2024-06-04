@@ -6,6 +6,11 @@ function formatDate(value: Date, withTime: boolean = true) {
     return dayjs(value).format(format)
 }
 
+function formatWeekDay(value: Date, withTime: boolean = true) {
+    const format = withTime ? 'dddd DD/MM/YYYY hh:mm:ss' : 'dddd DD/MM/YYYY'
+    return dayjs(value).format(format)
+}
+
 function formatTime(value: Date) {
     return dayjs(value).format('hh:mm:ss A')
 }
@@ -27,6 +32,7 @@ function minute(val: number) {
 
 export default {
     formatDate,
+    formatWeekDay,
     formatTime,
     formatDateRange,
     currency,

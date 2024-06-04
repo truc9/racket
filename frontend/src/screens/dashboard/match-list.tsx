@@ -19,9 +19,9 @@ const MatchList: React.FC<Prop> = ({ matches }) => {
   return (
     <Accordion variant="separated">
       {matches &&
-        matches.map((m) => {
+        matches.map((m, idx) => {
           return !m ? (
-            <span>Match not available</span>
+            <span key={idx}>Match not available</span>
           ) : (
             <Accordion.Item key={m.matchId} value={`${m.matchId}`}>
               <Accordion.Control icon={<FiMapPin />}>
