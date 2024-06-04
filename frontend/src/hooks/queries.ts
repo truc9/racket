@@ -1,6 +1,6 @@
-import httpService from '../common/http-service'
-import { MatchSummaryModel, PlayerModel, RegistrationDetailModel, RegistrationModel, ValueLabel } from '../models'
 import { useQuery } from '@tanstack/react-query'
+import httpService from '../common/http-service'
+import { AttendantRequestModel, MatchSummaryModel, PlayerModel, RegistrationDetailModel, RegistrationModel, ValueLabel } from '../models'
 
 export const usePlayersQuery = () => useQuery({
     initialData: [],
@@ -41,4 +41,9 @@ export const useSportCenterValueLabelQuery = () => useQuery({
 export const useMesssageTemplateQuery = () => useQuery({
     queryKey: ["getMessageTemplate"],
     queryFn: () => httpService.get<string>("api/v1/settings/message-template"),
+})
+
+export const useAttendantRequestsQuery = (externalUserId: string) => useQuery({
+    queryKey: ['getAttendantRequests', externalUserId],
+    queryFn: () => httpService.get<AttendantRequestModel[]>(`api/v1/players/external-users/${externalUserId}/attendant-requests`)
 })

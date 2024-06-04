@@ -1,16 +1,18 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import cx from "clsx";
 import { FiCalendar, FiClock, FiMapPin } from "react-icons/fi";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import formatter from "../../../common/formatter";
 import httpService from "../../../common/http-service";
-import { useMatchesQuery } from "../../../hooks/queries";
-import { MatchSummaryModel } from "../../../models";
+import { useAttendantRequestsQuery } from "../../../hooks/queries";
+import { AttendantRequestModel } from "../../../models";
+import { notifications } from "@mantine/notifications";
 
 export default function AttendantRequest() {
-  const { data: matches } = useMatchesQuery();
   const { user } = useAuth0();
+  const { data: matches, refetch } = useAttendantRequestsQuery(user?.sub ?? "");
 
-  const toggleAttendantClick = async (match: MatchSummaryModel) => {
+  const toggleAttendantClick = async (match: AttendantRequestModel) => {
     await httpService.post("api/v1/registrations/attendant-requests", {
       externalUserId: user?.sub,
       lastName: user?.family_name,
@@ -18,6 +20,12 @@ export default function AttendantRequest() {
       email: user?.email,
       matchId: match.matchId,
     });
+    notifications.show({
+      message: `Attendant ${match.isRequested ? "cancelled" : "requested"} successfully!`,
+      title: "Success",
+      color: match.isRequested ? "red" : "green",
+    });
+    refetch();
   };
 
   return (
@@ -47,7 +55,12 @@ export default function AttendantRequest() {
               </div>
               <button
                 onClick={() => toggleAttendantClick(m)}
-                className="animate-pulse rounded-full text-emerald-500 ring-2 ring-emerald-500 ring-offset-1 transition-all active:translate-y-1"
+                className={cx(
+                  "animate-pulse rounded-full ring-2 ring-offset-1 transition-all active:translate-y-1",
+                  m.isRequested
+                    ? "text-emerald-500 ring-emerald-500"
+                    : "text-orange-500 ring-orange-500",
+                )}
               >
                 <IoCheckmarkCircle size={50} />
               </button>
