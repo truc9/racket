@@ -11,7 +11,7 @@ const LogoutButton: FC<Prop> = ({ showLabel }) => {
 
   return (
     <button
-      className="flex w-full items-center justify-center gap-2 rounded bg-blue-600 px-3 py-3 text-center active:translate-y-1"
+      className="flex w-full items-center justify-center gap-2 rounded bg-blue-600 px-3 py-3 text-center text-white active:translate-y-1"
       onClick={() =>
         logout({ logoutParams: { returnTo: window.location.origin } })
       }
