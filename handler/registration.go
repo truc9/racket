@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"log"
 	"net/http"
 
@@ -23,11 +24,86 @@ func NewRegHandler(db *gorm.DB, logger *zap.SugaredLogger) *RegistrationHandler 
 	}
 }
 
-func (h RegistrationHandler) Register(ctx *gin.Context) {
+func (h *RegistrationHandler) AttendantRequest(c *gin.Context) {
+	dto := dto.AttendantRequestDto{}
+	var err error
+	if err = c.BindJSON(&dto); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	debugf := h.logger.Debugf
+
+	err = h.db.Transaction(func(tx *gorm.DB) error {
+		var player *domain.Player
+		err := h.db.Where("external_user_id = ?", dto.ExternalUserId).First(&player).Error
+
+		debugf("getting player done %v with error %v", player, err)
+
+		// create player if it not exist
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			player = &domain.Player{
+				FirstName:      dto.FirstName,
+				LastName:       dto.LastName,
+				Email:          dto.Email,
+				ExternalUserId: dto.ExternalUserId,
+			}
+
+			if err := tx.Create(player).Error; err != nil {
+				return err
+			}
+
+			debugf("create player done %v with error %v", player, err)
+		}
+
+		// find existing registration for this player & this match
+		var reg *domain.Registration
+		err = h.db.Model(&domain.Registration{}).
+			Where("player_id = ? AND match_id = ?", player.ID, dto.MatchId).
+			Scan(&reg).
+			Error
+
+		debugf("getting registration done %v with error %v", reg, err)
+
+		if err != nil {
+			return err
+		}
+
+		// create registration if not found
+		if reg == nil {
+			reg = &domain.Registration{
+				MatchId:  dto.MatchId,
+				PlayerId: player.ID,
+			}
+
+			err = tx.Create(reg).Error
+
+			debugf("create registration done %v with error %v", reg, err)
+
+			return err
+		}
+
+		// delete if already registed
+		err = tx.Unscoped().Delete(reg).Error
+
+		debugf("delete registration done %v with error %v", reg, err)
+
+		return err
+	})
+
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.Status(http.StatusOK)
+}
+
+func (h *RegistrationHandler) Register(c *gin.Context) {
 	dto := dto.RegistrationDto{}
 	var err error
-	if err = ctx.BindJSON(&dto); err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
+	if err = c.BindJSON(&dto); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
@@ -37,7 +113,7 @@ func (h RegistrationHandler) Register(ctx *gin.Context) {
 		Count(&count)
 
 	if count > 0 {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Player already registered this match"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Player already registered this match"})
 	} else {
 		p := &domain.Registration{
 			PlayerId: dto.PlayerId,
@@ -45,37 +121,37 @@ func (h RegistrationHandler) Register(ctx *gin.Context) {
 			IsPaid:   false,
 		}
 		h.db.Create(p)
-		ctx.JSON(http.StatusCreated, p)
+		c.JSON(http.StatusCreated, p)
 	}
 }
 
-func (h RegistrationHandler) Unregister(ctx *gin.Context) {
-	id, _ := ctx.Params.Get("registrationId")
+func (h *RegistrationHandler) Unregister(c *gin.Context) {
+	id, _ := c.Params.Get("registrationId")
 	h.db.Unscoped().Delete(&domain.Registration{}, id)
-	ctx.JSON(http.StatusOK, id)
+	c.JSON(http.StatusOK, id)
 }
 
-func (h RegistrationHandler) MarkPaid(ctx *gin.Context) {
-	registrationId, _ := ctx.Params.Get("registrationId")
+func (h *RegistrationHandler) MarkPaid(c *gin.Context) {
+	registrationId, _ := c.Params.Get("registrationId")
 	entity := domain.Registration{}
 	h.db.Find(&entity, registrationId)
 
 	entity.MarkPaid()
 	h.db.Save(&entity)
-	ctx.JSON(http.StatusOK, entity)
+	c.JSON(http.StatusOK, entity)
 }
 
-func (h RegistrationHandler) MarkUnPaid(ctx *gin.Context) {
-	registrationId, _ := ctx.Params.Get("registrationId")
+func (h *RegistrationHandler) MarkUnPaid(c *gin.Context) {
+	registrationId, _ := c.Params.Get("registrationId")
 	entity := domain.Registration{}
 	h.db.Find(&entity, registrationId)
 
 	entity.MarkUnpaid()
 	h.db.Save(&entity)
-	ctx.JSON(http.StatusOK, entity)
+	c.JSON(http.StatusOK, entity)
 }
 
-func (h RegistrationHandler) GetAll(ctx *gin.Context) {
+func (h *RegistrationHandler) GetAll(c *gin.Context) {
 	var result []dto.RegistrationOverviewDto
 	h.logger.Info("querying registration report")
 	h.db.Raw(`
@@ -98,5 +174,5 @@ func (h RegistrationHandler) GetAll(ctx *gin.Context) {
 
 	log.Print(result)
 
-	ctx.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, result)
 }

@@ -38,5 +38,14 @@ export interface SportCenterModel {
     minutePerSection: number
 }
 
+export interface AttendantRequestModel {
+    matchId: number
+    playerId: number
+    sportCenterName: string
+    sportCenterLocation: string
+    start: Date
+    end: Date
+    isRequested: boolean
+}
 
 export type { AdditionalCost } from './cost/additional-cost'

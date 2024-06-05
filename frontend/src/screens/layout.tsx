@@ -4,7 +4,7 @@ import Loading from "../components/loading";
 import LogoutButton from "../components/logout-button";
 import UserProfile from "../components/profile";
 import { FC, ReactNode, useState } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Navigate, NavLink, Outlet } from "react-router-dom";
 import { Suspense } from "react";
 import { Tooltip } from "@mantine/core";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -18,6 +18,8 @@ import {
   IoSettings,
   IoStorefront,
 } from "react-icons/io5";
+import { useQuery } from "@tanstack/react-query";
+import constant from "../common/constant";
 
 interface NavItemProps {
   label?: string;
@@ -43,23 +45,41 @@ const NavItem: FC<NavItemProps> = ({ label, path, icon, showLabel = true }) => {
   );
 };
 
-function AppLayout() {
+function Layout() {
   const APP_NAME = "RACKET";
   const [collapsed, setCollapsed] = useState(true);
-  const { user, isAuthenticated, isLoading } = useAuth0();
-  const navigate = useNavigate();
+
+  const {
+    user,
+    isAuthenticated,
+    isLoading: isCheckingUser,
+    getIdTokenClaims,
+  } = useAuth0();
+
+  const { data: isAdmin, isLoading: isCheckingRole } = useQuery({
+    queryKey: ["getUserRoles"],
+    queryFn: async () => {
+      const res: any = await getIdTokenClaims();
+      const roles = res["https://api.tns.com/roles"] as string[];
+      return roles.includes(constant.roles.admin);
+    },
+  });
 
   function toggleSideNav() {
     setCollapsed(!collapsed);
   }
 
-  if (isLoading) {
+  if (isCheckingUser || isCheckingRole) {
     return <FullScreenLoading />;
   }
 
   if (!isAuthenticated && !user) {
-    navigate("/login", { replace: true });
-    return <div></div>;
+    return <Navigate to="/login" replace={true} />;
+  }
+
+  // Not an admin, redirect to public layout
+  if (!isAdmin) {
+    return <Navigate to="/public" replace={true} />;
   }
 
   return (
@@ -140,4 +160,4 @@ function AppLayout() {
   );
 }
 
-export default AppLayout;
+export default Layout;
