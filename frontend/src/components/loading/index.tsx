@@ -1,9 +1,19 @@
-import { BeatLoader } from "react-spinners";
+import { FC } from "react";
+import { FadeLoader } from "react-spinners";
 
-export default function Loading() {
+interface Props {
+  text?: string;
+}
+
+const Loading: FC<Props> = ({ text }) => {
   return (
     <div className="flex h-full w-full items-center justify-center">
-      <BeatLoader />
+      <div className="flex items-center space-x-2">
+        <FadeLoader />
+        <span className="animate-pulse">{text}</span>
+      </div>
     </div>
   );
-}
+};
+
+export default Loading;

@@ -52,7 +52,7 @@ function Layout() {
   const {
     user,
     isAuthenticated,
-    isLoading: isCheckingUser,
+    isLoading: isLoading,
     getIdTokenClaims,
   } = useAuth0();
 
@@ -69,8 +69,8 @@ function Layout() {
     setCollapsed(!collapsed);
   }
 
-  if (isCheckingUser || isCheckingRole) {
-    return <FullScreenLoading text="Authenticating..." />;
+  if (isLoading) {
+    return <FullScreenLoading text="Authenticating" />;
   }
 
   if (!isAuthenticated && !user) {

@@ -7,9 +7,8 @@ interface Props {
 
 const FullScreenLoading: FC<Props> = ({ text }) => {
   return (
-    <div className="flex h-screen w-screen flex-col items-center justify-center space-x-2">
-      <Loading />
-      {text && <span>{text}</span>}
+    <div className="flex h-screen w-screen flex-col items-center justify-center">
+      <Loading text={text} />
     </div>
   );
 };
