@@ -70,7 +70,7 @@ function Layout() {
   }
 
   if (isCheckingUser || isCheckingRole) {
-    return <FullScreenLoading />;
+    return <FullScreenLoading text="Authenticating..." />;
   }
 
   if (!isAuthenticated && !user) {
