@@ -62,7 +62,7 @@ func (h PlayerHandler) GetExternalUserAttendantRequests(c *gin.Context) {
 	LEFT JOIN "registrations" re ON m.id = re.match_id AND re.deleted_at IS NULL
 	LEFT JOIN "players" pl ON pl.id = re.player_id AND pl.deleted_at IS NULL
 	WHERE m.deleted_at IS NULL
-	AND (pl.external_user_id IS NULL OR pl.external_user_id = ?)
+	AND (re.id IS NULL OR pl.external_user_id = ?)
 	ORDER BY m.start DESC
 	`, externalUserId).Scan(&result)
 
