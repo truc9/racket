@@ -4,15 +4,23 @@ import { FiCalendar, FiClock, FiMapPin } from "react-icons/fi";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import formatter from "../../../common/formatter";
 import httpService from "../../../common/http-service";
-import { useAttendantRequestsQuery } from "../../../hooks/queries";
-import { AttendantRequestModel } from "../../../models";
+import {
+  useAttendantRequestsQuery,
+  useMatchesQuery,
+} from "../../../hooks/queries";
+import { AttendantRequestModel, MatchSummaryModel } from "../../../models";
 import { notifications } from "@mantine/notifications";
+import { MatchModel } from "../../matches/models";
 
 export default function AttendantRequest() {
   const { user } = useAuth0();
-  const { data: matches, refetch } = useAttendantRequestsQuery(user?.sub ?? "");
+  const { data: attendantRequests, refetch } = useAttendantRequestsQuery(
+    user?.sub ?? "",
+  );
 
-  const toggleAttendantClick = async (match: AttendantRequestModel) => {
+  const { data: matches } = useMatchesQuery();
+
+  const toggleAttendantClick = async (match: MatchSummaryModel) => {
     await httpService.post("api/v1/registrations/attendant-requests", {
       externalUserId: user?.sub,
       lastName: user?.family_name,
@@ -20,11 +28,7 @@ export default function AttendantRequest() {
       email: user?.email,
       matchId: match.matchId,
     });
-    notifications.show({
-      message: `Attendant ${match.isRequested ? "cancelled" : "requested"} successfully!`,
-      title: "Success",
-      color: match.isRequested ? "red" : "green",
-    });
+
     refetch();
   };
 
@@ -57,7 +61,7 @@ export default function AttendantRequest() {
                 onClick={() => toggleAttendantClick(m)}
                 className={cx(
                   "animate-pulse rounded-full ring-2 ring-offset-1 transition-all active:translate-y-1",
-                  m.isRequested
+                  attendantRequests?.map((r) => r.matchId)?.includes(m.matchId)
                     ? "text-emerald-500 ring-emerald-500"
                     : "text-orange-500 ring-orange-500",
                 )}

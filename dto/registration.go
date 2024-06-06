@@ -1,7 +1,5 @@
 package dto
 
-import "time"
-
 type (
 	RegistrationOverviewDto struct {
 		RegistrationId uint   `json:"registrationId"`
@@ -25,12 +23,7 @@ type (
 	}
 
 	PlayerAttendantRequestDto struct {
-		MatchId             uint      `json:"matchId"`
-		PlayerId            uint      `json:"playerId"`
-		Start               time.Time `json:"start"`
-		End                 time.Time `json:"end"`
-		SportCenterName     string    `json:"sportCenterName"`
-		SportCenterLocation string    `json:"sportCenterLocation"`
-		IsRequested         bool      `json:"isRequested"`
+		MatchId  uint `json:"matchId"`
+		PlayerId uint `json:"playerId"`
 	}
 )

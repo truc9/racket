@@ -49,24 +49,11 @@ func (h PlayerHandler) GetExternalUserAttendantRequests(c *gin.Context) {
 	var result []dto.PlayerAttendantRequestDto
 	externalUserId := params.Get(c, "externalUserId")
 	h.db.Raw(`
-		SELECT DISTINCT
-			m.id AS match_id,
-			pl.id AS player_id,
-			m.start,
-			m.end,
-			sc.name AS sport_center_name,
-			sc.location AS sport_center_location,
-			re.id IS NOT NULL AS is_requested
-	FROM "matches" m
-	JOIN "sport_centers" sc ON m.sport_center_id = sc.id 
-		AND sc.deleted_at IS NULL
-	LEFT JOIN "registrations" re ON m.id = re.match_id 
-		AND re.deleted_at IS NULL 
-	LEFT JOIN "players" pl ON pl.id = re.player_id 
-		AND pl.deleted_at IS NULL
-		AND pl.external_user_id = ?
-	WHERE m.deleted_at IS NULL
-	ORDER BY m.start DESC
+		SELECT m.id as match_id, pl.id as player_id
+		FROM matches m
+		JOIN registrations re ON m.id = re.match_id
+		JOIN players pl ON pl.id = re.player_id
+		WHERE pl.external_user_id = ?
 	`, externalUserId).Scan(&result)
 
 	h.logger.Info(result)
