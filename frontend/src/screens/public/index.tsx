@@ -17,8 +17,8 @@ function Public() {
   }
 
   return (
-    <div className="flex h-screen w-screen flex-col">
-      <div className="flex w-full flex-col items-center justify-center space-y-2">
+    <div className="flex h-screen w-screen flex-col items-center justify-center">
+      <div className="flex w-full flex-col items-center justify-center space-y-2 lg:w-1/3">
         <img
           className="rounded-full"
           src={user!.picture}

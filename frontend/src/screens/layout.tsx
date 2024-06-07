@@ -77,7 +77,7 @@ function Layout() {
     return <FullScreenLoading text="Checking Permission" />;
   }
 
-  if (!isAuthenticated && !user) {
+  if (!isAuthenticated || !user) {
     return <Navigate to="/login" replace={true} />;
   }
 

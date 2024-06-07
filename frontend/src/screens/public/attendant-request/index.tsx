@@ -33,13 +33,13 @@ export default function AttendantRequest() {
   };
 
   return (
-    <div className="flex h-full flex-col gap-3 px-2 py-5">
+    <div className="flex h-full w-full flex-col gap-3 px-2 py-5 lg:w-1/3">
       {matches &&
         matches.map((m) => {
           return (
             <div
               key={m.matchId}
-              className="flex w-full items-center justify-between rounded bg-slate-100 px-3 py-3"
+              className="flex items-center justify-between rounded bg-slate-100 px-3 py-3"
             >
               <div className="flex flex-col">
                 <div className="flex items-center space-x-2 font-bold">
@@ -60,10 +60,10 @@ export default function AttendantRequest() {
               <button
                 onClick={() => toggleAttendantClick(m)}
                 className={cx(
-                  "animate-pulse rounded-full ring-2 ring-offset-1 transition-all active:translate-y-1",
+                  "rounded-full ring-2 ring-offset-1 transition-all active:translate-y-1",
                   attendantRequests?.map((r) => r.matchId)?.includes(m.matchId)
-                    ? "text-emerald-500 ring-emerald-500"
-                    : "text-orange-500 ring-orange-500",
+                    ? "animate-pulse text-green-500 ring-green-500"
+                    : "text-slate-300 ring-slate-300",
                 )}
               >
                 <IoCheckmarkCircle size={50} />
