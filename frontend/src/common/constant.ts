@@ -1,5 +1,8 @@
 export default {
-    roles: {
-        admin: 'admin'
+    auth0: {
+        roleNamespace: "https://api.tns.com/roles",
+        roles: {
+            ADMIN: 'admin'
+        }
     }
 }

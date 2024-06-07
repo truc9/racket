@@ -9,7 +9,7 @@ import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import httpService from "../../common/http-service";
 import Page from "../../components/page";
-import { useMesssageTemplateQuery } from "../../hooks/queries";
+import { useMesssageTemplateQuery } from "../../hooks/useQueries";
 
 export default function Setting() {
   const [template, setTemplate] = useState("");

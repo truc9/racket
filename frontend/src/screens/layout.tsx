@@ -60,8 +60,8 @@ function Layout() {
     queryKey: ["getUserRoles"],
     queryFn: async () => {
       const res: any = await getIdTokenClaims();
-      const roles = res["https://api.tns.com/roles"] as string[];
-      return roles.includes(constant.roles.admin);
+      const roles = res[constant.auth0.roleNamespace] as string[];
+      return roles.includes(constant.auth0.roles.ADMIN);
     },
   });
 

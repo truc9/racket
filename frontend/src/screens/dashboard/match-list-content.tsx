@@ -24,7 +24,7 @@ import {
   useMatchCostQuery,
   useMesssageTemplateQuery,
   useRegistrationsByMatchQuery,
-} from "../../hooks/queries";
+} from "../../hooks/useQueries";
 import {
   AdditionalCost,
   MatchSummaryModel,

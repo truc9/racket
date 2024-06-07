@@ -7,10 +7,8 @@ import httpService from "../../../common/http-service";
 import {
   useAttendantRequestsQuery,
   useMatchesQuery,
-} from "../../../hooks/queries";
-import { AttendantRequestModel, MatchSummaryModel } from "../../../models";
-import { notifications } from "@mantine/notifications";
-import { MatchModel } from "../../matches/models";
+} from "../../../hooks/useQueries";
+import { MatchSummaryModel } from "../../../models";
 
 export default function AttendantRequest() {
   const { user } = useAuth0();

@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import MatchList from "./match-list";
 import Page from "../../components/page";
 import { useMemo } from "react";
-import { useMatchesQuery } from "../../hooks/queries";
+import { useMatchesQuery } from "../../hooks/useQueries";
 
 function Dashboard() {
   const { data: matches } = useMatchesQuery();

@@ -10,7 +10,7 @@ import { IoAdd, IoSave, IoTrash } from "react-icons/io5";
 import { z } from "zod";
 import httpService from "../../common/http-service";
 import Page from "../../components/page";
-import { useSportCenterValueLabelQuery } from "../../hooks/queries";
+import { useSportCenterValueLabelQuery } from "../../hooks/useQueries";
 import { MatchModel } from "./models";
 
 const schema = z.object({
