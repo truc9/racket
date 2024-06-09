@@ -13,6 +13,11 @@ export const useMatchesQuery = () => useQuery({
     queryFn: () => httpService.get<MatchSummaryModel[]>("api/v1/matches"),
 })
 
+export const useUpcomingMatches = () => useQuery({
+    queryKey: ["getMatches"],
+    queryFn: () => httpService.get<MatchSummaryModel[]>("api/v1/upcoming-matches"),
+})
+
 export const useMatchCostQuery = (id: number) => useQuery({
     queryKey: ["getMatchCost"],
     queryFn: () => httpService.get<number>(`api/v1/matches/${id}/cost`),

@@ -44,6 +44,26 @@ func (h *MatchHandler) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
+func (h *MatchHandler) GetUpcomingMatches(c *gin.Context) {
+	var matches []domain.Match
+	h.db.Preload("SportCenter").Where("start >= CURRENT_DATE").Order("start DESC").Find(&matches)
+
+	result := lo.Map(matches, func(m domain.Match, _ int) dto.MatchDto {
+		return dto.MatchDto{
+			MatchId:          m.ID,
+			Start:            m.Start,
+			End:              m.End,
+			SportCenterId:    m.SportCenterId,
+			SportCenterName:  m.SportCenter.Name,
+			CostPerSection:   m.SportCenter.CostPerSection,
+			MinutePerSection: m.SportCenter.MinutePerSection,
+			Cost:             m.Cost,
+		}
+	})
+
+	c.JSON(http.StatusOK, result)
+}
+
 func (h *MatchHandler) Delete(c *gin.Context) {
 	matchId := params.Get(c, "matchId")
 	if err := h.db.Delete(&domain.Match{}, matchId).Error; err != nil {

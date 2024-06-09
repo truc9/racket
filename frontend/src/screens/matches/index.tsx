@@ -23,7 +23,7 @@ function Matches() {
   const [opened, { open, close }] = useDisclosure(false);
 
   const { data: matches, refetch } = useQuery({
-    queryKey: ["get_matches"],
+    queryKey: ["getMatches"],
     queryFn: () => httpService.get<MatchModel[]>("api/v1/matches"),
   });
 

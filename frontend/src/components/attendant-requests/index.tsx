@@ -6,7 +6,7 @@ import formatter from "../../common/formatter";
 import httpService from "../../common/http-service";
 import {
   useAttendantRequestsQuery,
-  useMatchesQuery,
+  useUpcomingMatches,
 } from "../../hooks/useQueries";
 import { MatchSummaryModel } from "../../models";
 
@@ -16,7 +16,7 @@ export default function AttendantRequests() {
     user?.sub ?? "",
   );
 
-  const { data: matches } = useMatchesQuery();
+  const { data: matches } = useUpcomingMatches();
 
   const toggleAttendantClick = async (match: MatchSummaryModel) => {
     await httpService.post("api/v1/registrations/attendant-requests", {

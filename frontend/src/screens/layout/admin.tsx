@@ -72,11 +72,7 @@ function AdminLayout() {
         )}
       >
         <div className="flex flex-1 flex-col">
-          {collapsed ? (
-            <div className="p-2 text-center text-2xl font-bold">
-              {APP_NAME.substring(0, 1)}
-            </div>
-          ) : (
+          {!collapsed && (
             <div className="p-2 text-2xl font-bold">{APP_NAME}</div>
           )}
           <div className={cx("flex flex-col p-2", collapsed && "items-center")}>

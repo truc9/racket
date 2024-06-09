@@ -37,6 +37,7 @@ func main() {
 	c.Invoke(func(handler *handler.MatchHandler) {
 		v1.POST("/matches", handler.Create)
 		v1.GET("/matches", handler.GetAll)
+		v1.GET("/upcoming-matches", handler.GetUpcomingMatches)
 		v1.GET("/matches/:matchId/registrations", handler.GetRegistrationsByMatch)
 		v1.GET("/matches/:matchId/cost", handler.GetCost)
 		v1.GET("/matches/:matchId/additional-costs", handler.GetAdditionalCost)
