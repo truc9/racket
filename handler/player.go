@@ -54,6 +54,7 @@ func (h PlayerHandler) GetExternalUserAttendantRequests(c *gin.Context) {
 		JOIN registrations re ON m.id = re.match_id
 		JOIN players pl ON pl.id = re.player_id
 		WHERE pl.external_user_id = ?
+			AND m.start >= CURRENT_DATE
 	`, externalUserId).Scan(&result)
 
 	h.logger.Info(result)
