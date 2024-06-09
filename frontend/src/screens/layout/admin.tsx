@@ -1,25 +1,23 @@
-import cx from "clsx";
-import FullScreenLoading from "../components/fullscreen-loading";
-import Loading from "../components/loading";
-import LogoutButton from "../components/logout-button";
-import UserProfile from "../components/profile";
-import { FC, ReactNode, useState } from "react";
-import { Navigate, NavLink, Outlet } from "react-router-dom";
-import { Suspense } from "react";
-import { Tooltip } from "@mantine/core";
 import { useAuth0 } from "@auth0/auth0-react";
+import { Tooltip } from "@mantine/core";
+import cx from "clsx";
+import { FC, ReactNode, Suspense, useState } from "react";
+import { Navigate, NavLink, Outlet } from "react-router-dom";
+import FullScreenLoading from "../../components/fullscreen-loading";
+import Loading from "../../components/loading";
+import LogoutButton from "../../components/logout-button";
+import UserProfile from "../../components/profile";
 
 import {
   IoBarChart,
   IoBasketball,
+  IoCafe,
   IoChevronBackCircle,
   IoHeart,
   IoPersonAdd,
   IoSettings,
   IoStorefront,
 } from "react-icons/io5";
-import { useQuery } from "@tanstack/react-query";
-import constant from "../common/constant";
 
 interface NavItemProps {
   label?: string;
@@ -45,45 +43,23 @@ const NavItem: FC<NavItemProps> = ({ label, path, icon, showLabel = true }) => {
   );
 };
 
-function Layout() {
+function AdminLayout() {
   const APP_NAME = "RACKET";
+
   const [collapsed, setCollapsed] = useState(true);
 
-  const {
-    user,
-    isAuthenticated,
-    isLoading: isLoading,
-    getIdTokenClaims,
-  } = useAuth0();
-
-  const { data: isAdmin, isLoading: isCheckingRole } = useQuery({
-    queryKey: ["getUserRoles"],
-    queryFn: async () => {
-      const res: any = await getIdTokenClaims();
-      const roles = res[constant.auth0.roleNamespace] as string[];
-      return roles.includes(constant.auth0.roles.ADMIN);
-    },
-  });
+  const { user, isAuthenticated, isLoading } = useAuth0();
 
   function toggleSideNav() {
     setCollapsed(!collapsed);
   }
 
   if (isLoading) {
-    return <FullScreenLoading text="Authenticating" />;
-  }
-
-  if (isCheckingRole) {
-    return <FullScreenLoading text="Checking Permission" />;
+    return <FullScreenLoading text="Log you in..." />;
   }
 
   if (!isAuthenticated || !user) {
     return <Navigate to="/login" replace={true} />;
-  }
-
-  // Not an admin, redirect to public layout
-  if (!isAdmin) {
-    return <Navigate to="/public" replace={true} />;
   }
 
   return (
@@ -127,6 +103,12 @@ function Layout() {
             />
             <NavItem
               showLabel={!collapsed}
+              path="/requests"
+              label="Requests"
+              icon={<IoCafe />}
+            />
+            <NavItem
+              showLabel={!collapsed}
               path="/sportcenters"
               label="Sport Centers"
               icon={<IoStorefront />}
@@ -164,4 +146,4 @@ function Layout() {
   );
 }
 
-export default Layout;
+export default AdminLayout;

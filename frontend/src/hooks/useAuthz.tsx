@@ -2,8 +2,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
 import constant from "../common/constant";
 
-export const useRoles = () => {
-  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+export const useAuthz = () => {
+  const { user, isAuthenticated, getIdTokenClaims } = useAuth0();
   const [roles, setRoles] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -12,10 +12,10 @@ export const useRoles = () => {
     const fetchRoles = async () => {
       if (isAuthenticated && user) {
         try {
-          const token = await getAccessTokenSilently();
-          const decodedToken = JSON.parse(atob(token.split(".")[1]));
-          const userRoles = decodedToken[constant.auth0.roleNamespace] || [];
-          setRoles(userRoles);
+          const claims: any = await getIdTokenClaims();
+          const roles: string[] = claims[constant.auth0.roleNamespace] || [];
+          setRoles(roles);
+          return roles;
         } catch (error) {
           console.error("Error fetching roles: ", error);
         } finally {
@@ -25,7 +25,7 @@ export const useRoles = () => {
     };
 
     fetchRoles();
-  }, [isAuthenticated, user, getAccessTokenSilently]);
+  }, [isAuthenticated, user, getIdTokenClaims]);
 
   return {
     roles,

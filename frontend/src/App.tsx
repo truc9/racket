@@ -1,8 +1,10 @@
 import { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
+import { useAuthz } from "./hooks/useAuthz";
 import Login from "./screens/auth/login";
-import Layout from "./screens/layout";
-import Public from "./screens/public";
+import AdminLayout from "./screens/layout/admin";
+import PublicLayout from "./screens/layout/public";
+import Page from "./components/page";
 
 const DashboardScreen = lazy(() => import("./screens/dashboard"));
 const MatchesScreen = lazy(() => import("./screens/matches"));
@@ -12,24 +14,31 @@ const SportCentersScreen = lazy(() => import("./screens/sportcenter"));
 const SettingsScreen = lazy(() => import("./screens/settings"));
 const PageNotFoundScreen = lazy(() => import("./screens/page-not-found"));
 const AttendantRequestScreen = lazy(
-  () => import("./screens/public/attendant-request"),
+  () => import("./components/attendant-requests"),
 );
+const AdminRequestScreen = lazy(() => import("./screens/admin-requests"));
 
 function App() {
+  const { isAdmin } = useAuthz();
+
   return (
     <Routes>
-      <Route element={<Layout />}>
-        <Route path="/" element={<DashboardScreen />} />
-        <Route path="/players" element={<PlayerScreen />} />
-        <Route path="/matches" element={<MatchesScreen />} />
-        <Route path="/sportcenters" element={<SportCentersScreen />} />
-        <Route path="/health" element={<HealthScreen />} />
-        <Route path="/settings" element={<SettingsScreen />} />
-        <Route path="*" element={<PageNotFoundScreen />} />
-      </Route>
-      <Route path="/public" element={<Public />}>
-        <Route index element={<AttendantRequestScreen />} />
-      </Route>
+      {isAdmin ? (
+        <Route element={<AdminLayout />}>
+          <Route index element={<DashboardScreen />} />
+          <Route path="/requests" element={<AdminRequestScreen />} />
+          <Route path="/players" element={<PlayerScreen />} />
+          <Route path="/matches" element={<MatchesScreen />} />
+          <Route path="/sportcenters" element={<SportCentersScreen />} />
+          <Route path="/health" element={<HealthScreen />} />
+          <Route path="/settings" element={<SettingsScreen />} />
+          <Route path="*" element={<PageNotFoundScreen />} />
+        </Route>
+      ) : (
+        <Route element={<PublicLayout />}>
+          <Route index element={<AttendantRequestScreen />} />
+        </Route>
+      )}
       <Route path="/login" element={<Login />} />
     </Routes>
   );

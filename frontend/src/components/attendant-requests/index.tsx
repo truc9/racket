@@ -2,15 +2,15 @@ import { useAuth0 } from "@auth0/auth0-react";
 import cx from "clsx";
 import { FiCalendar, FiClock, FiMapPin } from "react-icons/fi";
 import { IoCheckmarkCircle } from "react-icons/io5";
-import formatter from "../../../common/formatter";
-import httpService from "../../../common/http-service";
+import formatter from "../../common/formatter";
+import httpService from "../../common/http-service";
 import {
   useAttendantRequestsQuery,
   useMatchesQuery,
-} from "../../../hooks/useQueries";
-import { MatchSummaryModel } from "../../../models";
+} from "../../hooks/useQueries";
+import { MatchSummaryModel } from "../../models";
 
-export default function AttendantRequest() {
+export default function AttendantRequests() {
   const { user } = useAuth0();
   const { data: attendantRequests, refetch } = useAttendantRequestsQuery(
     user?.sub ?? "",

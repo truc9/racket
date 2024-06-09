@@ -5,7 +5,7 @@ import FullScreenLoading from "../../components/fullscreen-loading";
 import Loading from "../../components/loading";
 import LogoutButton from "../../components/logout-button";
 
-function Public() {
+function PublicLayout() {
   const { user, isAuthenticated, isLoading } = useAuth0();
 
   if (isLoading) {
@@ -38,4 +38,4 @@ function Public() {
   );
 }
 
-export default Public;
+export default PublicLayout;
