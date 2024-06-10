@@ -22,6 +22,12 @@ type (
 		IsPaid   bool   `json:"isPaid"`
 	}
 
+	UpdateMatchDto struct {
+		SportCenterId uint      `json:"sportCenterId"`
+		Start         time.Time `json:"start"`
+		End           time.Time `json:"end"`
+	}
+
 	MatchCostDto struct {
 		Cost float64 `json:"cost"`
 	}

@@ -35,6 +35,22 @@ func NewMatch(
 	}
 }
 
+func (m *Match) UpdateMatch(sportCenterId uint, start, end time.Time) error {
+	if sportCenterId == 0 {
+		return errors.New("sport center is invalid")
+	}
+
+	if end.Before(start) {
+		return errors.New("end date must be equal or after start date")
+	}
+
+	m.SportCenterId = sportCenterId
+	m.Start = start
+	m.End = end
+
+	return nil
+}
+
 func (m *Match) UpdateCost(cost float64) error {
 	if cost <= 0 {
 		return errors.New("invalid cost")

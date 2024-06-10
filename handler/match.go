@@ -107,7 +107,7 @@ func (h *MatchHandler) GetRegistrationsByMatch(c *gin.Context) {
 		FROM "players" pl
 		LEFT JOIN "registrations" re ON pl.id = re.player_id AND re.deleted_at IS NULL AND re.match_id = ?
 		WHERE pl.deleted_at IS NULL
-		ORDER BY pl.first_name ASC	
+		ORDER BY pl.first_name ASC
 	`, matchId).Scan(&result)
 
 	h.logger.Info(result)
@@ -130,6 +130,31 @@ func (h *MatchHandler) UpdateCost(c *gin.Context) {
 	}
 
 	match.UpdateCost(dto.Cost)
+	h.db.Save(&match)
+	c.JSON(http.StatusOK, match)
+}
+
+func (h *MatchHandler) UpdateMatch(c *gin.Context) {
+	matchId := params.Get(c, "matchId")
+	dto := dto.UpdateMatchDto{}
+	if err := c.BindJSON(&dto); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	match := domain.Match{}
+	if err := h.db.Find(&match, matchId).Error; err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	err := match.UpdateMatch(dto.SportCenterId, dto.Start, dto.End)
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, err)
+		return
+	}
+
 	h.db.Save(&match)
 	c.JSON(http.StatusOK, match)
 }
