@@ -1,11 +1,3 @@
-import httpService from "../../common/http-service";
-import Page from "../../components/page";
-import { IoAdd, IoPencil, IoSave, IoTrash } from "react-icons/io5";
-import { PlayerModel } from "./models";
-import { useDisclosure } from "@mantine/hooks";
-import { useForm, zodResolver } from "@mantine/form";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { z } from "zod";
 import {
   ActionIcon,
   Button,
@@ -14,6 +6,15 @@ import {
   Table,
   TextInput,
 } from "@mantine/core";
+import { useForm, zodResolver } from "@mantine/form";
+import { useDisclosure } from "@mantine/hooks";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { IoAdd, IoPencil, IoSave, IoTrash } from "react-icons/io5";
+import { z } from "zod";
+import formatter from "../../common/formatter";
+import httpService from "../../common/http-service";
+import Page from "../../components/page";
+import { PlayerSummaryModel, UpdatePlayerModel } from "./models";
 
 const schema = z.object({
   id: z.number().nullable(),
@@ -41,11 +42,11 @@ function Players() {
     refetch,
   } = useQuery({
     queryKey: ["getPlayers"],
-    queryFn: () => httpService.get<PlayerModel[]>("api/v1/players"),
+    queryFn: () => httpService.get<PlayerSummaryModel[]>("api/v1/players"),
   });
 
   const createOrUpdateMutation = useMutation({
-    mutationFn: (model: PlayerModel) => {
+    mutationFn: (model: UpdatePlayerModel) => {
       if (model.id) {
         return httpService.put(`api/v1/players/${model.id}`, model);
       }
@@ -59,7 +60,7 @@ function Players() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (model: PlayerModel) => {
+    mutationFn: (model: PlayerSummaryModel) => {
       return httpService.del(`api/v1/players/${model.id}`);
     },
     onSuccess(_data, _variables, _context) {
@@ -67,12 +68,12 @@ function Players() {
     },
   });
 
-  const editClick = (model: PlayerModel) => {
+  const editClick = (model: PlayerSummaryModel) => {
     form.setValues(model);
     openDrawer();
   };
 
-  const deleteClick = (model: PlayerModel) => {
+  const deleteClick = (model: PlayerSummaryModel) => {
     deleteMutation.mutate(model);
   };
 
@@ -93,6 +94,9 @@ function Players() {
             <Table.Tr>
               <Table.Th>First Name</Table.Th>
               <Table.Th>Last Name</Table.Th>
+              <Table.Th>Email</Table.Th>
+              <Table.Th>Created At</Table.Th>
+              <Table.Th>SSO</Table.Th>
               <Table.Th>Action</Table.Th>
             </Table.Tr>
           </Table.Thead>
@@ -104,6 +108,14 @@ function Players() {
                   <Table.Tr key={item.id}>
                     <Table.Td>{item.firstName}</Table.Td>
                     <Table.Td>{item.lastName}</Table.Td>
+                    <Table.Td>{item.email}</Table.Td>
+                    <Table.Td>{formatter.formatDate(item.createdAt)}</Table.Td>
+                    <Table.Td>
+                      {item.externalUserId?.substring(
+                        0,
+                        item.externalUserId.lastIndexOf("|"),
+                      )}
+                    </Table.Td>
                     <Table.Td className="flex items-center justify-end gap-2">
                       <ActionIcon onClick={() => editClick(item)} size="lg">
                         <IoPencil />
