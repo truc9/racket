@@ -159,7 +159,7 @@ function Matches() {
               await httpService.put(`api/v1/matches/${model.matchId}`, model);
             } else {
               await httpService.post("api/v1/matches", {
-                model,
+                ...model,
                 sportCenterId: +model.sportCenterId,
               });
             }
