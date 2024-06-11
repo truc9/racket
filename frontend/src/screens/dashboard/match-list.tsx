@@ -1,12 +1,11 @@
 import { Accordion, Badge } from "@mantine/core";
 import dayjs from "dayjs";
-import React, { lazy, Suspense } from "react";
-import { FiMapPin } from "react-icons/fi";
+import React, { Suspense } from "react";
+import { FiClock, FiMapPin } from "react-icons/fi";
 import formatter from "../../common/formatter";
 import Loading from "../../components/loading";
 import { MatchSummaryModel } from "../../models";
-
-const MatchListContent = lazy(() => import("./match-list-content"));
+import MatchListContent from "./match-list-content";
 
 interface Prop {
   matches: MatchSummaryModel[];
@@ -35,7 +34,8 @@ const MatchList: React.FC<Prop> = ({ matches }) => {
                     <Badge color="green">{m.court}</Badge>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span>{formatter.formatDateRange(m.start, m.end)}</span>
+                    <FiClock />
+                    <span>{formatter.formatDate(m.start)}</span>
                   </div>
                 </div>
               </Accordion.Control>

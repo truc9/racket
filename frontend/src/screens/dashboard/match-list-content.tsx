@@ -12,6 +12,7 @@ import {
   IoCopy,
   IoHeartCircle,
   IoPersonSharp,
+  IoTime,
 } from "react-icons/io5";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -184,6 +185,12 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
           </div>
 
           <div className="grid grid-cols-1 justify-between gap-3 md:grid-cols-2 xl:grid-cols-3">
+            <MatchFigure
+              icon={<IoTime />}
+              label="Duration"
+              figure={formatter.duration(match.start, match.end)}
+            ></MatchFigure>
+
             <MatchFigure
               icon={<IoPersonSharp />}
               label="Total players"

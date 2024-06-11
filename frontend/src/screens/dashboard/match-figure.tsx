@@ -5,6 +5,7 @@ import { FiEdit } from "react-icons/fi";
 interface Prop {
   label: string;
   figure?: string;
+  smallFigure?: string;
   icon?: React.ReactNode;
   onActionClick?: () => void;
   actionIcon?: React.ReactNode;
@@ -12,6 +13,7 @@ interface Prop {
 
 const MatchFigure: React.FC<Prop> = ({
   figure,
+  smallFigure,
   label,
   icon,
   onActionClick,
@@ -31,6 +33,7 @@ const MatchFigure: React.FC<Prop> = ({
         </div>
       )}
       <span className="text-3xl font-bold">{figure}</span>
+      {smallFigure && <span className="font-bold">{smallFigure}</span>}
     </div>
   );
 };
