@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
-import MatchList from "./match-list";
-import Page from "../../components/page";
 import { useMemo } from "react";
+import Page from "../../components/page";
 import { useMatchesQuery } from "../../hooks/useQueries";
+import MatchList from "./match-list";
 
 function Dashboard() {
   const { data: matches } = useMatchesQuery();

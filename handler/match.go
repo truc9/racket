@@ -39,6 +39,7 @@ func (h *MatchHandler) GetAll(c *gin.Context) {
 			CostPerSection:   m.SportCenter.CostPerSection,
 			MinutePerSection: m.SportCenter.MinutePerSection,
 			Cost:             m.Cost,
+			Court:            m.Court,
 		}
 	})
 
@@ -59,6 +60,7 @@ func (h *MatchHandler) GetUpcomingMatches(c *gin.Context) {
 			CostPerSection:   m.SportCenter.CostPerSection,
 			MinutePerSection: m.SportCenter.MinutePerSection,
 			Cost:             m.Cost,
+			Court:            m.Court,
 		}
 	})
 
@@ -87,7 +89,14 @@ func (h *MatchHandler) Create(c *gin.Context) {
 	sc := domain.SportCenter{}
 	h.db.Find(&sc, dto.SportCenterId)
 
-	m := domain.NewMatch(dto.Start, dto.End, dto.SportCenterId, sc.CostPerSection, float64(sc.MinutePerSection))
+	m := domain.NewMatch(
+		dto.Start,
+		dto.End,
+		dto.SportCenterId,
+		sc.CostPerSection,
+		float64(sc.MinutePerSection),
+		dto.Court,
+	)
 
 	h.logger.Debug(m)
 
@@ -104,11 +113,16 @@ func (h *MatchHandler) GetRegistrationsByMatch(c *gin.Context) {
 	matchId, _ := c.Params.Get("matchId")
 	h.logger.Infof("getting match id %s", matchId)
 	h.db.Raw(`
-		SELECT pl.id AS player_id, CONCAT(pl.first_name, ' ', pl.last_name) AS player_name, re.id AS registration_id, re.match_id, re.is_paid
-		FROM "players" pl
-		LEFT JOIN "registrations" re ON pl.id = re.player_id AND re.deleted_at IS NULL AND re.match_id = ?
-		WHERE pl.deleted_at IS NULL
-		ORDER BY pl.first_name ASC
+	SELECT
+		pl.id AS player_id,
+		CONCAT(pl.first_name, ' ', pl.last_name) AS player_name,
+		re.id AS registration_id,
+		re.match_id,
+		re.is_paid
+	FROM "players" pl
+	LEFT JOIN "registrations" re ON pl.id = re.player_id AND re.deleted_at IS NULL AND re.match_id = ?
+	WHERE pl.deleted_at IS NULL
+	ORDER BY pl.first_name ASC
 	`, matchId).Scan(&result)
 
 	h.logger.Info(result)
@@ -150,7 +164,7 @@ func (h *MatchHandler) UpdateMatch(c *gin.Context) {
 	}
 
 	sportCenterId, _ := strconv.Atoi(dto.SportCenterId)
-	err := match.UpdateMatch(uint(sportCenterId), dto.Start, dto.End)
+	err := match.UpdateMatch(uint(sportCenterId), dto.Start, dto.End, dto.Court)
 
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)

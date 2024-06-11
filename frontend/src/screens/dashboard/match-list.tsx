@@ -1,9 +1,9 @@
+import { Accordion, Badge } from "@mantine/core";
 import dayjs from "dayjs";
+import React, { lazy, Suspense } from "react";
+import { FiMapPin } from "react-icons/fi";
 import formatter from "../../common/formatter";
 import Loading from "../../components/loading";
-import React, { lazy, Suspense } from "react";
-import { Accordion } from "@mantine/core";
-import { FiMapPin } from "react-icons/fi";
 import { MatchSummaryModel } from "../../models";
 
 const MatchListContent = lazy(() => import("./match-list-content"));
@@ -26,9 +26,13 @@ const MatchList: React.FC<Prop> = ({ matches }) => {
             <Accordion.Item key={m.matchId} value={`${m.matchId}`}>
               <Accordion.Control icon={<FiMapPin />}>
                 <div className="flex items-center justify-between px-5">
-                  <div className="flex items-center gap-2">
-                    <span>{dayjs(m.start).format("dddd")} -</span>
-                    <span>{m.sportCenterName || "N/A"}</span>
+                  <div className="flex items-center space-x-2">
+                    <span>{dayjs(m.start).format("dddd")}</span>
+                    <span>|</span>
+                    <span className="font-bold">
+                      {m.sportCenterName || "N/A"}
+                    </span>
+                    <Badge color="green">{m.court}</Badge>
                   </div>
                   <div className="flex items-center gap-2">
                     <span>{formatter.formatDateRange(m.start, m.end)}</span>

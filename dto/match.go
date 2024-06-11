@@ -12,6 +12,7 @@ type (
 		CostPerSection   float64   `json:"costPerSection"`
 		MinutePerSection uint      `json:"minutePerSection"`
 		Cost             float64   `json:"cost"`
+		Court            string    `json:"court"`
 	}
 
 	AttendantDto struct {
@@ -26,6 +27,7 @@ type (
 		SportCenterId string    `json:"sportCenterId"`
 		Start         time.Time `json:"start"`
 		End           time.Time `json:"end"`
+		Court         string    `json:"court"`
 	}
 
 	MatchCostDto struct {

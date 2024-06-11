@@ -14,6 +14,7 @@ type Match struct {
 	Cost            float64          `json:"cost"`
 	AdditionalCosts []AdditionalCost `json:"additionalCosts"`
 	SportCenter     SportCenter      `json:"sportCenter"`
+	Court           string           `json:"court"`
 }
 
 func NewMatch(
@@ -22,6 +23,7 @@ func NewMatch(
 	sportCenterId uint,
 	costPerSection float64,
 	minutePerSection float64,
+	court string,
 ) *Match {
 	totalMinutes := math.Abs(end.Sub(start).Minutes())
 	sectionCount := totalMinutes / minutePerSection
@@ -32,10 +34,16 @@ func NewMatch(
 		Start:         start,
 		End:           end,
 		Cost:          cost,
+		Court:         court,
 	}
 }
 
-func (m *Match) UpdateMatch(sportCenterId uint, start, end time.Time) error {
+func (m *Match) UpdateMatch(
+	sportCenterId uint,
+	start,
+	end time.Time,
+	court string,
+) error {
 	if sportCenterId == 0 {
 		return errors.New("sport center is invalid")
 	}
@@ -47,6 +55,7 @@ func (m *Match) UpdateMatch(sportCenterId uint, start, end time.Time) error {
 	m.SportCenterId = sportCenterId
 	m.Start = start
 	m.End = end
+	m.Court = court
 
 	return nil
 }

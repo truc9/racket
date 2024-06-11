@@ -1,4 +1,12 @@
-import { ActionIcon, Button, Drawer, Select, Table, Text } from "@mantine/core";
+import {
+  ActionIcon,
+  Button,
+  Drawer,
+  Select,
+  Table,
+  Text,
+  TextInput,
+} from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
@@ -19,6 +27,7 @@ const schema = z.object({
   start: z.date({ message: "Start date is required" }),
   end: z.date({ message: "End date is required" }),
   sportCenterId: z.string({ message: "Sport center is required" }),
+  court: z.string(),
 });
 
 function Matches() {
@@ -42,6 +51,7 @@ function Matches() {
       end: dayjs(new Date()).set("hour", 11).set("minute", 0).toDate(),
       // Mantine <Select/> received default value as string
       sportCenterId: "0",
+      court: "Court 3",
     },
     validate: zodResolver(schema),
   });
@@ -71,6 +81,7 @@ function Matches() {
       start: new Date(match.start),
       end: new Date(match.end),
       sportCenterId: match.sportCenterId.toString(),
+      court: match.court,
     });
     openMatchDrawer();
   };
@@ -91,6 +102,7 @@ function Matches() {
           <Table.Thead>
             <Table.Tr>
               <Table.Th>Sport Center</Table.Th>
+              <Table.Th>Court</Table.Th>
               <Table.Th>Start</Table.Th>
               <Table.Th>End</Table.Th>
               <Table.Th>Action</Table.Th>
@@ -102,6 +114,7 @@ function Matches() {
                 return (
                   <Table.Tr key={item.matchId}>
                     <Table.Td>{item.sportCenterName || "N/A"}</Table.Td>
+                    <Table.Td>{item.court || "N/A"}</Table.Td>
                     <Table.Td>
                       {dayjs(item.start).format("DD/MM/YYYY hh:mm:ss")}
                     </Table.Td>
@@ -162,6 +175,11 @@ function Matches() {
             label="End (date/time)"
             required
             {...form.getInputProps("end")}
+          />
+          <TextInput
+            label="Court"
+            placeholder="Add court..."
+            {...form.getInputProps("court")}
           />
           <Select
             label="Sport center"
