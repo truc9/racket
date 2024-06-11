@@ -51,7 +51,7 @@ function Matches() {
       end: dayjs(new Date()).set("hour", 11).set("minute", 0).toDate(),
       // Mantine <Select/> received default value as string
       sportCenterId: "0",
-      court: "Court 3",
+      court: "",
     },
     validate: zodResolver(schema),
   });
@@ -158,7 +158,10 @@ function Matches() {
               );
               await httpService.put(`api/v1/matches/${model.matchId}`, model);
             } else {
-              await httpService.post("api/v1/matches", model);
+              await httpService.post("api/v1/matches", {
+                model,
+                sportCenterId: +model.sportCenterId,
+              });
             }
             refetch();
             form.reset();
