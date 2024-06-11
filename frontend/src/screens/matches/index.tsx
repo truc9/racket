@@ -5,22 +5,27 @@ import { useDisclosure } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { zodResolver } from "mantine-form-zod-resolver";
-import { IoAdd, IoSave, IoTrash } from "react-icons/io5";
+import { zodResolver } from "@mantine/form";
+import { IoAdd, IoPencil, IoSave, IoTrash } from "react-icons/io5";
 import { z } from "zod";
 import httpService from "../../common/http-service";
 import Page from "../../components/page";
 import { useSportCenterValueLabelQuery } from "../../hooks/useQueries";
+import { CreateOrUpdateMatchModel } from "../../models";
 import { MatchModel } from "./models";
 
 const schema = z.object({
+  matchId: z.number().nullable(),
   start: z.date({ message: "Start date is required" }),
   end: z.date({ message: "End date is required" }),
   sportCenterId: z.string({ message: "Sport center is required" }),
 });
 
 function Matches() {
-  const [opened, { open, close }] = useDisclosure(false);
+  const [
+    isMatchDrawerOpened,
+    { open: openMatchDrawer, close: closeMatchDrawer },
+  ] = useDisclosure(false);
 
   const { data: matches, refetch } = useQuery({
     queryKey: ["getMatches"],
@@ -29,11 +34,13 @@ function Matches() {
 
   const { data: sportCenterOptions } = useSportCenterValueLabelQuery();
 
-  const form = useForm({
+  const form = useForm<CreateOrUpdateMatchModel>({
     mode: "uncontrolled",
     initialValues: {
+      matchId: null,
       start: dayjs(new Date()).set("hour", 9).set("minute", 0).toDate(),
       end: dayjs(new Date()).set("hour", 11).set("minute", 0).toDate(),
+      // Mantine <Select/> received default value as string
       sportCenterId: "0",
     },
     validate: zodResolver(schema),
@@ -57,11 +64,26 @@ function Matches() {
       },
     });
 
+  const editMatch = (match: MatchModel) => {
+    console.log(match);
+    form.setValues({
+      matchId: match.matchId,
+      start: new Date(match.start),
+      end: new Date(match.end),
+      sportCenterId: match.sportCenterId.toString(),
+    });
+    openMatchDrawer();
+  };
+
   return (
     <>
       <Page title="Matches Management">
         <div>
-          <Button leftSection={<IoAdd />} variant="default" onClick={open}>
+          <Button
+            leftSection={<IoAdd />}
+            variant="default"
+            onClick={openMatchDrawer}
+          >
             Create Match
           </Button>
         </div>
@@ -71,49 +93,63 @@ function Matches() {
               <Table.Th>Sport Center</Table.Th>
               <Table.Th>Start</Table.Th>
               <Table.Th>End</Table.Th>
+              <Table.Th>Action</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {matches?.map((item) => {
-              return (
-                <Table.Tr key={item.matchId}>
-                  <Table.Td>{item.sportCenterName || "N/A"}</Table.Td>
-                  <Table.Td>
-                    {dayjs(item.start).format("DD/MM/YYYY hh:mm:ss")}
-                  </Table.Td>
-                  <Table.Td>
-                    {item.end && dayjs(item.end).format("DD/MM/YYYY hh:mm:ss")}
-                  </Table.Td>
-                  <Table.Td className="text-right">
-                    <ActionIcon
-                      size="lg"
-                      onClick={() => deleteMatch(item.matchId!)}
-                      color="red"
-                    >
-                      <IoTrash />
-                    </ActionIcon>
-                  </Table.Td>
-                </Table.Tr>
-              );
-            })}
+            {matches &&
+              matches.map((item) => {
+                return (
+                  <Table.Tr key={item.matchId}>
+                    <Table.Td>{item.sportCenterName || "N/A"}</Table.Td>
+                    <Table.Td>
+                      {dayjs(item.start).format("DD/MM/YYYY hh:mm:ss")}
+                    </Table.Td>
+                    <Table.Td>
+                      {item.end &&
+                        dayjs(item.end).format("DD/MM/YYYY hh:mm:ss")}
+                    </Table.Td>
+                    <Table.Td className="flex-end flex justify-end space-x-2 text-right">
+                      <ActionIcon
+                        size="lg"
+                        color="blue"
+                        onClick={() => editMatch(item)}
+                      >
+                        <IoPencil />
+                      </ActionIcon>
+                      <ActionIcon
+                        size="lg"
+                        onClick={() => deleteMatch(item.matchId!)}
+                        color="red"
+                      >
+                        <IoTrash />
+                      </ActionIcon>
+                    </Table.Td>
+                  </Table.Tr>
+                );
+              })}
           </Table.Tbody>
         </Table>
       </Page>
       <Drawer
         position="right"
-        opened={opened}
-        onClose={close}
+        opened={isMatchDrawerOpened}
+        onClose={closeMatchDrawer}
         title="Create Match"
       >
         <form
           onSubmit={form.onSubmit(async (model) => {
-            await httpService.post("api/v1/matches", {
-              ...model,
-              sportCenterId: +model.sportCenterId,
-            });
+            if (model.matchId) {
+              console.log(
+                `Updating match ${model.matchId} with values ${JSON.stringify(model)}`,
+              );
+              await httpService.put(`api/v1/matches/${model.matchId}`, model);
+            } else {
+              await httpService.post("api/v1/matches", model);
+            }
             refetch();
             form.reset();
-            close();
+            closeMatchDrawer();
           })}
           className="flex flex-col gap-2"
         >
@@ -128,10 +164,12 @@ function Matches() {
             {...form.getInputProps("end")}
           />
           <Select
-            defaultValue={form.getInputProps("sportCenterId")}
             label="Sport center"
             placeholder="Pick value"
             data={sportCenterOptions}
+            nothingFoundMessage="No sport center"
+            clearable
+            searchable
             {...form.getInputProps("sportCenterId")}
           />
 

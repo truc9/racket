@@ -23,7 +23,7 @@ type (
 	}
 
 	UpdateMatchDto struct {
-		SportCenterId uint      `json:"sportCenterId"`
+		SportCenterId string    `json:"sportCenterId"`
 		Start         time.Time `json:"start"`
 		End           time.Time `json:"end"`
 	}

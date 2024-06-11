@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/samber/lo"
@@ -138,20 +139,21 @@ func (h *MatchHandler) UpdateMatch(c *gin.Context) {
 	matchId := params.Get(c, "matchId")
 	dto := dto.UpdateMatchDto{}
 	if err := c.BindJSON(&dto); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
 	match := domain.Match{}
 	if err := h.db.Find(&match, matchId).Error; err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	err := match.UpdateMatch(dto.SportCenterId, dto.Start, dto.End)
+	sportCenterId, _ := strconv.Atoi(dto.SportCenterId)
+	err := match.UpdateMatch(uint(sportCenterId), dto.Start, dto.End)
 
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, err)
+		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
