@@ -4,7 +4,6 @@ import { useAuthz } from "./hooks/useAuthz";
 import Login from "./screens/auth/login";
 import AdminLayout from "./screens/layouts/admin";
 import PublicLayout from "./screens/layouts/public";
-import Page from "./components/page";
 
 const DashboardScreen = lazy(() => import("./screens/dashboard"));
 const MatchesScreen = lazy(() => import("./screens/matches"));
