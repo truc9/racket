@@ -101,7 +101,13 @@ function Players() {
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {isPending && <Skeleton />}
+            {isPending && (
+              <Table.Tr>
+                <Table.Td colSpan={6}>
+                  <Skeleton />
+                </Table.Td>
+              </Table.Tr>
+            )}
             {!isPending &&
               players?.map((item) => {
                 return (

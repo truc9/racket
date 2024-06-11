@@ -8,7 +8,7 @@ const LoginButton = () => {
   return (
     <Button
       fullWidth
-      color="green"
+      color="blue"
       leftSection={<FaSignInAlt />}
       size="lg"
       onClick={() => loginWithRedirect()}
