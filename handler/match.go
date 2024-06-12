@@ -40,6 +40,7 @@ func (h *MatchHandler) GetAll(c *gin.Context) {
 			MinutePerSection: m.SportCenter.MinutePerSection,
 			Cost:             m.Cost,
 			Court:            m.Court,
+			CustomSection:    m.CustomSection,
 		}
 	})
 
@@ -96,6 +97,7 @@ func (h *MatchHandler) Create(c *gin.Context) {
 		sc.CostPerSection,
 		float64(sc.MinutePerSection),
 		dto.Court,
+		dto.CustomSection,
 	)
 
 	h.logger.Debug(m)
@@ -144,7 +146,7 @@ func (h *MatchHandler) UpdateCost(c *gin.Context) {
 		return
 	}
 
-	match.UpdateCost(dto.Cost)
+	match.UpdateCost(dto.Cost, "Invalidate auto-calc cost, update manual")
 	h.db.Save(&match)
 	c.JSON(http.StatusOK, match)
 }
@@ -164,7 +166,21 @@ func (h *MatchHandler) UpdateMatch(c *gin.Context) {
 	}
 
 	sportCenterId, _ := strconv.Atoi(dto.SportCenterId)
-	err := match.UpdateMatch(uint(sportCenterId), dto.Start, dto.End, dto.Court)
+
+	spc := &domain.SportCenter{}
+	h.db.Find(&spc, sportCenterId)
+
+	h.logger.Debugf("get sport center %v", spc)
+
+	err := match.UpdateMatch(
+		uint(sportCenterId),
+		dto.Start,
+		dto.End,
+		float64(spc.MinutePerSection),
+		spc.CostPerSection,
+		dto.Court,
+		dto.CustomSection,
+	)
 
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)

@@ -13,6 +13,7 @@ type (
 		MinutePerSection uint      `json:"minutePerSection"`
 		Cost             float64   `json:"cost"`
 		Court            string    `json:"court"`
+		CustomSection    *float64  `json:"customSection"`
 	}
 
 	AttendantDto struct {
@@ -28,6 +29,7 @@ type (
 		Start         time.Time `json:"start"`
 		End           time.Time `json:"end"`
 		Court         string    `json:"court"`
+		CustomSection *float64  `json:"customSection"`
 	}
 
 	MatchCostDto struct {

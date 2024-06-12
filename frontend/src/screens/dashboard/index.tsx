@@ -7,9 +7,9 @@ import MatchSection from "./match-section";
 function Dashboard() {
   const { data: matches } = useMatchesQuery();
 
-  const currentMatch = useMemo(() => {
+  const todayMatches = useMemo(() => {
     if (!matches) return null;
-    return matches.find((m) => dayjs(m.start).isSame(new Date(), "date"));
+    return matches.filter((m) => dayjs(m.start).isSame(new Date(), "date"));
   }, [matches]);
 
   const upcomingMatches = useMemo(() => {
@@ -20,8 +20,8 @@ function Dashboard() {
   return (
     <Page title="Dashboard">
       <div className="flex flex-col gap-2">
-        {currentMatch && (
-          <MatchSection title="Today Match" matches={[currentMatch]} />
+        {todayMatches && (
+          <MatchSection title="Today Match" matches={todayMatches} />
         )}
 
         {upcomingMatches && (

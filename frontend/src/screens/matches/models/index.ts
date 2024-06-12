@@ -6,6 +6,7 @@ export interface MatchModel {
   sportCenterId: number;
   costPerSection: number;
   minutePerSection: number;
-  sectionCost: number;
+  cost: number;
+  customSection: number | null;
   court: string;
 }

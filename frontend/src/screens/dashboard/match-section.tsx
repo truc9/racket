@@ -1,5 +1,5 @@
-import dayjs from "dayjs";
 import React from "react";
+import { IoPlanetOutline } from "react-icons/io5";
 import { MatchSummaryModel } from "../../models";
 import MatchList from "./match-list";
 
@@ -11,14 +11,11 @@ interface Props {
 const MatchSection: React.FC<Props> = ({ title, matches }) => {
   return (
     <div className="flex flex-col gap-2">
-      <h3 className="font-bold">{title}</h3>
-      {matches && (
-        <MatchList
-          matches={matches.filter((m) =>
-            dayjs(m.start).isAfter(new Date(), "date"),
-          )}
-        ></MatchList>
-      )}
+      <div className="flex items-center space-x-2 text-lg font-bold">
+        <IoPlanetOutline />
+        <h3>{title}</h3>
+      </div>
+      {matches && <MatchList matches={matches} />}
     </div>
   );
 };

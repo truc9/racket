@@ -15,6 +15,7 @@ const MatchList: React.FC<Prop> = ({ matches }) => {
   if (!matches || matches.length === 0) {
     return <div>No matches</div>;
   }
+
   return (
     <Accordion variant="separated">
       {matches &&

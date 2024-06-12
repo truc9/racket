@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Button,
   Drawer,
+  NumberInput,
   Select,
   Table,
   Text,
@@ -21,6 +22,8 @@ import Page from "../../components/page";
 import { useSportCenterValueLabelQuery } from "../../hooks/useQueries";
 import { CreateOrUpdateMatchModel } from "../../models";
 import { MatchModel } from "./models";
+import formatter from "../../common/formatter";
+import Currency from "../../components/currency";
 
 const schema = z.object({
   matchId: z.number().nullable(),
@@ -28,6 +31,7 @@ const schema = z.object({
   end: z.date({ message: "End date is required" }),
   sportCenterId: z.string({ message: "Sport center is required" }),
   court: z.string(),
+  customSection: z.number().nullable(),
 });
 
 function Matches() {
@@ -52,6 +56,7 @@ function Matches() {
       // Mantine <Select/> received default value as string
       sportCenterId: "0",
       court: "",
+      customSection: null,
     },
     validate: zodResolver(schema),
   });
@@ -82,6 +87,7 @@ function Matches() {
       end: new Date(match.end),
       sportCenterId: match.sportCenterId.toString(),
       court: match.court,
+      customSection: match.customSection,
     });
     openMatchDrawer();
   };
@@ -105,6 +111,10 @@ function Matches() {
               <Table.Th>Court</Table.Th>
               <Table.Th>Start</Table.Th>
               <Table.Th>End</Table.Th>
+              <Table.Th>How many Sections?</Table.Th>
+              <Table.Th>Cost /sec</Table.Th>
+              <Table.Th>Minutes /sec</Table.Th>
+              <Table.Th>Total</Table.Th>
               <Table.Th>Action</Table.Th>
             </Table.Tr>
           </Table.Thead>
@@ -121,6 +131,14 @@ function Matches() {
                     <Table.Td>
                       {item.end &&
                         dayjs(item.end).format("DD/MM/YYYY hh:mm:ss")}
+                    </Table.Td>
+                    <Table.Td>{item.customSection || "N/A"}</Table.Td>
+                    <Table.Td>
+                      <Currency value={item.costPerSection} />
+                    </Table.Td>
+                    <Table.Td>{item.minutePerSection || "N/A"}</Table.Td>
+                    <Table.Td>
+                      <Currency value={item.cost} />
                     </Table.Td>
                     <Table.Td className="flex-end flex justify-end space-x-2 text-right">
                       <ActionIcon
@@ -183,6 +201,11 @@ function Matches() {
             label="Court"
             placeholder="Add court..."
             {...form.getInputProps("court")}
+          />
+          <NumberInput
+            label="Custom Section"
+            placeholder="How many section in today match..."
+            {...form.getInputProps("customSection")}
           />
           <Select
             label="Sport center"

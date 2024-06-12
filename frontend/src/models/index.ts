@@ -26,6 +26,7 @@ export interface CreateOrUpdateMatchModel {
   start: Date;
   end: Date;
   court: string | null;
+  customSection: number | null;
 }
 
 export interface RegistrationDetailModel {
