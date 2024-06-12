@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { useMemo } from "react";
 import Page from "../../components/page";
 import { useMatchesQuery } from "../../hooks/useQueries";
-import MatchList from "./match-list";
+import MatchSection from "./match-section";
 
 function Dashboard() {
   const { data: matches } = useMatchesQuery();
@@ -12,24 +12,21 @@ function Dashboard() {
     return matches.find((m) => dayjs(m.start).isSame(new Date(), "date"));
   }, [matches]);
 
+  const upcomingMatches = useMemo(() => {
+    if (!matches) return null;
+    return matches.filter((m) => dayjs(m.start).isAfter(new Date(), "date"));
+  }, [matches]);
+
   return (
     <Page title="Dashboard">
       <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-2">
-          <h3 className="font-bold">Today Match</h3>
-          <MatchList matches={[currentMatch!]}></MatchList>
-        </div>
+        {currentMatch && (
+          <MatchSection title="Today Match" matches={[currentMatch]} />
+        )}
 
-        <div className="flex flex-col gap-2">
-          <h3 className="font-bold">Upcoming Matches</h3>
-          {matches && (
-            <MatchList
-              matches={matches.filter((m) =>
-                dayjs(m.start).isAfter(new Date(), "date"),
-              )}
-            ></MatchList>
-          )}
-        </div>
+        {upcomingMatches && (
+          <MatchSection title="Upcoming Matches" matches={upcomingMatches} />
+        )}
       </div>
     </Page>
   );
