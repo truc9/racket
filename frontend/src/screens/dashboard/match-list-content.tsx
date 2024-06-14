@@ -1,4 +1,4 @@
-import { Alert, Button, Modal, NumberInput } from "@mantine/core";
+import { Alert, Button, Modal } from "@mantine/core";
 import { useClipboard, useDisclosure } from "@mantine/hooks";
 import { useMutation } from "@tanstack/react-query";
 import React, { useMemo, useRef, useState } from "react";
@@ -22,7 +22,6 @@ import httpService from "../../common/http-service";
 import ToggleButton from "../../components/toggle-button";
 import {
   useMatchAdditionalCostQuery,
-  useMatchCostQuery,
   useMesssageTemplateQuery,
   useRegistrationsByMatchQuery,
 } from "../../hooks/useQueries";
@@ -54,8 +53,6 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
     match.matchId,
   );
 
-  const { data: cost, refetch: reloadCost } = useMatchCostQuery(match.matchId);
-
   const { data: additionalCost, refetch: reloadAdditionalCost } =
     useMatchAdditionalCostQuery(match.matchId);
 
@@ -82,11 +79,11 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
   }, [registrations]);
 
   const individualCost = useMemo(() => {
-    const total = (cost ?? 0) + (additionalCost ?? 0);
+    const total = (match.cost ?? 0) + (additionalCost ?? 0);
     const totalPlayer =
       registrations?.filter((r) => !!r.registrationId)?.length ?? 0;
     return totalPlayer === 0 ? 0 : total / totalPlayer;
-  }, [cost, additionalCost, registrations]);
+  }, [match.cost, additionalCost, registrations]);
 
   const handleSaveAdditionalCosts = async (costs: AdditionalCost[]) => {
     await httpService.put(
@@ -103,13 +100,20 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
     };
 
     return bindTemplate(messageTemplate ?? "", {
-      cost: cost?.toFixed(2),
+      cost: match?.cost?.toFixed(2),
+      customSection: match?.customSection,
       additionalCost: additionalCost?.toFixed(2),
       individualCost: individualCost?.toFixed(2),
       totalPlayer:
         registrations?.filter((r) => !!r.registrationId)?.length ?? 0,
     });
-  }, [cost, additionalCost, individualCost, registrations]);
+  }, [
+    match?.cost,
+    additionalCost,
+    individualCost,
+    registrations,
+    messageTemplate,
+  ]);
 
   const registerMut = useMutation({
     onSuccess: reload,
@@ -137,18 +141,6 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
         `api/v1/registrations/${registrationId}/unpaid`,
         {},
       );
-    },
-  });
-
-  const updateCostMut = useMutation({
-    onSuccess() {
-      reloadCost();
-      closeCost();
-    },
-    mutationFn: (model: { matchId: number; cost: number }) => {
-      return httpService.put(`api/v1/matches/${model.matchId}/costs`, {
-        cost: model.cost,
-      });
     },
   });
 
@@ -218,8 +210,7 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
             <MatchFigure
               icon={<FiDollarSign />}
               label="Cost"
-              figure={formatter.currency(cost ?? 0)}
-              onActionClick={openCost}
+              figure={formatter.currency(match.cost ?? 0)}
             ></MatchFigure>
 
             <MatchFigure
@@ -284,22 +275,6 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
             })}
         </div>
       </div>
-
-      <Modal opened={costOpened} onClose={closeCost} title="Update Cost">
-        <div className="flex flex-col gap-2">
-          <NumberInput onChange={(val) => setCurrentCost(+val)} />
-          <Button
-            onClick={() =>
-              updateCostMut.mutate({
-                matchId: match.matchId,
-                cost: currentCost,
-              })
-            }
-          >
-            Save
-          </Button>
-        </div>
-      </Modal>
 
       <Modal
         opened={additionalCostOpened}

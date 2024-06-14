@@ -27,7 +27,7 @@ func NewMatchHandler(db *gorm.DB, logger *zap.SugaredLogger) *MatchHandler {
 
 func (h *MatchHandler) GetAll(c *gin.Context) {
 	var matches []domain.Match
-	h.db.Preload("SportCenter").Order("start DESC").Find(&matches)
+	h.db.Preload("SportCenter").Order("start ASC").Find(&matches)
 
 	result := lo.Map(matches, func(m domain.Match, _ int) dto.MatchDto {
 		return dto.MatchDto{
@@ -49,7 +49,7 @@ func (h *MatchHandler) GetAll(c *gin.Context) {
 
 func (h *MatchHandler) GetUpcomingMatches(c *gin.Context) {
 	var matches []domain.Match
-	h.db.Preload("SportCenter").Where("start >= CURRENT_DATE").Order("start DESC").Find(&matches)
+	h.db.Preload("SportCenter").Where("start >= CURRENT_DATE").Order("start ASC").Find(&matches)
 
 	result := lo.Map(matches, func(m domain.Match, _ int) dto.MatchDto {
 		return dto.MatchDto{
