@@ -8,6 +8,7 @@ require (
 	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/joho/godotenv v1.5.1
+	github.com/resend/resend-go/v2 v2.9.0
 	github.com/samber/lo v1.39.0
 	go.uber.org/dig v1.17.1
 	go.uber.org/zap v1.27.0

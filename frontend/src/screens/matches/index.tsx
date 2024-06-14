@@ -22,7 +22,6 @@ import Page from "../../components/page";
 import { useSportCenterValueLabelQuery } from "../../hooks/useQueries";
 import { CreateOrUpdateMatchModel } from "../../models";
 import { MatchModel } from "./models";
-import formatter from "../../common/formatter";
 import Currency from "../../components/currency";
 
 const schema = z.object({

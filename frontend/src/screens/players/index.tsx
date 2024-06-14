@@ -5,16 +5,18 @@ import {
   Skeleton,
   Table,
   TextInput,
+  Tooltip,
 } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { IoAdd, IoPencil, IoSave, IoTrash } from "react-icons/io5";
+import { IoAdd, IoMail, IoPencil, IoSave, IoTrash } from "react-icons/io5";
 import { z } from "zod";
 import formatter from "../../common/formatter";
 import httpService from "../../common/http-service";
 import Page from "../../components/page";
 import { PlayerSummaryModel, UpdatePlayerModel } from "./models";
+import { notifications } from "@mantine/notifications";
 
 const schema = z.object({
   id: z.number().nullable(),
@@ -74,7 +76,23 @@ function Players() {
   };
 
   const deleteClick = (model: PlayerSummaryModel) => {
+    if (model.externalUserId) {
+      notifications.show({
+        title: "Important",
+        message: "Please do not delete user from SSO",
+        color: "teal",
+      });
+      return;
+    }
+
     deleteMutation.mutate(model);
+  };
+
+  const sendWelcomeEmail = async (model: PlayerSummaryModel) => {
+    console.log(model);
+    await httpService.post(`api/v1/players/${model.id}/welcome-email`, {
+      to: [model.email],
+    });
   };
 
   return (
@@ -123,10 +141,27 @@ function Players() {
                       )}
                     </Table.Td>
                     <Table.Td className="flex items-center justify-end gap-2">
-                      <ActionIcon onClick={() => editClick(item)} size="lg">
+                      <Tooltip label="Welcome Email" position="top">
+                        <ActionIcon
+                          disabled={!item.email}
+                          color="pink"
+                          onClick={() => sendWelcomeEmail(item)}
+                          size="lg"
+                        >
+                          <IoMail />
+                        </ActionIcon>
+                      </Tooltip>
+
+                      <ActionIcon
+                        onClick={() => editClick(item)}
+                        size="lg"
+                        disabled={!!item.externalUserId}
+                      >
                         <IoPencil />
                       </ActionIcon>
+
                       <ActionIcon
+                        disabled={!!item.externalUserId}
                         size="lg"
                         color="red"
                         onClick={() => deleteClick(item)}
