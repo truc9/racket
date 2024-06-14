@@ -1,7 +1,7 @@
 import { Alert, Button, Modal } from "@mantine/core";
 import { useClipboard, useDisclosure } from "@mantine/hooks";
 import { useMutation } from "@tanstack/react-query";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef } from "react";
 import { FaCashRegister } from "react-icons/fa";
 import { FiDollarSign } from "react-icons/fi";
 import {
@@ -38,11 +38,8 @@ interface Prop {
 }
 
 const MatchListContent: React.FC<Prop> = ({ match }) => {
-  const [currentCost, setCurrentCost] = useState(0);
   const clipboard = useClipboard({ timeout: 500 });
   const clipboardRef = useRef<HTMLDivElement>(null!);
-  const [costOpened, { open: openCost, close: closeCost }] =
-    useDisclosure(false);
 
   const [
     additionalCostOpened,
