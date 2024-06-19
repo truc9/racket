@@ -9,14 +9,21 @@ import {
 } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { IoAdd, IoMail, IoPencil, IoSave, IoTrash } from "react-icons/io5";
+import {
+  IoAdd,
+  IoMail,
+  IoPencil,
+  IoSave,
+  IoSync,
+  IoTrash,
+} from "react-icons/io5";
 import { z } from "zod";
 import formatter from "../../common/formatter";
-import httpService from "../../common/http-service";
+import httpService from "../../common/http";
 import Page from "../../components/page";
 import { PlayerSummaryModel, UpdatePlayerModel } from "./models";
-import { notifications } from "@mantine/notifications";
 
 const schema = z.object({
   id: z.number().nullable(),
@@ -141,6 +148,17 @@ function Players() {
                       )}
                     </Table.Td>
                     <Table.Td className="flex items-center justify-end gap-2">
+                      <Tooltip label="Resync from Auth0" position="top">
+                        <ActionIcon
+                          disabled={!item.email}
+                          color="orange"
+                          onClick={() => sendWelcomeEmail(item)}
+                          size="lg"
+                        >
+                          <IoSync />
+                        </ActionIcon>
+                      </Tooltip>
+
                       <Tooltip label="Welcome Email" position="top">
                         <ActionIcon
                           disabled={!item.email}

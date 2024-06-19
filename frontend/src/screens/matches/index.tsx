@@ -17,7 +17,7 @@ import dayjs from "dayjs";
 import { zodResolver } from "@mantine/form";
 import { IoAdd, IoPencil, IoSave, IoTrash } from "react-icons/io5";
 import { z } from "zod";
-import httpService from "../../common/http-service";
+import httpService from "../../common/http";
 import Page from "../../components/page";
 import { useSportCenterValueLabelQuery } from "../../hooks/useQueries";
 import { CreateOrUpdateMatchModel } from "../../models";

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import httpService from '../common/http-service'
+import httpService from '../common/http'
 import { AttendantRequestModel, MatchSummaryModel, PlayerModel, RegistrationDetailModel, RegistrationModel, ValueLabel } from '../models'
 
 export const usePlayersQuery = () => useQuery({

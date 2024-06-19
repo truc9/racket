@@ -18,7 +18,7 @@ import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import formatter from "../../common/formatter";
-import httpService from "../../common/http-service";
+import httpService from "../../common/http";
 import ToggleButton from "../../components/toggle-button";
 import {
   useMatchAdditionalCostQuery,

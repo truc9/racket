@@ -3,7 +3,7 @@ import cx from "clsx";
 import { FiCalendar, FiClock, FiMapPin } from "react-icons/fi";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import formatter from "../../common/formatter";
-import httpService from "../../common/http-service";
+import httpService from "../../common/http";
 import {
   useAttendantRequestsQuery,
   useUpcomingMatches,

@@ -1,4 +1,4 @@
-import httpService from '../common/http-service'
+import httpService from '../common/http'
 import { RegistrationDetailModel } from '../models'
 
 async function getRegistrationByMatch(matchId: number) {
