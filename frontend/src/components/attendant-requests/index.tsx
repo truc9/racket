@@ -35,6 +35,9 @@ export default function AttendantRequests() {
     <div className="flex h-full w-full flex-col gap-3 px-2 py-5 lg:w-2/3">
       {matches &&
         matches.map((m) => {
+          const isAttended = attendantRequests
+            ?.map((r) => r.matchId)
+            ?.includes(m.matchId);
           return (
             <div
               key={m.matchId}
@@ -55,10 +58,12 @@ export default function AttendantRequests() {
                   <span>-</span>
                   <span>{formatter.formatTime(m.end)}</span>
                 </div>
-                <div className="flex items-center space-x-2 font-bold text-red-500">
-                  <FiGift />
-                  <span>{formatter.currency(m.individualCost)}</span>
-                </div>
+                {isAttended && (
+                  <div className="flex items-center space-x-2 font-bold text-pink-500">
+                    <FiGift />
+                    <span>{formatter.currency(m.individualCost)}</span>
+                  </div>
+                )}
               </div>
 
               {!dayjs(new Date()).isSame(m.start, "day") && (
@@ -66,9 +71,7 @@ export default function AttendantRequests() {
                   onClick={() => toggleAttendantClick(m)}
                   className={cx(
                     "rounded-full ring-2 ring-offset-1 transition-all active:translate-y-1",
-                    attendantRequests
-                      ?.map((r) => r.matchId)
-                      ?.includes(m.matchId)
+                    isAttended
                       ? "animate-pulse text-green-500 ring-green-500"
                       : "text-slate-300 ring-slate-300",
                   )}
