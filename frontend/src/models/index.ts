@@ -18,6 +18,9 @@ export interface MatchSummaryModel {
   court: string
   cost: number
   customSection: number
+  playerCount: number
+  registrationIds: number[]
+  individualCost: number
   start: Date
   end: Date
 }

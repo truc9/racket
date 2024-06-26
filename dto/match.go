@@ -11,9 +11,13 @@ type (
 		SportCenterId    uint      `json:"sportCenterId"`
 		CostPerSection   float64   `json:"costPerSection"`
 		MinutePerSection uint      `json:"minutePerSection"`
+		IndividualCost   float64   `json:"individualCost"`
 		Cost             float64   `json:"cost"`
+		AdditionalCost   float64   `json:"additionalCost"`
 		Court            string    `json:"court"`
 		CustomSection    *float64  `json:"customSection"`
+		PlayerCount      int       `json:"playerCount"`
+		RegistrationIds  []uint    `json:"registrationIds"`
 	}
 
 	AttendantDto struct {
