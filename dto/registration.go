@@ -6,6 +6,7 @@ type (
 		MatchId        uint   `json:"matchId"`
 		PlayerId       uint   `json:"playerId"`
 		PlayerName     string `json:"playerName"`
+		Email          string `json:"email"`
 		IsPaid         bool   `json:"isPaid"`
 	}
 

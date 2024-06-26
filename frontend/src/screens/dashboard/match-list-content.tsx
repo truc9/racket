@@ -227,7 +227,7 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
                   key={reg.playerId}
                   className="grid grid-cols-3 items-center justify-center gap-x-2 rounded from-green-300 to-green-50 px-2 py-2 align-middle transition-all odd:bg-slate-50 hover:bg-gradient-to-r"
                 >
-                  <span>{reg.playerName}</span>
+                  <span>{reg.playerName || reg.email}</span>
                   <div>
                     {!!reg.registrationId ? (
                       <ToggleButton

@@ -36,6 +36,7 @@ export interface RegistrationDetailModel {
   matchId: number
   playerId: number
   playerName: string
+  email: string
   isPaid: boolean
 }
 

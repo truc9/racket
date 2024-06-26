@@ -117,7 +117,8 @@ func (h *MatchHandler) GetRegistrationsByMatch(c *gin.Context) {
 	h.db.Raw(`
 	SELECT
 		pl.id AS player_id,
-		CONCAT(pl.first_name, ' ', pl.last_name) AS player_name,
+		TRIM(CONCAT(pl.first_name, ' ', pl.last_name)) AS player_name,
+		pl.email,
 		re.id AS registration_id,
 		re.match_id,
 		re.is_paid
