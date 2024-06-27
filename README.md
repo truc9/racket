@@ -47,3 +47,11 @@ docker compose up
 - Dayjs
 - Mantine UI
 - Numerable
+
+
+## Dev Guidline
+### Run test
+```bash
+go test -v ./...
+go test -v -cover ./...
+```

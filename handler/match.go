@@ -27,7 +27,11 @@ func NewMatchHandler(db *gorm.DB, logger *zap.SugaredLogger) *MatchHandler {
 
 func (h *MatchHandler) GetAll(c *gin.Context) {
 	var matches []domain.Match
-	h.db.Preload("SportCenter").Order("start ASC").Find(&matches)
+	h.db.
+		Preload("SportCenter").
+		Preload("AdditionalCosts").
+		Order("start ASC").
+		Find(&matches)
 
 	result := lo.Map(matches, func(m domain.Match, _ int) dto.MatchDto {
 		return dto.MatchDto{
@@ -39,8 +43,11 @@ func (h *MatchHandler) GetAll(c *gin.Context) {
 			CostPerSection:   m.SportCenter.CostPerSection,
 			MinutePerSection: m.SportCenter.MinutePerSection,
 			Cost:             m.Cost,
-			Court:            m.Court,
-			CustomSection:    m.CustomSection,
+			AdditionalCost: lo.SumBy(m.AdditionalCosts, func(ac domain.AdditionalCost) float64 {
+				return ac.Amount
+			}),
+			Court:         m.Court,
+			CustomSection: m.CustomSection,
 		}
 	})
 
@@ -49,7 +56,14 @@ func (h *MatchHandler) GetAll(c *gin.Context) {
 
 func (h *MatchHandler) GetUpcomingMatches(c *gin.Context) {
 	var matches []domain.Match
-	h.db.Preload("SportCenter").Where("start >= CURRENT_DATE").Order("start ASC").Find(&matches)
+	h.db.
+		Preload("SportCenter").
+		Preload("AdditionalCosts").
+		Preload("Registrations").
+		Where("start >= CURRENT_DATE").Order("start ASC").
+		Find(&matches)
+
+	h.logger.Debugf("Query matches: %v", matches)
 
 	result := lo.Map(matches, func(m domain.Match, _ int) dto.MatchDto {
 		return dto.MatchDto{
@@ -61,7 +75,11 @@ func (h *MatchHandler) GetUpcomingMatches(c *gin.Context) {
 			CostPerSection:   m.SportCenter.CostPerSection,
 			MinutePerSection: m.SportCenter.MinutePerSection,
 			Cost:             m.Cost,
+			AdditionalCost:   m.CalcAdditionalCost(),
 			Court:            m.Court,
+			PlayerCount:      m.CalcPlayerCount(),
+			RegistrationIds:  lo.Map(m.Registrations, func(reg domain.Registration, _ int) uint { return reg.ID }),
+			IndividualCost:   m.CalcIndividualCost(),
 		}
 	})
 
@@ -117,7 +135,8 @@ func (h *MatchHandler) GetRegistrationsByMatch(c *gin.Context) {
 	h.db.Raw(`
 	SELECT
 		pl.id AS player_id,
-		CONCAT(pl.first_name, ' ', pl.last_name) AS player_name,
+		TRIM(CONCAT(pl.first_name, ' ', pl.last_name)) AS player_name,
+		pl.email,
 		re.id AS registration_id,
 		re.match_id,
 		re.is_paid

@@ -18,6 +18,9 @@ export interface MatchSummaryModel {
   court: string
   cost: number
   customSection: number
+  playerCount: number
+  registrationIds: number[]
+  individualCost: number
   start: Date
   end: Date
 }
@@ -36,6 +39,7 @@ export interface RegistrationDetailModel {
   matchId: number
   playerId: number
   playerName: string
+  email: string
   isPaid: boolean
 }
 

@@ -4,6 +4,8 @@ import (
 	"errors"
 	"math"
 	"time"
+
+	"github.com/samber/lo"
 )
 
 type Match struct {
@@ -17,6 +19,7 @@ type Match struct {
 	Court           string           `json:"court"`
 	CustomSection   *float64         `gorm:"default:null" json:"customSection"`
 	Comment         string           `json:"comment"`
+	Registrations   []Registration   `json:"registrations"`
 }
 
 func NewMatch(
@@ -85,6 +88,29 @@ func (m *Match) AddCost(description string, amount float64) error {
 
 	m.AdditionalCosts = append(m.AdditionalCosts, *cost)
 	return nil
+}
+
+func (m *Match) CalcPlayerCount() int {
+	return len(m.Registrations)
+}
+
+func (m *Match) CalcAdditionalCost() float64 {
+	return lo.SumBy(m.AdditionalCosts, func(ac AdditionalCost) float64 { return ac.Amount })
+}
+
+func (m *Match) CalcIndividualCost() float64 {
+
+	additionalCost := lo.SumBy(m.AdditionalCosts, func(ac AdditionalCost) float64 {
+		return ac.Amount
+	})
+
+	playerCount := len(m.Registrations)
+
+	if playerCount != 0 {
+		return (m.Cost + additionalCost) / float64(playerCount)
+	}
+
+	return 0
 }
 
 func (m *Match) calculateCost(minutePerSection, costPerSection float64) float64 {

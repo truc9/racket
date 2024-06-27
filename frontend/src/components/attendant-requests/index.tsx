@@ -1,6 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import cx from "clsx";
-import { FiCalendar, FiClock, FiMapPin } from "react-icons/fi";
+import { FiCalendar, FiClock, FiGift, FiMapPin } from "react-icons/fi";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import formatter from "../../common/formatter";
 import httpService from "../../common/http";
@@ -9,14 +9,14 @@ import {
   useUpcomingMatches,
 } from "../../hooks/useQueries";
 import { MatchSummaryModel } from "../../models";
+import dayjs from "dayjs";
 
 export default function AttendantRequests() {
   const { user } = useAuth0();
-  const { data: attendantRequests, refetch } = useAttendantRequestsQuery(
-    user?.sub ?? "",
-  );
+  const { data: attendantRequests, refetch: refetchAttendants } =
+    useAttendantRequestsQuery(user?.sub ?? "");
 
-  const { data: matches } = useUpcomingMatches();
+  const { data: matches, refetch: refetchMatches } = useUpcomingMatches();
 
   const toggleAttendantClick = async (match: MatchSummaryModel) => {
     await httpService.post("api/v1/registrations/attendant-requests", {
@@ -27,13 +27,17 @@ export default function AttendantRequests() {
       matchId: match.matchId,
     });
 
-    refetch();
+    refetchAttendants();
+    refetchMatches();
   };
 
   return (
     <div className="flex h-full w-full flex-col gap-3 px-2 py-5 lg:w-2/3">
       {matches &&
         matches.map((m) => {
+          const isAttended = attendantRequests
+            ?.map((r) => r.matchId)
+            ?.includes(m.matchId);
           return (
             <div
               key={m.matchId}
@@ -54,18 +58,27 @@ export default function AttendantRequests() {
                   <span>-</span>
                   <span>{formatter.formatTime(m.end)}</span>
                 </div>
-              </div>
-              <button
-                onClick={() => toggleAttendantClick(m)}
-                className={cx(
-                  "rounded-full ring-2 ring-offset-1 transition-all active:translate-y-1",
-                  attendantRequests?.map((r) => r.matchId)?.includes(m.matchId)
-                    ? "animate-pulse text-green-500 ring-green-500"
-                    : "text-slate-300 ring-slate-300",
+                {isAttended && (
+                  <div className="flex items-center space-x-2 font-bold text-pink-500">
+                    <FiGift />
+                    <span>{formatter.currency(m.individualCost)}</span>
+                  </div>
                 )}
-              >
-                <IoCheckmarkCircle size={50} />
-              </button>
+              </div>
+
+              {!dayjs(new Date()).isSame(m.start, "day") && (
+                <button
+                  onClick={() => toggleAttendantClick(m)}
+                  className={cx(
+                    "rounded-full ring-2 ring-offset-1 transition-all active:translate-y-1",
+                    isAttended
+                      ? "animate-pulse text-green-500 ring-green-500"
+                      : "text-slate-300 ring-slate-300",
+                  )}
+                >
+                  <IoCheckmarkCircle size={50} />
+                </button>
+              )}
             </div>
           );
         })}

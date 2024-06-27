@@ -1,6 +1,7 @@
 import { Alert, Button, Modal } from "@mantine/core";
 import { useClipboard, useDisclosure } from "@mantine/hooks";
 import { useMutation } from "@tanstack/react-query";
+import cx from "clsx";
 import React, { useMemo, useRef } from "react";
 import { FaCashRegister } from "react-icons/fa";
 import { FiDollarSign } from "react-icons/fi";
@@ -227,7 +228,9 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
                   key={reg.playerId}
                   className="grid grid-cols-3 items-center justify-center gap-x-2 rounded from-green-300 to-green-50 px-2 py-2 align-middle transition-all odd:bg-slate-50 hover:bg-gradient-to-r"
                 >
-                  <span>{reg.playerName}</span>
+                  <span className={cx({ "font-bold": !!reg.registrationId })}>
+                    {reg.playerName || reg.email}
+                  </span>
                   <div>
                     {!!reg.registrationId ? (
                       <ToggleButton
