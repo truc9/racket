@@ -1,9 +1,5 @@
 import { Auth0Provider } from "@auth0/auth0-react";
-import {
-  createTheme,
-  MantineColorsTuple,
-  MantineProvider,
-} from "@mantine/core";
+import { createTheme, MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import { ModalsProvider } from "@mantine/modals";
@@ -19,22 +15,20 @@ import "./index.css";
 
 const queryClient = new QueryClient();
 
-const myColor: MantineColorsTuple = [
-  "#eaf1ff",
-  "#d4dffc",
-  "#a7bbf3",
-  "#7896ec",
-  "#5076e5",
-  "#3762e2",
-  "#2857e1",
-  "#1b48c8",
-  "#1240b4",
-  "#00369f",
-];
-
 const theme = createTheme({
   colors: {
-    myColor,
+    myColor: [
+      "#eaf1ff",
+      "#d4dffc",
+      "#a7bbf3",
+      "#7896ec",
+      "#5076e5",
+      "#3762e2",
+      "#2857e1",
+      "#1b48c8",
+      "#1240b4",
+      "#00369f",
+    ],
   },
   fontFamily: "Inter",
 });
@@ -51,9 +45,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               domain={import.meta.env.VITE_AUTH0_DOMAIN}
               clientId={import.meta.env.VITE_AUTH0_CLIENTID}
               authorizationParams={{
-                redirect_uri: "/login",
-                audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-                scope: "openid profile email",
+                redirect_uri: window.location.origin,
               }}
             >
               <App />

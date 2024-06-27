@@ -1,5 +1,27 @@
 import { Auth0Client } from "@auth0/auth0-spa-js"
 import axios from "axios"
+import { jwtDecode } from "jwt-decode"
+
+class TokenManager {
+  private token: string | null = null;
+
+  constructor() {
+  }
+
+  public setToken(token: string) {
+    this.token = token
+  }
+
+  public getToken(): string | null {
+    return this.token
+  }
+
+  public isInvalid(): boolean {
+    return !this.token
+  }
+}
+
+const tokenManager = new TokenManager()
 
 const createBearerToken = async () => {
   const auth0 = new Auth0Client({
@@ -7,10 +29,13 @@ const createBearerToken = async () => {
     clientId: import.meta.env.VITE_AUTH0_CLIENTID
   })
 
-  const token = await auth0.getTokenSilently()
+  if (tokenManager.isInvalid()) {
+    const token = await auth0.getTokenSilently()
+    tokenManager.setToken(token)
+  }
 
   try {
-    return `Bearer ${token}`
+    return `Bearer ${tokenManager.getToken()}`
   } catch (err) {
     return ""
   }
