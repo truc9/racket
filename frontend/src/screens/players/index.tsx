@@ -152,11 +152,7 @@ function Players() {
                         </ActionIcon>
                       </Tooltip>
 
-                      <ActionIcon
-                        onClick={() => editClick(item)}
-                        size="lg"
-                        disabled={!!item.externalUserId}
-                      >
+                      <ActionIcon onClick={() => editClick(item)} size="lg">
                         <IoPencil />
                       </ActionIcon>
 
