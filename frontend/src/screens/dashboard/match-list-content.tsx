@@ -13,13 +13,13 @@ import {
   IoCopy,
   IoHeartCircle,
   IoPersonSharp,
+  IoPin,
   IoTime,
 } from "react-icons/io5";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import formatter from "../../common/formatter";
-import httpService from "../../common/http-service";
 import ToggleButton from "../../components/toggle-button";
 import {
   useMatchAdditionalCostQuery,
@@ -33,12 +33,16 @@ import {
 } from "../../models";
 import AdditionalCostEditor from "./additional-cost-editor";
 import MatchFigure from "./match-figure";
+import dayjs from "dayjs";
+import httpService from "../../common/http-service";
 
 interface Prop {
   match: MatchSummaryModel;
 }
 
 const MatchListContent: React.FC<Prop> = ({ match }) => {
+  const clipboardLoc = useClipboard({ timeout: 500 });
+  const clipboardRefLoc = useRef<HTMLDivElement>(null!);
   const clipboard = useClipboard({ timeout: 500 });
   const clipboardRef = useRef<HTMLDivElement>(null!);
 
@@ -146,7 +150,41 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
     <div className="flex flex-col gap-3">
       <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
         <div className="flex flex-col gap-3">
-          <div>
+          <div className="flex flex-col gap-3">
+            <Alert
+              className="relative"
+              color="red"
+              title="Match Details"
+              icon={<IoPin />}
+            >
+              <div className="flex flex-col gap-2" ref={clipboardRefLoc}>
+                <div className="flex items-center gap-2 font-bold">
+                  <span>Match open at {match.sportCenterName}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span>
+                    <span>📆 </span>
+                    {dayjs(match.start).format("dddd DD-MM-YYYY")}
+                    <span> ⏰ </span>
+                    {dayjs(match.start).format("hh:mm")}
+                    <span> to </span>
+                    {dayjs(match.end).format("hh:mm")}
+                  </span>
+                </div>
+              </div>
+              <Button
+                className="absolute right-2 top-2"
+                variant="light"
+                leftSection={<IoCopy />}
+                color={clipboardLoc.copied ? "purple" : "red"}
+                onClick={() =>
+                  clipboardLoc.copy(clipboardRefLoc.current.innerText)
+                }
+              >
+                {clipboardLoc.copied ? "Copied" : "Copy"}
+              </Button>
+            </Alert>
+
             <Alert
               className="relative"
               variant="light"
