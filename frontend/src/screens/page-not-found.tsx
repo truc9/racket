@@ -5,7 +5,7 @@ function PageNotFound() {
     <Page>
       <div className="flex h-full w-full items-center justify-center">
         <div className="flex flex-col">
-          <span className="text-center text-4xl font-bold text-blue-700">
+          <span className="text-center text-4xl font-bold text-emerald-700">
             Page Not Found
           </span>
         </div>

@@ -109,7 +109,7 @@ export default function Setting() {
                 <RichTextEditor.Content className="min-h-[300px]" />
               </RichTextEditor>
             </div>
-            <div className="rounded border border-blue-100 bg-blue-50 p-3 text-sm">
+            <div className="rounded border border-emerald-100 bg-emerald-50 p-3 text-sm">
               <Markdown rehypePlugins={[rehypeRaw]}>{template}</Markdown>
             </div>
           </div>

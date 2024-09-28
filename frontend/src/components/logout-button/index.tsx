@@ -15,7 +15,7 @@ const LogoutButton: FC<Prop> = ({ showLabel }) => {
   return (
     <button
       className={cx(
-        `bg-blue-600`,
+        `bg-emerald-400`,
         "flex w-full items-center justify-center gap-2 rounded px-3 py-3 text-center text-white active:translate-y-1",
       )}
       onClick={() => {
