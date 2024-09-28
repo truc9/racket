@@ -79,7 +79,6 @@ function Matches() {
     });
 
   const editMatch = (match: MatchModel) => {
-    console.log(match);
     form.setValues({
       matchId: match.matchId,
       start: new Date(match.start),
@@ -170,9 +169,6 @@ function Matches() {
         <form
           onSubmit={form.onSubmit(async (model) => {
             if (model.matchId) {
-              console.log(
-                `Updating match ${model.matchId} with values ${JSON.stringify(model)}`,
-              );
               await httpService.put(`api/v1/matches/${model.matchId}`, model);
             } else {
               await httpService.post("api/v1/matches", {

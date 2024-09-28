@@ -83,7 +83,16 @@ func (h *PlayerHandler) Update(c *gin.Context) {
 
 func (h *PlayerHandler) Delete(c *gin.Context) {
 	id := params.Get(c, "playerId")
-	h.db.Unscoped().Delete(&domain.Player{}, id)
+
+	if err := h.db.Unscoped().Where("player_id = ?", id).Delete(&domain.Registration{}).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if err := h.db.Unscoped().Delete(&domain.Player{}, id).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
 	c.Status(http.StatusOK)
 }
 

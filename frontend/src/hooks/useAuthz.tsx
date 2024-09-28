@@ -13,7 +13,7 @@ export const useAuthz = () => {
       if (isAuthenticated && user) {
         try {
           const claims: any = await getIdTokenClaims();
-          const roles: string[] = claims[constant.auth0.roleNamespace] || [];
+          const roles: string[] = claims[constant.auth0.claims.roles] || [];
           setRoles(roles);
           return roles;
         } catch (error) {

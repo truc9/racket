@@ -1,8 +1,10 @@
 export default {
     auth0: {
-        roleNamespace: "https://api.tns.com/roles",
+        claims: {
+            roles: 'https://auth.teco.co.uk/roles'
+        },
         roles: {
             ADMIN: 'admin'
         }
     }
-}
+};

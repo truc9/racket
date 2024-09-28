@@ -46,9 +46,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <MantineProvider theme={theme}>
           <ModalsProvider>
             <Auth0Provider
+              cacheLocation="localstorage"
               domain={import.meta.env.VITE_AUTH0_DOMAIN}
               clientId={import.meta.env.VITE_AUTH0_CLIENTID}
-              cacheLocation="localstorage"
               authorizationParams={{
                 redirect_uri: window.location.origin,
               }}

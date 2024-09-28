@@ -4,6 +4,7 @@ import {
   Drawer,
   Skeleton,
   Table,
+  Text,
   TextInput,
   Tooltip,
 } from "@mantine/core";
@@ -17,6 +18,7 @@ import httpService from "../../common/http-service";
 import Page from "../../components/page";
 import { PlayerSummaryModel, UpdatePlayerModel } from "./models";
 import { notifications } from "@mantine/notifications";
+import { modals } from "@mantine/modals";
 
 const schema = z.object({
   id: z.number().nullable(),
@@ -68,6 +70,13 @@ function Players() {
     onSuccess(_data, _variables, _context) {
       refetch();
     },
+    onError(err, _) {
+      notifications.show({
+        title: "Error",
+        message: "Unable to delete player.",
+        color: "red",
+      });
+    },
   });
 
   const editClick = (model: PlayerSummaryModel) => {
@@ -76,20 +85,24 @@ function Players() {
   };
 
   const deleteClick = (model: PlayerSummaryModel) => {
-    if (model.externalUserId) {
-      notifications.show({
-        title: "Important",
-        message: "Please do not delete user from SSO",
-        color: "teal",
-      });
-      return;
-    }
-
-    deleteMutation.mutate(model);
+    modals.openConfirmModal({
+      title: "Delete Player ?",
+      centered: true,
+      children: (
+        <Text>
+          Are you sure you want to delete {model.firstName}. This action is
+          irreversable!
+        </Text>
+      ),
+      labels: { confirm: "Yes", cancel: "Cancel" },
+      confirmProps: { color: "red" },
+      onConfirm: async () => {
+        deleteMutation.mutate(model);
+      },
+    });
   };
 
   const sendWelcomeEmail = async (model: PlayerSummaryModel) => {
-    console.log(model);
     await httpService.post(`api/v1/players/${model.id}/welcome-email`, {
       to: [model.email],
     });
@@ -157,7 +170,6 @@ function Players() {
                       </ActionIcon>
 
                       <ActionIcon
-                        disabled={!!item.externalUserId}
                         size="lg"
                         color="red"
                         onClick={() => deleteClick(item)}
