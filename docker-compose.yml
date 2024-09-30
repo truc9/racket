@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - DB=postgres://postgres:admin@db:5432/racket?sslmode=disable
+      - DB=postgres://postgres:admin@db:5433/racket?sslmode=disable
       - AUTH0_DOMAIN=
       - AUTH0_CLIENTID=
       - AUTH0_CLIENTSECRET=
@@ -31,7 +31,7 @@ services:
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=racket
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
       - pgdata:/var/lib/postgresql/data

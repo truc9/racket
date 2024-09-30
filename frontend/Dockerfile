@@ -1,35 +1,32 @@
-# Stage 1: Build the React app
-FROM node:18-alpine AS build
+# Stage 1: Build the application
+FROM oven/bun:latest as build
 
-# Install pnpm
-RUN npm i -g pnpm
-
-# Set working directory
+# Set the working directory
 WORKDIR /app
 
-# Copy package.json and pnpm-lock.yaml
-COPY package.json pnpm-lock.yaml ./
+# Copy the package.json and bun.lockb to install dependencies
+COPY package.json bun.lockb ./
 
-# Install dependencies
-RUN pnpm install
+# Install dependencies using Bun
+RUN bun install
 
-# Copy the rest of the application
+# Copy the rest of the application code
 COPY . .
 
-# Build the application
-RUN pnpm run build
+# Build the Vite React application
+RUN bun run build
 
-# Stage 2: Serve the React app using nginx
-FROM nginx:stable-alpine
+# Stage 2: Serve with Nginx
+FROM nginx:alpine
 
-# Copy the built files from the previous stage
+# Copy the build output to Nginx's default static serving directory
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Copy custom nginx configuration if needed
+# Copy custom Nginx configuration if you have one (optional)
 # COPY nginx.conf /etc/nginx/nginx.conf
 
 # Expose port 80
 EXPOSE 80
 
-# Start nginx server
+# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
