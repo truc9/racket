@@ -20,6 +20,10 @@ type (
 		RegistrationIds  []uint    `json:"registrationIds"`
 	}
 
+	CloneMatchDto struct {
+		MatchId uint `json:"matchId"`
+	}
+
 	AttendantDto struct {
 		Name     string `json:"name"`
 		MatchId  uint   `json:"matchId"`

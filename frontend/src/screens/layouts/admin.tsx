@@ -28,7 +28,7 @@ interface NavItemProps {
 const NavItem: FC<NavItemProps> = ({ label, path, icon, showLabel = true }) => {
   return (
     <NavLink
-      className="flex items-center gap-2 rounded px-4 py-3 hover:bg-emerald-400 [&.active]:bg-emerald-400"
+      className="flex items-center gap-2 rounded px-4 py-3 hover:bg-blue-600 [&.active]:bg-blue-600"
       to={path}
     >
       {showLabel ? (
@@ -66,7 +66,7 @@ function AdminLayout() {
     <div className="flex h-screen w-screen">
       <div
         className={cx(
-          "group relative flex h-full flex-shrink-0 flex-grow-0 flex-col border-r bg-emerald-500 text-white transition-all delay-100",
+          "group relative flex h-full flex-shrink-0 flex-grow-0 flex-col border-r bg-blue-700 text-white transition-all delay-100",
           !collapsed && "w-[300px]",
           collapsed && "w-16",
         )}
@@ -124,7 +124,7 @@ function AdminLayout() {
           </div>
           <button
             onClick={toggleSideNav}
-            className="absolute -right-2 top-2 hidden rounded-full border border-emerald-500 bg-white text-lg text-emerald-500 shadow ring-emerald-500 group-hover:block"
+            className="absolute -right-2 top-2 hidden rounded-full border border-blue-500 bg-white text-lg text-blue-500 shadow ring-blue-500 group-hover:block"
           >
             <IoChevronBackCircle className={cx(collapsed && "rotate-180")} />
           </button>

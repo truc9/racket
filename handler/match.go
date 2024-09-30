@@ -30,7 +30,7 @@ func (h *MatchHandler) GetAll(c *gin.Context) {
 	h.db.
 		Preload("SportCenter").
 		Preload("AdditionalCosts").
-		Order("start ASC").
+		Order("start DESC").
 		Find(&matches)
 
 	result := lo.Map(matches, func(m domain.Match, _ int) dto.MatchDto {
@@ -126,6 +126,23 @@ func (h *MatchHandler) Create(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, m)
+}
+
+func (h *MatchHandler) Clone(c *gin.Context) {
+	matchId, _ := c.Params.Get("matchId")
+	match := domain.Match{}
+	if err := h.db.Find(&match, matchId).Error; err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	clone := match.Clone()
+	if err := h.db.Create(&clone).Error; err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, clone)
 }
 
 func (h *MatchHandler) GetRegistrationsByMatch(c *gin.Context) {

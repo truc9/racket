@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"encoding/json"
 	"errors"
 	"math"
 	"time"
@@ -92,6 +93,16 @@ func (m *Match) AddCost(description string, amount float64) error {
 
 func (m *Match) CalcPlayerCount() int {
 	return len(m.Registrations)
+}
+
+func (m *Match) Clone() Match {
+	var clone Match
+	data, _ := json.Marshal(m)
+	json.Unmarshal(data, &clone)
+	clone.ID = 0
+	clone.Start = clone.Start.AddDate(0, 0, 7)
+	clone.End = clone.End.AddDate(0, 0, 7)
+	return clone
 }
 
 func (m *Match) CalcAdditionalCost() float64 {

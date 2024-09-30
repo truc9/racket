@@ -1,3 +1,7 @@
+import dayjs from "dayjs";
+import { IoAdd, IoDuplicate, IoPencil, IoSave, IoTrash } from "react-icons/io5";
+import { z } from "zod";
+
 import {
   ActionIcon,
   Button,
@@ -9,20 +13,17 @@ import {
   TextInput,
 } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
-import { useForm } from "@mantine/form";
+import { useForm, zodResolver } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { useQuery } from "@tanstack/react-query";
-import dayjs from "dayjs";
-import { zodResolver } from "@mantine/form";
-import { IoAdd, IoPencil, IoSave, IoTrash } from "react-icons/io5";
-import { z } from "zod";
+
 import httpService from "../../common/http-service";
+import Currency from "../../components/currency";
 import Page from "../../components/page";
 import { useSportCenterValueLabelQuery } from "../../hooks/useQueries";
 import { CreateOrUpdateMatchModel } from "../../models";
 import { MatchModel } from "./models";
-import Currency from "../../components/currency";
 
 const schema = z.object({
   matchId: z.number().nullable(),
@@ -90,6 +91,20 @@ function Matches() {
     openMatchDrawer();
   };
 
+  const cloneMatch = (match: MatchModel) => {
+    modals.openConfirmModal({
+      title: "Clone",
+      centered: true,
+      children: <Text>Want to clone {match.sportCenterName} match ?</Text>,
+      labels: { confirm: "Yes", cancel: "No" },
+      confirmProps: { color: "green" },
+      onConfirm: async () => {
+        await httpService.post(`api/v1/matches/${match.matchId}/clone`, null);
+        refetch();
+      },
+    });
+  };
+
   return (
     <>
       <Page title="Matches Management">
@@ -105,7 +120,7 @@ function Matches() {
         <Table striped withRowBorders={false}>
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Sport Center</Table.Th>
+              <Table.Th>ID</Table.Th>
               <Table.Th>Court</Table.Th>
               <Table.Th>Start</Table.Th>
               <Table.Th>End</Table.Th>
@@ -121,14 +136,14 @@ function Matches() {
               matches.map((item) => {
                 return (
                   <Table.Tr key={item.matchId}>
+                    <Table.Td>{item.matchId}</Table.Td>
                     <Table.Td>{item.sportCenterName || "N/A"}</Table.Td>
                     <Table.Td>{item.court || "N/A"}</Table.Td>
                     <Table.Td>
-                      {dayjs(item.start).format("DD/MM/YYYY hh:mm:ss")}
+                      {dayjs(item.start).format("DD/MM/YYYY hh:mm")}
                     </Table.Td>
                     <Table.Td>
-                      {item.end &&
-                        dayjs(item.end).format("DD/MM/YYYY hh:mm:ss")}
+                      {item.end && dayjs(item.end).format("DD/MM/YYYY hh:mm")}
                     </Table.Td>
                     <Table.Td>{item.customSection || "N/A"}</Table.Td>
                     <Table.Td>
@@ -141,10 +156,17 @@ function Matches() {
                     <Table.Td className="flex-end flex justify-end space-x-2 text-right">
                       <ActionIcon
                         size="lg"
-                        color="blue"
+                        color="grey"
                         onClick={() => editMatch(item)}
                       >
                         <IoPencil />
+                      </ActionIcon>
+                      <ActionIcon
+                        size="lg"
+                        onClick={() => cloneMatch(item)}
+                        color="grey"
+                      >
+                        <IoDuplicate />
                       </ActionIcon>
                       <ActionIcon
                         size="lg"
