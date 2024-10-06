@@ -1,29 +1,25 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/truc9/racket/domain"
 	"github.com/truc9/racket/dto"
 	"github.com/truc9/racket/params"
-	"github.com/truc9/racket/service/email"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
 type PlayerHandler struct {
-	db      *gorm.DB
-	logger  *zap.SugaredLogger
-	emailer email.Emailer
+	db     *gorm.DB
+	logger *zap.SugaredLogger
 }
 
-func NewPlayerHandler(db *gorm.DB, logger *zap.SugaredLogger, emailer email.Emailer) *PlayerHandler {
+func NewPlayerHandler(db *gorm.DB, logger *zap.SugaredLogger) *PlayerHandler {
 	return &PlayerHandler{
-		db:      db,
-		logger:  logger,
-		emailer: emailer,
+		db:     db,
+		logger: logger,
 	}
 }
 
@@ -103,10 +99,5 @@ func (h *PlayerHandler) SendWelcomeEmail(c *gin.Context) {
 	playerId := params.Get(c, "playerId")
 	var name string
 	h.db.Find(&domain.Player{}, playerId).Select("first_name", &name)
-
-	_, err := h.emailer.Send("truc.nguyen.dev@gmail.com", dto.To, "Welcome", fmt.Sprintf("<h1>Welcome %s to Racket!</h1>", name))
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-	}
 	c.Status(http.StatusOK)
 }

@@ -5,7 +5,6 @@ import (
 	"github.com/truc9/racket/handler"
 	"github.com/truc9/racket/logger"
 	"github.com/truc9/racket/service"
-	"github.com/truc9/racket/service/email"
 	"go.uber.org/dig"
 )
 
@@ -25,7 +24,6 @@ func Register() *dig.Container {
 
 	// Services
 	c.Provide(service.NewSportCenterService)
-	c.Provide(email.NewResendEmailer)
 
 	return c
 }
