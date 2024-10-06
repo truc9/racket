@@ -1,4 +1,4 @@
-# 🏸 RACKET
+# 🧜‍♀️ RACKET
 
 [![Go](https://github.com/truc9/racket/actions/workflows/go.yml/badge.svg)](https://github.com/truc9/racket/actions/workflows/go.yml)
 
