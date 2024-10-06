@@ -21,13 +21,17 @@ docker compose up
 ```
 
 ## Roadmap
-- [ ] Better database migration
+- [x] Registration dashboard  
+- [x] Players management
+- [x] Matches management
+- [x] Duplicate match
+- [x] Unpaid report
 - [ ] Backend authorization
 - [x] Docker support
-- [ ] Testing
 - [x] Support cost management
 - [ ] Support notification (Facebook Messenger, Email, Push Notification)
 - [ ] Mobile Apps
+- [ ] Testing
 
 ## Demo
 ![demo](art/iPad-PRO-11-dashboard.png "Dashboard")
@@ -35,6 +39,8 @@ docker compose up
 ![demo](art/iPad-PRO-11-players.png "Players")
 
 ![demo](art/iPad-PRO-11-matches.png "Matches")
+
+![demo](art/iPad-Air-4-unpaid-report.png "Unpaid Report")
 
 ![demo](art/iPad-PRO-11-sportcenters.png "Sport Centers")
 
