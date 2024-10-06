@@ -3,4 +3,5 @@ export interface UnpaidModel {
     playerName: string;
     matchCount: number;
     unpaidAmount: number;
+    registrationSummary: string;
 }
