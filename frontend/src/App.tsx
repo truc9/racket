@@ -16,6 +16,7 @@ const AttendantRequestScreen = lazy(
   () => import("./components/attendant-requests"),
 );
 const AdminRequestScreen = lazy(() => import("./screens/admin-requests"));
+const Reportings = lazy(() => import("./screens/reporting"));
 
 function App() {
   const { isAdmin } = useAuthz();
@@ -29,6 +30,7 @@ function App() {
           <Route path="players" element={<PlayerScreen />} />
           <Route path="matches" element={<MatchesScreen />} />
           <Route path="sportcenters" element={<SportCentersScreen />} />
+          <Route path="reports" element={<Reportings />} />
           <Route path="health" element={<HealthScreen />} />
           <Route path="settings" element={<SettingsScreen />} />
           <Route path="*" element={<PageNotFoundScreen />} />

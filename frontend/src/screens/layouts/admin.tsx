@@ -12,6 +12,7 @@ import {
   IoBarChart,
   IoBasketball,
   IoCafe,
+  IoCashOutline,
   IoChevronBackCircle,
   IoHeart,
   IoPersonAdd,
@@ -96,6 +97,12 @@ function AdminLayout() {
               path="/players"
               label="Players"
               icon={<IoPersonAdd />}
+            />
+            <NavItem
+              showLabel={!collapsed}
+              path="/reports"
+              label="Reports"
+              icon={<IoCashOutline />}
             />
             <NavItem
               showLabel={!collapsed}

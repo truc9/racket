@@ -78,5 +78,9 @@ func main() {
 		v1.POST("/settings/message-template", handler.CreateMessageTemplate)
 	})
 
+	c.Invoke(func(handler *handler.ReportingHandler) {
+		v1.GET("/reports/unpaid", handler.GetUnpaidReport)
+	})
+
 	r.Run()
 }
