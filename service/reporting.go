@@ -33,7 +33,7 @@ func (s *ReportingService) GetUnpaidReport() ([]UnpaidByPlayer, error) {
 		GROUP BY m.id, m.sport_center_id
 	),
 	cte_registration_history AS (
-		SELECT p.id AS player_id, STRING_AGG(TO_CHAR(m.start, 'DD-Mon'), ', ') AS registration_summary
+		SELECT p.id AS player_id, STRING_AGG(TO_CHAR(m.start, 'DD-Mon'), ', ' ORDER BY m.start) AS registration_summary
 		FROM registrations r
 		JOIN matches m ON m.id = r.match_id
 		JOIN players p on p.id = r.player_id
