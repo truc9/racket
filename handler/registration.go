@@ -8,19 +8,29 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/truc9/racket/domain"
 	"github.com/truc9/racket/dto"
+	"github.com/truc9/racket/service"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
 type RegistrationHandler struct {
-	db     *gorm.DB
-	logger *zap.SugaredLogger
+	db        *gorm.DB
+	logger    *zap.SugaredLogger
+	matchsvc  *service.MatchService
+	playersvc *service.PlayerService
 }
 
-func NewRegHandler(db *gorm.DB, logger *zap.SugaredLogger) *RegistrationHandler {
+func NewRegHandler(
+	db *gorm.DB,
+	logger *zap.SugaredLogger,
+	playersvc *service.PlayerService,
+	matchsvc *service.MatchService,
+) *RegistrationHandler {
 	return &RegistrationHandler{
-		db:     db,
-		logger: logger,
+		db:        db,
+		logger:    logger,
+		matchsvc:  matchsvc,
+		playersvc: playersvc,
 	}
 }
 

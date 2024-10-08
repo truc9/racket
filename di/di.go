@@ -26,6 +26,8 @@ func Register() *dig.Container {
 	// Services
 	c.Provide(service.NewSportCenterService)
 	c.Provide(service.NewReportingService)
+	c.Provide(service.NewMatchService)
+	c.Provide(service.NewPlayerService)
 
 	return c
 }
