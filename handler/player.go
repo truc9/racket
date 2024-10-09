@@ -24,7 +24,7 @@ func NewPlayerHandler(db *gorm.DB, logger *zap.SugaredLogger) *PlayerHandler {
 }
 
 func (h *PlayerHandler) Create(c *gin.Context) {
-	dto := dto.PlayerDto{}
+	dto := dto.PlayerSummaryDto{}
 	var err error
 	if err = c.BindJSON(&dto); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
@@ -62,7 +62,7 @@ func (h *PlayerHandler) GetExternalUserAttendantRequests(c *gin.Context) {
 }
 
 func (h *PlayerHandler) Update(c *gin.Context) {
-	var model dto.PlayerDto
+	var model dto.PlayerSummaryDto
 	id := params.Get(c, "playerId")
 	if err := c.BindJSON(&model); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)

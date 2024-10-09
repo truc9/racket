@@ -17,17 +17,20 @@ func NewMatchService(db *gorm.DB) *MatchService {
 }
 
 func (s *MatchService) GetMatchSummary(matchId uint) (*dto.MatchSummaryDto, error) {
-	model := &dto.MatchSummaryDto{}
+	match := &domain.Match{}
 	err := s.db.Model(&domain.Match{}).
-		Preload("sport_centers").
-		Select("id as match_id, start, end, sport_centers.name as sport_center_name").
-		Where("id = ?", matchId).
-		First(&model).
+		Preload("SportCenter").
+		Find(&match, matchId).
 		Error
 
 	if err != nil {
 		return nil, err
 	}
 
-	return model, nil
+	return &dto.MatchSummaryDto{
+		MatchId:         match.ID,
+		Start:           match.Start,
+		End:             match.End,
+		SportCenterName: match.SportCenter.Name,
+	}, nil
 }

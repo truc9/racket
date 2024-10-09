@@ -28,6 +28,7 @@ func Register() *dig.Container {
 	c.Provide(service.NewReportingService)
 	c.Provide(service.NewMatchService)
 	c.Provide(service.NewPlayerService)
+	c.Provide(service.NewActivityService)
 
 	return c
 }

@@ -23,15 +23,17 @@ type Activity struct {
 	domain.BaseModel
 	TypeId      ActivityType `json:"typeId"`
 	Description string       `json:"description"`
+	Payload     string       `json:"payload"`
 }
 
-func CreateActivityLog(typeId ActivityType, description string) (*Activity, error) {
-	if len(description) == 0 {
-		return nil, errors.New("description is mandatory")
+func CreateActivityLog(typeId ActivityType, description, payload string) (*Activity, error) {
+	if len(payload) == 0 {
+		return nil, errors.New("payload is mandatory")
 	}
 
 	return &Activity{
 		TypeId:      typeId,
 		Description: description,
+		Payload:     payload,
 	}, nil
 }

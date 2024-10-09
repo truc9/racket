@@ -16,8 +16,8 @@ func NewPlayerService(db *gorm.DB) *PlayerService {
 	}
 }
 
-func (s *PlayerService) GetPlayer(playerId uint) (*dto.PlayerDto, error) {
-	model := &dto.PlayerDto{}
+func (s *PlayerService) GetPlayerSummary(playerId uint) (*dto.PlayerSummaryDto, error) {
+	model := &dto.PlayerSummaryDto{}
 	err := s.db.Model(&domain.Player{}).
 		Select("id as player_id, first_name, last_name").
 		Where("id = ?", playerId).

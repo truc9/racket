@@ -8,6 +8,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/truc9/racket/domain"
+	"github.com/truc9/racket/domain/activity"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -43,6 +44,7 @@ func NewDatabase() *gorm.DB {
 			&domain.AdditionalCost{},
 			&domain.SportCenter{},
 			&domain.Settings{},
+			&activity.Activity{},
 		)
 
 		db = dbCtx.Debug()
