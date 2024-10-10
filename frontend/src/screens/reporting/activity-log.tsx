@@ -5,6 +5,7 @@ import httpService from "../../common/http-service";
 import { ActivityModel } from "../../models/reports/activity";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import formatter from "../../common/formatter";
 
 dayjs.extend(relativeTime);
 
@@ -33,7 +34,7 @@ export default function ActivityLog() {
                 <Table.Td>{dayjs(item.createdDate).fromNow()}</Table.Td>
                 <Table.Td>{item.typeName}</Table.Td>
                 <Table.Td>
-                  {dayjs(item.createdDate).format("DD/MM/YYYY hh:mm")}
+                  {formatter.formatDate(item.createdDate, true)}
                 </Table.Td>
                 <Table.Td>{item.description}</Table.Td>{" "}
               </Table.Tr>
