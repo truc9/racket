@@ -26,13 +26,13 @@ function App() {
       {isAdmin ? (
         <Route element={<AdminLayout />}>
           <Route index={true} path="/" element={<DashboardScreen />} />
-          <Route path="/requests" element={<AdminRequestScreen />} />
-          <Route path="/players" element={<PlayerScreen />} />
-          <Route path="/matches" element={<MatchesScreen />} />
-          <Route path="/sportcenters" element={<SportCentersScreen />} />
-          <Route path="/reports" element={<Reportings />} />
-          <Route path="/health" element={<HealthScreen />} />
-          <Route path="/settings" element={<SettingsScreen />} />
+          <Route path="requests" element={<AdminRequestScreen />} />
+          <Route path="players" element={<PlayerScreen />} />
+          <Route path="matches" element={<MatchesScreen />} />
+          <Route path="sportcenters" element={<SportCentersScreen />} />
+          <Route path="reports" element={<Reportings />} />
+          <Route path="health" element={<HealthScreen />} />
+          <Route path="settings" element={<SettingsScreen />} />
           <Route path="*" element={<PageNotFoundScreen />} />
         </Route>
       ) : (
