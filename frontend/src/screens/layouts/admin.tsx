@@ -12,8 +12,8 @@ import {
   IoBarChart,
   IoBasketball,
   IoCafe,
-  IoCashOutline,
   IoChevronBackCircle,
+  IoDocumentTextOutline,
   IoHeart,
   IoPersonAdd,
   IoSettings,
@@ -102,7 +102,7 @@ function AdminLayout() {
               showLabel={!collapsed}
               path="/reports"
               label="Reports"
-              icon={<IoCashOutline />}
+              icon={<IoDocumentTextOutline />}
             />
             <NavItem
               showLabel={!collapsed}
