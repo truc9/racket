@@ -82,5 +82,9 @@ func main() {
 		v1.GET("/reports/unpaid", handler.GetUnpaidReport)
 	})
 
+	c.Invoke(func(handler *handler.ActivityHandler) {
+		v1.GET("/activities", handler.GetAll)
+	})
+
 	r.Run()
 }

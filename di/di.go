@@ -22,10 +22,14 @@ func Register() *dig.Container {
 	c.Provide(handler.NewSportCenterHandler)
 	c.Provide(handler.NewSettingsHandler)
 	c.Provide(handler.NewReportingHandler)
+	c.Provide(handler.NewActivityHandler)
 
 	// Services
 	c.Provide(service.NewSportCenterService)
 	c.Provide(service.NewReportingService)
+	c.Provide(service.NewMatchService)
+	c.Provide(service.NewPlayerService)
+	c.Provide(service.NewActivityService)
 
 	return c
 }

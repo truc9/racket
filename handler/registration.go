@@ -8,19 +8,26 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/truc9/racket/domain"
 	"github.com/truc9/racket/dto"
+	"github.com/truc9/racket/service"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
 type RegistrationHandler struct {
-	db     *gorm.DB
-	logger *zap.SugaredLogger
+	db          *gorm.DB
+	logger      *zap.SugaredLogger
+	activitysvc *service.ActivityService
 }
 
-func NewRegHandler(db *gorm.DB, logger *zap.SugaredLogger) *RegistrationHandler {
+func NewRegHandler(
+	db *gorm.DB,
+	logger *zap.SugaredLogger,
+	activitysvc *service.ActivityService,
+) *RegistrationHandler {
 	return &RegistrationHandler{
-		db:     db,
-		logger: logger,
+		db:          db,
+		logger:      logger,
+		activitysvc: activitysvc,
 	}
 }
 
@@ -115,19 +122,60 @@ func (h *RegistrationHandler) Register(c *gin.Context) {
 	if count > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Player already registered this match"})
 	} else {
-		p := &domain.Registration{
-			PlayerId: dto.PlayerId,
-			MatchId:  dto.MatchId,
-			IsPaid:   false,
-		}
-		h.db.Create(p)
-		c.JSON(http.StatusCreated, p)
+		var reg *domain.Registration
+		h.db.Transaction(func(tx *gorm.DB) error {
+			reg = &domain.Registration{
+				PlayerId: dto.PlayerId,
+				MatchId:  dto.MatchId,
+				IsPaid:   false,
+			}
+			if err := tx.Create(reg).Error; err != nil {
+				return err
+			}
+
+			//TODO: refactor
+			ac, err := h.activitysvc.BuildRegisterActivity(dto.PlayerId, dto.MatchId)
+			if err != nil {
+				return err
+			}
+
+			if err := tx.Create(ac).Error; err != nil {
+				return err
+			}
+
+			return nil
+		})
+
+		c.JSON(http.StatusCreated, reg)
 	}
 }
 
 func (h *RegistrationHandler) Unregister(c *gin.Context) {
 	id, _ := c.Params.Get("registrationId")
-	h.db.Unscoped().Delete(&domain.Registration{}, id)
+
+	h.db.Transaction(func(tx *gorm.DB) error {
+		//TODO: refactor
+		reg := &domain.Registration{}
+		if err := tx.Find(&reg, id).Error; err != nil {
+			return err
+		}
+		h.logger.Info(reg)
+		ac, err := h.activitysvc.BuildUnregisterActivity(reg.PlayerId, reg.MatchId)
+		if err != nil {
+			return err
+		}
+
+		if err := tx.Create(ac).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Unscoped().Delete(&domain.Registration{}, id).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+
 	c.JSON(http.StatusOK, id)
 }
 

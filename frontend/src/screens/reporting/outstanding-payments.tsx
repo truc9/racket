@@ -1,4 +1,4 @@
-import { rem, Skeleton, Table } from "@mantine/core";
+import { Skeleton, Table } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 
 import httpService from "../../common/http-service";
@@ -6,12 +6,8 @@ import Currency from "../../components/currency";
 import { UnpaidModel } from "../../models/reports/unpaid";
 import clsx from "clsx";
 
-export default function Unpaid() {
-  const {
-    isPending,
-    data: unpaidData,
-    refetch,
-  } = useQuery({
+export default function OutstandingPayments() {
+  const { isPending, data } = useQuery({
     queryKey: ["getUnpaidReport"],
     queryFn: () => httpService.get<UnpaidModel[]>("api/v1/reports/unpaid"),
   });
@@ -29,7 +25,7 @@ export default function Unpaid() {
       <Table.Tbody>
         {isPending && <Skeleton />}
         {!isPending &&
-          unpaidData?.map((item) => {
+          data?.map((item) => {
             return (
               <Table.Tr key={item.playerId}>
                 <Table.Td>{item.playerName}</Table.Td>

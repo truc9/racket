@@ -20,6 +20,13 @@ type (
 		RegistrationIds  []uint    `json:"registrationIds"`
 	}
 
+	MatchSummaryDto struct {
+		MatchId         uint      `json:"matchId"`
+		Start           time.Time `json:"start"`
+		End             time.Time `json:"end"`
+		SportCenterName string    `json:"sportCenterName"`
+	}
+
 	CloneMatchDto struct {
 		MatchId uint `json:"matchId"`
 	}
