@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/samber/lo"
 	"github.com/truc9/racket/domain/activity"
+	"github.com/truc9/racket/dto"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -28,6 +30,23 @@ func NewActivityService(
 		matchsvc:  matchsvc,
 		playersvc: playersvc,
 	}
+}
+
+func (s *ActivityService) GetAll() []dto.ActivityDto {
+	activities := []activity.Activity{}
+	if err := s.db.Order("created_at desc").Find(&activities).Error; err != nil {
+		return []dto.ActivityDto{}
+	}
+
+	return lo.Map(activities, func(ac activity.Activity, _ int) dto.ActivityDto {
+		return dto.ActivityDto{
+			TypeId:      ac.TypeId,
+			TypeName:    ac.GetTypeName(),
+			Description: ac.Description,
+			Payload:     ac.Payload,
+			CreatedDate: ac.CreatedAt,
+		}
+	})
 }
 
 // TODO: consider passing transaction into here when reuse ?

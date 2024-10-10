@@ -26,6 +26,24 @@ type Activity struct {
 	Payload     string       `json:"payload"`
 }
 
+func (a *Activity) GetTypeName() string {
+	maps := map[ActivityType]string{
+		MatchCreated:            "Match Created",
+		MatchDeleted:            "Match Deleted",
+		MatchRegistered:         "Match Registered",
+		MatchUnRegistered:       "Match Unregistered",
+		MatchUpdated:            "Match Updated",
+		SportCenterCreated:      "Sport Center Created",
+		SportCenterPriceChanged: "Sport Center Price Changed",
+		SportCenterUpdated:      "Sport Center Update",
+	}
+
+	if name, exist := maps[a.TypeId]; exist {
+		return name
+	}
+	return "Unknown"
+}
+
 func CreateActivityLog(typeId ActivityType, description, payload string) (*Activity, error) {
 	if len(payload) == 0 {
 		return nil, errors.New("payload is mandatory")
