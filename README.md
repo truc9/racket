@@ -1,6 +1,6 @@
 # 🧜‍♀️ RACKET
 
-[![Go](https://github.com/truc9/racket/actions/workflows/go.yml/badge.svg)](https://github.com/truc9/racket/actions/workflows/go.yml)
+[![Go](https://github.com/truc9/racket/actions/workflows/go.yml/badge.svg)](https://github.com/truc9/racket/actions/workflows/go.yml) [![CodeQL Advanced](https://github.com/truc9/racket/actions/workflows/codeql.yml/badge.svg)](https://github.com/truc9/racket/actions/workflows/codeql.yml)
 
 ## Overview
 An app for amature badminton player self-organized group, manage players, courts, costs
