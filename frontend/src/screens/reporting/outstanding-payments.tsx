@@ -17,9 +17,9 @@ export default function OutstandingPayments() {
       <Table.Thead>
         <Table.Tr>
           <Table.Th>Name</Table.Th>
+          <Table.Th>Unpaid Amount</Table.Th>
           <Table.Th>Matches</Table.Th>
           <Table.Th>Summary</Table.Th>
-          <Table.Th>Unpaid</Table.Th>
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>
@@ -29,18 +29,18 @@ export default function OutstandingPayments() {
             return (
               <Table.Tr key={item.playerId}>
                 <Table.Td>{item.playerName}</Table.Td>
-                <Table.Td>{item.matchCount}</Table.Td>
-                <Table.Td>{item.registrationSummary}</Table.Td>
                 <Table.Td
                   className={clsx(
                     "font-bold",
-                    item.unpaidAmount > 10
+                    item.unpaidAmount > 100
                       ? "text-rose-500"
                       : "text-emerald-500",
                   )}
                 >
                   <Currency value={item.unpaidAmount} />
                 </Table.Td>
+                <Table.Td>{item.matchCount}</Table.Td>
+                <Table.Td>{item.registrationSummary}</Table.Td>
               </Table.Tr>
             );
           })}
