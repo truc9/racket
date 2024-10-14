@@ -27,9 +27,10 @@ func (s *ReportingService) GetUnpaidReport() ([]UnpaidByPlayer, error) {
 		SELECT 
 			m.id AS match_id, 
 			m.sport_center_id AS sport_center_id,
-			m.cost / COUNT(r.id) AS individual_cost
+			(m.cost + SUM(COALESCE(ac.amount,0))) / COUNT(r.id) AS individual_cost
 		FROM matches m
 		JOIN registrations r ON m.id = r.match_id
+		LEFT JOIN additional_costs ac on ac.match_id = m.id
 		GROUP BY m.id, m.sport_center_id
 	),
 	cte_registration_history AS (
