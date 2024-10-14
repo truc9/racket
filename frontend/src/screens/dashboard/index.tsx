@@ -21,11 +21,7 @@ function Dashboard() {
 
   const historyMatches = useMemo(() => {
     if (!matches) return null;
-    return matches.filter(
-      (m) =>
-        dayjs(m.start).isBefore(new Date()) &&
-        dayjs(m.start).month() == dayjs().month(),
-    );
+    return matches.filter((m) => dayjs(m.start).isBefore(new Date()));
   }, [matches]);
 
   return (

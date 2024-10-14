@@ -121,6 +121,7 @@ function Matches() {
           <Table.Thead>
             <Table.Tr>
               <Table.Th>ID</Table.Th>
+              <Table.Th>Sport Center</Table.Th>
               <Table.Th>Court</Table.Th>
               <Table.Th>Start</Table.Th>
               <Table.Th>End</Table.Th>
@@ -128,7 +129,7 @@ function Matches() {
               <Table.Th>Cost /sec</Table.Th>
               <Table.Th>Minutes /sec</Table.Th>
               <Table.Th>Total</Table.Th>
-              <Table.Th>Action</Table.Th>
+              <Table.Th></Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>

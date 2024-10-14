@@ -104,7 +104,7 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
     return bindTemplate(messageTemplate ?? "", {
       cost: match?.cost?.toFixed(2),
       customSection: match?.customSection,
-      additionalCost: additionalCost?.toFixed(2),
+      additionalCost: match.additionalCost?.toFixed(2),
       individualCost: individualCost?.toFixed(2),
       totalPlayer:
         registrations?.filter((r) => !!r.registrationId)?.length ?? 0,
@@ -252,7 +252,7 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
             <MatchFigure
               icon={<FaCashRegister />}
               label="Addtional cost"
-              figure={formatter.currency(additionalCost ?? 0)}
+              figure={formatter.currency(match.additionalCost ?? 0)}
               onActionClick={openAdditionalCost}
             ></MatchFigure>
           </div>
