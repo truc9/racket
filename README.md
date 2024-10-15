@@ -9,29 +9,39 @@ An app for amature badminton player self-organized group, manage players, courts
 This project for personal hobby and learning purpose
 
 ## Usage
-Must provide your own Auth0 keys in docker compose frontend service
-```
-environment:
-    - VITE_AUTH0_DOMAIN=
-    - VITE_AUTH0_CLIENTID=
-```
+### Environment Variables
 
+Backend
+```
+DB=postgres://postgres:admin@localhost:5434/racket?sslmode=disable
+AUTH0_ISSUER_URL=
+AUTH0_AUDIENCE=
+```
+Frontend
+```
+VITE_API_HOST=http://localhost:8080
+VITE_AUTH0_DOMAIN=
+VITE_AUTH0_CLIENTID=
+VITE_AUTH0_AUDIENCE=
+```
+## Docker
 ```bash
 docker compose up
 ```
 
 ## Roadmap
+- [x] Auth0 Integration
+- [x] Docker support
 - [x] Registration dashboard  
 - [x] Players management
 - [x] Matches management
 - [x] Duplicate match
 - [x] Unpaid report
-- [ ] Backend authorization
-- [x] Docker support
 - [x] Support cost management
 - [ ] Support notification (Facebook Messenger, Email, Push Notification)
-- [ ] Mobile Apps
-- [ ] Testing
+- [ ] Monzo API Integration
+- [ ] Support Mobile Devices (iOS, Android)
+- [ ] Testing high coverage
 
 ## Demo
 ![demo](art/iPad-PRO-11-dashboard.png "Dashboard")
