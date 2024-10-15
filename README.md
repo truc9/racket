@@ -6,7 +6,7 @@
 An app for amature badminton player self-organized group, manage players, courts, costs
 
 > [!NOTE]
-This project for personal hobby and learning purpose
+🚧🚧🚧 This project for personal hobby and learning purpose 🚧🚧🚧
 
 ## Usage
 ### Environment Variables
