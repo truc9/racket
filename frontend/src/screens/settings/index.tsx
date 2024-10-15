@@ -7,7 +7,7 @@ import { useState } from "react";
 import { IoChatboxOutline, IoNotificationsCircle } from "react-icons/io5";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
-import httpService from "../../common/http-service";
+import httpService from "../../common/httpservice";
 import Page from "../../components/page";
 import { useMesssageTemplateQuery } from "../../hooks/useQueries";
 

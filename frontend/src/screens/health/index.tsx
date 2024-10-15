@@ -1,4 +1,4 @@
-import httpService from "../../common/http-service";
+import httpService from "../../common/httpservice";
 import Page from "../../components/page";
 import { Badge } from "@mantine/core";
 import { useEffect, useState } from "react";

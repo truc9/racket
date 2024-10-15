@@ -14,7 +14,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { IoAdd, IoMail, IoPencil, IoSave, IoTrash } from "react-icons/io5";
 import { z } from "zod";
 import formatter from "../../common/formatter";
-import httpService from "../../common/http-service";
+import httpService from "../../common/httpservice";
 import Page from "../../components/page";
 import { PlayerSummaryModel, UpdatePlayerModel } from "./models";
 import { notifications } from "@mantine/notifications";

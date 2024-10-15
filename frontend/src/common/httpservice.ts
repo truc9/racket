@@ -28,17 +28,20 @@ async function get<T = any>(url: string) {
 }
 
 async function post<T = any>(url: string, body: T) {
-    const res = await client.post(url, body);
+    const headers = await getAuthHeaders();
+    const res = await client.post(url, body, { headers });
     return res.data;
 }
 
 async function put<T = any>(url: string, body: T) {
-    const res = await client.put(url, body);
+    const headers = await getAuthHeaders();
+    const res = await client.put(url, body, { headers });
     return res.data;
 }
 
 async function del(url: string) {
-    const res = await client.delete(url);
+    const headers = await getAuthHeaders();
+    const res = await client.delete(url, { headers });
     return res.data;
 }
 

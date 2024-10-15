@@ -18,7 +18,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { useQuery } from "@tanstack/react-query";
 
-import httpService from "../../common/http-service";
+import httpService from "../../common/httpservice";
 import Currency from "../../components/currency";
 import Page from "../../components/page";
 import { useSportCenterValueLabelQuery } from "../../hooks/useQueries";

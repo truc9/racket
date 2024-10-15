@@ -1,7 +1,7 @@
 import { Skeleton, Table } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 
-import httpService from "../../common/http-service";
+import httpService from "../../common/httpservice";
 import Currency from "../../components/currency";
 import { UnpaidModel } from "../../models/reports/unpaid";
 import clsx from "clsx";

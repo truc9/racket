@@ -1,7 +1,7 @@
 import { Skeleton, Table } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 
-import httpService from "../../common/http-service";
+import httpService from "../../common/httpservice";
 import { ActivityModel } from "../../models/reports/activity";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";

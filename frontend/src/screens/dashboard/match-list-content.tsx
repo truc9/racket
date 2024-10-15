@@ -34,7 +34,7 @@ import {
 import AdditionalCostEditor from "./additional-cost-editor";
 import MatchFigure from "./match-figure";
 import dayjs from "dayjs";
-import httpService from "../../common/http-service";
+import httpService from "../../common/httpservice";
 
 interface Prop {
   match: MatchSummaryModel;
