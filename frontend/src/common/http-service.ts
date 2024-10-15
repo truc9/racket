@@ -1,7 +1,7 @@
-import { createAuth0Client } from "@auth0/auth0-spa-js";
+import { Auth0Client } from "@auth0/auth0-spa-js";
 import axios from "axios";
 
-const auth0 = await createAuth0Client({
+const auth0 = new Auth0Client({
     domain: import.meta.env.VITE_AUTH0_DOMAIN,
     clientId: import.meta.env.VITE_AUTH0_CLIENTID,
     authorizationParams: {
