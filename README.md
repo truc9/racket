@@ -61,3 +61,7 @@ docker compose up
 go test -v ./...
 go test -v -cover ./...
 ```
+
+## Hosting
+- Backend: https://www.koyeb.com/
+- Frontend: https://vercel.com/
