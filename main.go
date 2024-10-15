@@ -1,22 +1,40 @@
 package main
 
 import (
+	"log"
+	"net/url"
+	"os"
 	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/truc9/racket/di"
 	"github.com/truc9/racket/handler"
+
+	jwtmiddleware "github.com/auth0/go-jwt-middleware/v2"
+	"github.com/auth0/go-jwt-middleware/v2/jwks"
+	"github.com/auth0/go-jwt-middleware/v2/validator"
+	adapter "github.com/gwatts/gin-adapter"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	c := di.Register()
 
 	r := gin.Default()
+
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173", "https://getracket.vercel.app"},
+		AllowOrigins: []string{
+			"http://localhost:5173",
+			"https://getracket.vercel.app",
+		},
 		AllowMethods:     []string{"PUT", "POST", "GET", "DELETE", "PATCH"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
+		AllowHeaders:     []string{"*"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
@@ -27,6 +45,19 @@ func main() {
 			"message": "ok",
 		})
 	})
+
+	issuerURL, _ := url.Parse(os.Getenv("AUTH0_ISSUER_URL"))
+	audience := os.Getenv("AUTH0_AUDIENCE")
+	provider := jwks.NewCachingProvider(issuerURL, time.Duration(5*time.Minute))
+
+	jwtValidator, _ := validator.New(provider.KeyFunc,
+		validator.RS256,
+		issuerURL.String(),
+		[]string{audience},
+	)
+
+	jwtMiddleware := jwtmiddleware.New(jwtValidator.ValidateToken)
+	r.Use(adapter.Wrap(jwtMiddleware.CheckJWT))
 
 	r.GET("/health/origins", func(ctx *gin.Context) {
 		ctx.JSON(200, ctx.Request.Header.Get("Origin"))

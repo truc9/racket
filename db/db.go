@@ -6,7 +6,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/joho/godotenv"
 	"github.com/truc9/racket/domain"
 	"github.com/truc9/racket/domain/activity"
 	"gorm.io/driver/postgres"
@@ -20,11 +19,6 @@ var (
 
 func NewDatabase() *gorm.DB {
 	once.Do(func() {
-		err := godotenv.Load()
-		if err != nil {
-			log.Fatal("Error loading .env file")
-		}
-
 		DB_CONN := os.Getenv("DB")
 
 		dbCtx, err := gorm.Open(postgres.Open(DB_CONN), &gorm.Config{

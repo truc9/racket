@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
-import { useAuthz } from "./hooks/useAuthz";
+import { useClaims } from "./hooks/useClaims";
 import Login from "./screens/auth/login";
 import AdminLayout from "./screens/layouts/admin";
 import PublicLayout from "./screens/layouts/public";
@@ -19,7 +19,7 @@ const AdminRequestScreen = lazy(() => import("./screens/admin-requests"));
 const Reportings = lazy(() => import("./screens/reporting"));
 
 function App() {
-  const { isAdmin } = useAuthz();
+  const { isAdmin } = useClaims();
 
   return (
     <Routes>

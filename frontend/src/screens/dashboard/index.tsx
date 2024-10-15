@@ -3,11 +3,20 @@ import { lazy, Suspense, useMemo } from "react";
 import Loading from "../../components/loading";
 import Page from "../../components/page";
 import { useMatchesQuery } from "../../hooks/useQueries";
+import { useClaims } from "../../hooks/useClaims";
 
 const MatchSection = lazy(() => import("./match-section"));
 
 function Dashboard() {
   const { data: matches } = useMatchesQuery();
+  const { isAdmin, roles } = useClaims();
+
+  if (isAdmin) {
+    console.log("I am admin");
+    console.log(roles);
+  } else {
+    console.log("I am user");
+  }
 
   const todayMatches = useMemo(() => {
     if (!matches) return null;

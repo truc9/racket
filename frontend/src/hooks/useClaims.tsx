@@ -2,7 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
 import constant from "../common/constant";
 
-export const useAuthz = () => {
+export const useClaims = () => {
   const { user, isAuthenticated, getIdTokenClaims } = useAuth0();
   const [roles, setRoles] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);

@@ -29,3 +29,6 @@ go.work.sum
 # Ignore local & overrride config
 *.local.yml
 *.override.yml
+
+.env
+.env.local
