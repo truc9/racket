@@ -30,18 +30,18 @@ docker compose up
 ```
 
 ## Roadmap
-- [x] Auth0 Integration
-- [x] Docker support
-- [x] Registration dashboard  
-- [x] Players management
-- [x] Matches management
-- [x] Duplicate match
-- [x] Unpaid report
-- [x] Support cost management
-- [ ] Support notification (Facebook Messenger, Email, Push Notification)
-- [ ] Monzo API Integration
-- [ ] Support Mobile Devices (iOS, Android)
-- [ ] Testing high coverage
+- ✅ Auth0 Integration
+- ✅ Docker support
+- ✅ Registration dashboard  
+- ✅ Players management
+- ✅ Matches management
+- ✅ Duplicate match
+- ✅ Unpaid report
+- ✅ Support cost management
+- 🚧 Support notification (Facebook Messenger, Email, Push Notification)
+- 🚧 Monzo API Integration
+- 🚧 Support Mobile Devices (iOS, Android)
+- 🚧 Testing high coverage
 
 ## Demo
 ![demo](art/iPad-PRO-11-dashboard.png "Dashboard")
