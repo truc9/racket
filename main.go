@@ -56,6 +56,9 @@ func main() {
 		[]string{audience},
 	)
 
+	log.Printf("Audience: %s\n", audience)
+	log.Printf("Issuer: %s\n", issuerURL)
+
 	jwtMiddleware := jwtmiddleware.New(jwtValidator.ValidateToken)
 	r.Use(adapter.Wrap(jwtMiddleware.CheckJWT))
 
