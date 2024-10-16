@@ -7,15 +7,19 @@ interface Props {
 }
 
 const DataTableSkeleton: FC<Props> = ({ row, col }) => {
-  return [...Array(row)].map((_, rowIdx) => (
-    <Table.Tr key={rowIdx}>
-      {[...Array(col)].map((_, colIdx) => (
-        <Table.Td key={colIdx}>
-          <Skeleton height={20} />
-        </Table.Td>
+  return (
+    <>
+      {[...Array(row)].map((_, rowIdx) => (
+        <Table.Tr key={rowIdx}>
+          {[...Array(col)].map((_, colIdx) => (
+            <Table.Td key={colIdx}>
+              <Skeleton height={20} />
+            </Table.Td>
+          ))}
+        </Table.Tr>
       ))}
-    </Table.Tr>
-  ));
+    </>
+  );
 };
 
 export default DataTableSkeleton;
