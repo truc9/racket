@@ -9,19 +9,22 @@ import (
 	"github.com/truc9/racket/domain"
 	"github.com/truc9/racket/dto"
 	"github.com/truc9/racket/params"
+	"github.com/truc9/racket/service"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
 type MatchHandler struct {
-	db     *gorm.DB
-	logger *zap.SugaredLogger
+	db       *gorm.DB
+	logger   *zap.SugaredLogger
+	matchSvc *service.MatchService
 }
 
-func NewMatchHandler(db *gorm.DB, logger *zap.SugaredLogger) *MatchHandler {
+func NewMatchHandler(db *gorm.DB, logger *zap.SugaredLogger, matchSvc *service.MatchService) *MatchHandler {
 	return &MatchHandler{
-		db:     db,
-		logger: logger,
+		db:       db,
+		logger:   logger,
+		matchSvc: matchSvc,
 	}
 }
 
@@ -54,6 +57,25 @@ func (h *MatchHandler) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
+func (h *MatchHandler) GetTodayMatches(c *gin.Context) {
+	result := h.matchSvc.GetTodayMatches()
+	c.JSON(http.StatusOK, result)
+}
+
+func (h *MatchHandler) GetFutureMatches(c *gin.Context) {
+	result := h.matchSvc.GetFutureMatches()
+	c.JSON(http.StatusOK, result)
+}
+
+func (h *MatchHandler) GetArchivedMatches(c *gin.Context) {
+	result := h.matchSvc.GetArchivedMatches()
+	c.JSON(http.StatusOK, result)
+}
+
+// This is for player to register match
+// This might show some extra infomation about the cost of individual
+// This is not just the same with get future match
+// TODO: revisit
 func (h *MatchHandler) GetUpcomingMatches(c *gin.Context) {
 	var matches []domain.Match
 	h.db.

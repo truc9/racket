@@ -13,6 +13,23 @@ export const useMatchesQuery = () => useQuery({
     queryFn: () => httpService.get<MatchSummaryModel[]>("api/v1/matches"),
 });
 
+export const useArchivedMatchesQuery = () => useQuery({
+    queryKey: ['getArchivedMatches'],
+    queryFn: () => httpService.get<MatchSummaryModel[]>("api/v1/matches/archived")
+});
+
+export const useFutureMatchesQuery = () => useQuery({
+    queryKey: ['getFutureMatchesQuery'],
+    queryFn: () => httpService.get<MatchSummaryModel[]>("api/v1/matches/future")
+});
+
+export const useTodayMatchesQuery = () => useQuery({
+    queryKey: ['getTodayMatchesQuery'],
+    queryFn: () => httpService.get<MatchSummaryModel[]>("api/v1/matches/today")
+});
+
+// TODO: refactor
+// This query used for player login to show up comming matches they can register
 export const useUpcomingMatches = () => useQuery({
     queryKey: ["getMatches"],
     queryFn: () => httpService.get<MatchSummaryModel[]>("api/v1/upcoming-matches"),

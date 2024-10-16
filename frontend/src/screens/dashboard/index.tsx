@@ -1,56 +1,43 @@
-import dayjs from "dayjs";
-import { lazy, Suspense, useMemo } from "react";
-import Loading from "../../components/loading";
+import { lazy } from "react";
 import Page from "../../components/page";
-import { useMatchesQuery } from "../../hooks/useQueries";
-import { useClaims } from "../../hooks/useClaims";
+import {
+  useArchivedMatchesQuery,
+  useFutureMatchesQuery,
+  useTodayMatchesQuery,
+} from "../../hooks/useQueries";
 
 const MatchSection = lazy(() => import("./match-section"));
 
 function Dashboard() {
-  const { data: matches } = useMatchesQuery();
-  const { isAdmin, roles } = useClaims();
+  const { data: archivedMatches, isPending: archivedMatchesLoading } =
+    useArchivedMatchesQuery();
 
-  if (isAdmin) {
-    console.log("I am admin");
-    console.log(roles);
-  } else {
-    console.log("I am user");
-  }
+  const { data: futureMatches, isPending: futureMatchesLoading } =
+    useFutureMatchesQuery();
 
-  const todayMatches = useMemo(() => {
-    if (!matches) return null;
-    return matches.filter((m) => dayjs(m.start).isSame(new Date(), "date"));
-  }, [matches]);
-
-  const upcomingMatches = useMemo(() => {
-    if (!matches) return null;
-    return matches.filter((m) => dayjs(m.start).isAfter(new Date(), "date"));
-  }, [matches]);
-
-  const historyMatches = useMemo(() => {
-    if (!matches) return null;
-    return matches.filter((m) => dayjs(m.start).isBefore(new Date()));
-  }, [matches]);
+  const { data: todayMatches, isPending: todayMatchesLoading } =
+    useTodayMatchesQuery();
 
   return (
     <Page title="Dashboard">
       <div className="flex flex-col gap-2">
-        <Suspense fallback={<Loading />}>
-          {todayMatches && (
-            <MatchSection title="Today" matches={todayMatches} />
-          )}
-        </Suspense>
-        <Suspense fallback={<Loading />}>
-          {upcomingMatches && (
-            <MatchSection title="Upcoming" matches={upcomingMatches} />
-          )}
-        </Suspense>
-        <Suspense fallback={<Loading />}>
-          {historyMatches && (
-            <MatchSection title="Last month" matches={historyMatches} />
-          )}
-        </Suspense>
+        <MatchSection
+          title="Today"
+          isLoading={todayMatchesLoading}
+          matches={todayMatches}
+        />
+
+        <MatchSection
+          title="Future"
+          isLoading={futureMatchesLoading}
+          matches={futureMatches}
+        />
+
+        <MatchSection
+          title="Archived"
+          isLoading={archivedMatchesLoading}
+          matches={archivedMatches}
+        />
       </div>
     </Page>
   );
