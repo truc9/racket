@@ -1,10 +1,11 @@
 import { Skeleton, Table } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 
+import clsx from "clsx";
 import httpService from "../../common/httpservice";
 import Currency from "../../components/currency";
+import DataTableSkeleton from "../../components/skeleton/data-table-skeleton";
 import { UnpaidModel } from "../../models/reports/unpaid";
-import clsx from "clsx";
 
 export default function OutstandingPayments() {
   const { isPending, data } = useQuery({
@@ -23,7 +24,7 @@ export default function OutstandingPayments() {
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>
-        {isPending && <Skeleton />}
+        {isPending && <DataTableSkeleton row={3} col={4} />}
         {!isPending &&
           data?.map((item) => {
             return (

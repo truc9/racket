@@ -24,6 +24,7 @@ import Page from "../../components/page";
 import { useSportCenterValueLabelQuery } from "../../hooks/useQueries";
 import { CreateOrUpdateMatchModel } from "../../models";
 import { MatchModel } from "./models";
+import DataTableSkeleton from "../../components/skeleton/data-table-skeleton";
 
 const schema = z.object({
   matchId: z.number().nullable(),
@@ -40,7 +41,11 @@ function Matches() {
     { open: openMatchDrawer, close: closeMatchDrawer },
   ] = useDisclosure(false);
 
-  const { data: matches, refetch } = useQuery({
+  const {
+    data: matches,
+    isPending: matchesLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["getMatches"],
     queryFn: () => httpService.get<MatchModel[]>("api/v1/matches"),
   });
@@ -133,6 +138,7 @@ function Matches() {
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
+            {matchesLoading && <DataTableSkeleton row={3} col={10} />}
             {matches &&
               matches.map((item) => {
                 return (

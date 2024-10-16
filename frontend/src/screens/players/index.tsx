@@ -19,6 +19,7 @@ import Page from "../../components/page";
 import { PlayerSummaryModel, UpdatePlayerModel } from "./models";
 import { notifications } from "@mantine/notifications";
 import { modals } from "@mantine/modals";
+import DataTableSkeleton from "../../components/skeleton/data-table-skeleton";
 
 const schema = z.object({
   id: z.number().nullable(),
@@ -132,13 +133,7 @@ function Players() {
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {isPending && (
-              <Table.Tr>
-                <Table.Td colSpan={6}>
-                  <Skeleton />
-                </Table.Td>
-              </Table.Tr>
-            )}
+            {isPending && <DataTableSkeleton row={3} col={6} />}
             {!isPending &&
               players?.map((item) => {
                 return (

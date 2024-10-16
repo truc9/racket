@@ -1,11 +1,12 @@
 import { Skeleton, Table } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 
-import httpService from "../../common/httpservice";
-import { ActivityModel } from "../../models/reports/activity";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import formatter from "../../common/formatter";
+import httpService from "../../common/httpservice";
+import DataTableSkeleton from "../../components/skeleton/data-table-skeleton";
+import { ActivityModel } from "../../models/reports/activity";
 
 dayjs.extend(relativeTime);
 
@@ -26,7 +27,7 @@ export default function ActivityLog() {
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>
-        {isPending && <Skeleton />}
+        {isPending && <DataTableSkeleton row={3} col={4} />}
         {!isPending &&
           data?.map((item) => {
             return (
