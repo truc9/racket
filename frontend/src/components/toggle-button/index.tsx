@@ -1,19 +1,29 @@
 import clsx from "clsx";
 import React from "react";
-import { IoBan } from "react-icons/io5";
+import { IoBan, IoRefreshCircle } from "react-icons/io5";
 
 interface Prop extends React.HTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode;
   activeColor?: "green" | "pink" | "red";
   isActive?: boolean;
+  isLoading?: boolean;
   disabled?: boolean;
 }
+
+const Wrapper = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="flex h-8 w-8 items-center justify-center gap-1 rounded-full bg-slate-300 text-center text-white">
+      {children}
+    </div>
+  );
+};
 
 const ToggleButton: React.FC<Prop> = ({
   disabled,
   icon,
   activeColor = "green",
   isActive,
+  isLoading,
   ...props
 }) => {
   const activeBg = {
@@ -22,10 +32,18 @@ const ToggleButton: React.FC<Prop> = ({
     red: "bg-red-500",
   };
 
+  if (isLoading) {
+    return (
+      <Wrapper>
+        <IoRefreshCircle className="animate-spin" />
+      </Wrapper>
+    );
+  }
+
   return disabled ? (
-    <div className="flex h-8 w-8 items-center justify-center gap-1 rounded-full bg-slate-300 text-center text-white">
+    <Wrapper>
       <IoBan />
-    </div>
+    </Wrapper>
   ) : (
     <button
       {...props}

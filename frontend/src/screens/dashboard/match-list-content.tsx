@@ -2,7 +2,8 @@ import { Alert, Button, Modal } from "@mantine/core";
 import { useClipboard, useDisclosure } from "@mantine/hooks";
 import { useMutation } from "@tanstack/react-query";
 import cx from "clsx";
-import React, { useMemo, useRef } from "react";
+import dayjs from "dayjs";
+import React, { useMemo, useRef, useState } from "react";
 import { FaCashRegister } from "react-icons/fa";
 import { FiDollarSign } from "react-icons/fi";
 import {
@@ -20,6 +21,7 @@ import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import formatter from "../../common/formatter";
+import httpService from "../../common/httpservice";
 import ToggleButton from "../../components/toggle-button";
 import {
   useMatchAdditionalCostQuery,
@@ -33,8 +35,6 @@ import {
 } from "../../models";
 import AdditionalCostEditor from "./additional-cost-editor";
 import MatchFigure from "./match-figure";
-import dayjs from "dayjs";
-import httpService from "../../common/httpservice";
 
 interface Prop {
   match: MatchSummaryModel;
@@ -117,13 +117,13 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
     messageTemplate,
   ]);
 
-  const registerMut = useMutation({
+  const regMut = useMutation({
     onSuccess: reload,
     mutationFn: (model: RegistrationModel) =>
       httpService.post("api/v1/registrations", model),
   });
 
-  const unregisterMut = useMutation({
+  const unregMut = useMutation({
     onSuccess: reload,
     mutationFn: (registrationId: number) =>
       httpService.del(`api/v1/registrations/${registrationId}`),
@@ -131,19 +131,14 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
 
   const paidMut = useMutation({
     onSuccess: reload,
-    mutationFn: (registrationId: number) => {
-      return httpService.put(`api/v1/registrations/${registrationId}/paid`, {});
-    },
+    mutationFn: (registrationId: number) =>
+      httpService.put(`api/v1/registrations/${registrationId}/paid`, {}),
   });
 
   const unpaidMut = useMutation({
     onSuccess: reload,
-    mutationFn: (registrationId: number) => {
-      return httpService.put(
-        `api/v1/registrations/${registrationId}/unpaid`,
-        {},
-      );
-    },
+    mutationFn: (registrationId: number) =>
+      httpService.put(`api/v1/registrations/${registrationId}/unpaid`, {}),
   });
 
   return (
@@ -273,16 +268,18 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
                     {!!reg.registrationId ? (
                       <ToggleButton
                         isActive={true}
+                        isLoading={unregMut.isPending}
                         activeColor="pink"
-                        onClick={() => unregisterMut.mutate(reg.registrationId)}
+                        onClick={() => unregMut.mutate(reg.registrationId)}
                         icon={<IoHeartCircle />}
                       />
                     ) : (
                       <ToggleButton
-                        activeColor="pink"
                         isActive={false}
+                        isLoading={regMut.isPending}
+                        activeColor="pink"
                         onClick={() =>
-                          registerMut.mutate({
+                          regMut.mutate({
                             matchId: match.matchId,
                             playerId: reg.playerId,
                           })
@@ -291,12 +288,12 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
                       />
                     )}
                   </div>
-
                   {!!reg.registrationId ? (
                     <div>
                       <ToggleButton
                         activeColor="green"
                         isActive={reg.isPaid}
+                        isLoading={unpaidMut.isPending || paidMut.isPending}
                         onClick={() =>
                           reg.isPaid
                             ? unpaidMut.mutate(reg.registrationId)
