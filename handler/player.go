@@ -101,3 +101,18 @@ func (h *PlayerHandler) SendWelcomeEmail(c *gin.Context) {
 	h.db.Find(&domain.Player{}, playerId).Select("first_name", &name)
 	c.Status(http.StatusOK)
 }
+
+func (h *PlayerHandler) MarkOutstandingPaymentsAsPaid(c *gin.Context) {
+	playerId := params.Get(c, "playerId")
+	if err := h.db.
+		Model(&domain.Registration{}).
+		Where("player_id = ? AND is_paid = false", playerId).
+		Updates(map[string]interface{}{
+			"is_paid": true,
+		}).Error; err != nil {
+
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+	c.Status(http.StatusOK)
+}

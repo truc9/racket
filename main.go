@@ -89,6 +89,7 @@ func main() {
 		v1.POST("/players/:playerId/welcome-email", handler.SendWelcomeEmail)
 		v1.DELETE("/players/:playerId", handler.Delete)
 		v1.PUT("/players/:playerId", handler.Update)
+		v1.PUT("/players/:playerId/outstanding-payments/paid", handler.MarkOutstandingPaymentsAsPaid)
 	})
 
 	c.Invoke(func(handler *handler.RegistrationHandler) {
