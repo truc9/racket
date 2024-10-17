@@ -50,7 +50,7 @@ docker compose up
 
 ![demo](art/iPad-PRO-11-matches.png "Matches")
 
-![demo](art/iPad-Air-4-unpaid-report.png "Unpaid Report")
+![demo](art/iPad-PRO-11-mark-as-paid.png "Mark as paid")
 
 ![demo](art/iPad-PRO-11-sportcenters.png "Sport Centers")
 
