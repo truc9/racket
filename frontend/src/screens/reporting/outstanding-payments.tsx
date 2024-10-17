@@ -1,7 +1,8 @@
-import { Skeleton, Table } from "@mantine/core";
+import { Table } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 
 import clsx from "clsx";
+import { useMemo } from "react";
 import httpService from "../../common/httpservice";
 import Currency from "../../components/currency";
 import DataTableSkeleton from "../../components/skeleton/data-table-skeleton";
@@ -12,6 +13,11 @@ export default function OutstandingPayments() {
     queryKey: ["getUnpaidReport"],
     queryFn: () => httpService.get<UnpaidModel[]>("api/v1/reports/unpaid"),
   });
+
+  const totalUnpaid = useMemo(() => {
+    if (!data || data.length == 0) return 0;
+    return data.map((e) => e.unpaidAmount).reduce((prev, cur) => (cur += prev));
+  }, [data]);
 
   return (
     <Table striped highlightOnHover withRowBorders={false}>
@@ -25,26 +31,33 @@ export default function OutstandingPayments() {
       </Table.Thead>
       <Table.Tbody>
         {isPending && <DataTableSkeleton row={3} col={4} />}
-        {!isPending &&
-          data?.map((item) => {
-            return (
-              <Table.Tr key={item.playerId}>
-                <Table.Td>{item.playerName}</Table.Td>
-                <Table.Td
-                  className={clsx(
-                    "font-bold",
-                    item.unpaidAmount > 100
-                      ? "text-rose-500"
-                      : "text-emerald-500",
-                  )}
-                >
-                  <Currency value={item.unpaidAmount} />
-                </Table.Td>
-                <Table.Td>{item.matchCount}</Table.Td>
-                <Table.Td>{item.registrationSummary}</Table.Td>
-              </Table.Tr>
-            );
-          })}
+        {data?.map((item) => {
+          return (
+            <Table.Tr key={item.playerId}>
+              <Table.Td>{item.playerName}</Table.Td>
+              <Table.Td
+                className={clsx(
+                  "font-bold",
+                  item.unpaidAmount > 20 ? "text-rose-500" : "text-emerald-500",
+                )}
+              >
+                <Currency value={item.unpaidAmount} />
+              </Table.Td>
+              <Table.Td>{item.matchCount}</Table.Td>
+              <Table.Td>{item.registrationSummary}</Table.Td>
+            </Table.Tr>
+          );
+        })}
+        {totalUnpaid > 0 && (
+          <Table.Tr className="font-bold">
+            <Table.Td>Total</Table.Td>
+            <Table.Td>
+              <Currency value={totalUnpaid} />
+            </Table.Td>
+            <Table.Td></Table.Td>
+            <Table.Td></Table.Td>
+          </Table.Tr>
+        )}
       </Table.Tbody>
     </Table>
   );

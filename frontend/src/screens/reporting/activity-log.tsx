@@ -1,4 +1,4 @@
-import { Skeleton, Table } from "@mantine/core";
+import { Table } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 
 import dayjs from "dayjs";

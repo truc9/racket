@@ -3,7 +3,7 @@ import { useClipboard, useDisclosure } from "@mantine/hooks";
 import { useMutation } from "@tanstack/react-query";
 import cx from "clsx";
 import dayjs from "dayjs";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef } from "react";
 import { FaCashRegister } from "react-icons/fa";
 import { FiDollarSign } from "react-icons/fi";
 import {
@@ -24,7 +24,6 @@ import formatter from "../../common/formatter";
 import httpService from "../../common/httpservice";
 import ToggleButton from "../../components/toggle-button";
 import {
-  useMatchAdditionalCostQuery,
   useMesssageTemplateQuery,
   useRegistrationsByMatchQuery,
 } from "../../hooks/useQueries";
@@ -55,9 +54,6 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
     match.matchId,
   );
 
-  const { data: additionalCost, refetch: reloadAdditionalCost } =
-    useMatchAdditionalCostQuery(match.matchId);
-
   const { data: messageTemplate } = useMesssageTemplateQuery();
 
   const statPercentage = useMemo(() => {
@@ -81,11 +77,11 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
   }, [registrations]);
 
   const individualCost = useMemo(() => {
-    const total = (match.cost ?? 0) + (additionalCost ?? 0);
+    const total = (match.cost ?? 0) + (match.additionalCost ?? 0);
     const totalPlayer =
       registrations?.filter((r) => !!r.registrationId)?.length ?? 0;
     return totalPlayer === 0 ? 0 : total / totalPlayer;
-  }, [match.cost, additionalCost, registrations]);
+  }, [match.cost, registrations]);
 
   const handleSaveAdditionalCosts = async (costs: AdditionalCost[]) => {
     await httpService.put(
@@ -93,7 +89,6 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
       costs,
     );
     closeAdditionalCost();
-    reloadAdditionalCost();
   };
 
   const costMessage = useMemo(() => {
@@ -109,13 +104,7 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
       totalPlayer:
         registrations?.filter((r) => !!r.registrationId)?.length ?? 0,
     });
-  }, [
-    match?.cost,
-    additionalCost,
-    individualCost,
-    registrations,
-    messageTemplate,
-  ]);
+  }, [match, individualCost, registrations, messageTemplate]);
 
   const regMut = useMutation({
     onSuccess: reload,
