@@ -121,40 +121,39 @@ func (h *RegistrationHandler) Register(c *gin.Context) {
 
 	if count > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Player already registered this match"})
-	} else {
-		var reg *domain.Registration
-		h.db.Transaction(func(tx *gorm.DB) error {
-			reg = &domain.Registration{
-				PlayerId: dto.PlayerId,
-				MatchId:  dto.MatchId,
-				IsPaid:   false,
-			}
-			if err := tx.Create(reg).Error; err != nil {
-				return err
-			}
-
-			//TODO: refactor
-			ac, err := h.activitysvc.BuildRegisterActivity(dto.PlayerId, dto.MatchId)
-			if err != nil {
-				return err
-			}
-
-			if err := tx.Create(ac).Error; err != nil {
-				return err
-			}
-
-			return nil
-		})
-
-		c.JSON(http.StatusCreated, reg)
+		return
 	}
+
+	var reg *domain.Registration
+	h.db.Transaction(func(tx *gorm.DB) error {
+		reg = &domain.Registration{
+			PlayerId: dto.PlayerId,
+			MatchId:  dto.MatchId,
+			IsPaid:   false,
+		}
+		if err := tx.Create(reg).Error; err != nil {
+			return err
+		}
+
+		ac, err := h.activitysvc.BuildRegisterActivity(dto.PlayerId, dto.MatchId)
+		if err != nil {
+			return err
+		}
+
+		if err := tx.Create(ac).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	c.JSON(http.StatusCreated, reg)
 }
 
 func (h *RegistrationHandler) Unregister(c *gin.Context) {
 	id, _ := c.Params.Get("registrationId")
 
 	h.db.Transaction(func(tx *gorm.DB) error {
-		//TODO: refactor
 		reg := &domain.Registration{}
 		if err := tx.Find(&reg, id).Error; err != nil {
 			return err
