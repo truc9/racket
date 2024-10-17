@@ -68,7 +68,7 @@ function AdminLayout() {
       <div
         className={cx(
           "group relative flex h-full flex-shrink-0 flex-grow-0 flex-col border-r bg-blue-700 text-white transition-all delay-100",
-          !collapsed && "w-[300px]",
+          !collapsed && "w-[270px]",
           collapsed && "w-16",
         )}
       >
