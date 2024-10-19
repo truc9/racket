@@ -7,7 +7,7 @@ import { Menu, rem } from "@mantine/core";
 import { IconLogout } from "@tabler/icons-react";
 
 function PublicLayout() {
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { user, isAuthenticated, isLoading, logout } = useAuth0();
 
   if (isLoading) {
     return <FullScreenLoading />;
@@ -38,6 +38,7 @@ function PublicLayout() {
 
         <Menu.Dropdown>
           <Menu.Item
+            onClick={() => logout()}
             color="red"
             leftSection={
               <IconLogout style={{ width: rem(14), height: rem(14) }} />
