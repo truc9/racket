@@ -1,7 +1,9 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import { Skeleton } from "@mantine/core";
 import cx from "clsx";
+import dayjs from "dayjs";
 import { FiCalendar, FiClock, FiGift, FiMapPin } from "react-icons/fi";
-import { IoCheckmarkCircle } from "react-icons/io5";
+import { IoCheckmarkCircle, IoFileTrayOutline } from "react-icons/io5";
 import formatter from "../../common/formatter";
 import httpService from "../../common/httpservice";
 import {
@@ -9,14 +11,17 @@ import {
   useUpcomingMatches,
 } from "../../hooks/useQueries";
 import { MatchSummaryModel } from "../../models";
-import dayjs from "dayjs";
 
 export default function AttendantRequests() {
   const { user } = useAuth0();
   const { data: attendantRequests, refetch: refetchAttendants } =
     useAttendantRequestsQuery(user?.sub ?? "");
 
-  const { data: matches, refetch: refetchMatches } = useUpcomingMatches();
+  const {
+    data: matches,
+    refetch: refetchMatches,
+    isLoading: matchsLoading,
+  } = useUpcomingMatches();
 
   const toggleAttendantClick = async (match: MatchSummaryModel) => {
     await httpService.post("api/v1/registrations/attendant-requests", {
@@ -32,8 +37,17 @@ export default function AttendantRequests() {
   };
 
   return (
-    <div className="flex h-full w-full flex-col gap-3 px-2 py-5 lg:w-2/3">
-      {matches &&
+    <div className="flex h-full w-full flex-col gap-3 px-2 py-5 md:w-2/3 xl:w-1/3">
+      {matchsLoading ? (
+        <>
+          <div className="flex items-center justify-between rounded bg-slate-100 px-3 py-3">
+            <Skeleton height={30} />
+          </div>
+          <div className="flex items-center justify-between rounded bg-slate-100 px-3 py-3">
+            <Skeleton height={30} />
+          </div>
+        </>
+      ) : matches && matches.length > 0 ? (
         matches.map((m) => {
           const isAttended = attendantRequests
             ?.map((r) => r.matchId)
@@ -81,7 +95,13 @@ export default function AttendantRequests() {
               )}
             </div>
           );
-        })}
+        })
+      ) : (
+        <div className="flex flex-col items-center justify-center">
+          <IoFileTrayOutline size={30} />
+          <span>No Match Available</span>
+        </div>
+      )}
     </div>
   );
 }

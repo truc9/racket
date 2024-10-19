@@ -82,7 +82,7 @@ func (h *MatchHandler) GetUpcomingMatches(c *gin.Context) {
 		Preload("SportCenter").
 		Preload("AdditionalCosts").
 		Preload("Registrations").
-		Where("start >= CURRENT_DATE").Order("start ASC").
+		Where("start::date >= CURRENT_DATE::date").Order("start ASC").
 		Find(&matches)
 
 	h.logger.Debugf("Query matches: %v", matches)
