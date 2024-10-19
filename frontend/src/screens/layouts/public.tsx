@@ -1,13 +1,14 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { Suspense } from "react";
-import { Navigate, Outlet } from "react-router-dom";
-import FullScreenLoading from "../../components/fullscreen-loading";
-import Loading from "../../components/loading";
 import { Menu, rem } from "@mantine/core";
 import { IconLogout } from "@tabler/icons-react";
+import { Suspense } from "react";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import FullScreenLoading from "../../components/fullscreen-loading";
+import Loading from "../../components/loading";
 
 function PublicLayout() {
   const { user, isAuthenticated, isLoading, logout } = useAuth0();
+  const navigate = useNavigate();
 
   if (isLoading) {
     return <FullScreenLoading />;
@@ -38,7 +39,10 @@ function PublicLayout() {
 
         <Menu.Dropdown>
           <Menu.Item
-            onClick={() => logout()}
+            onClick={() => {
+              navigate("/login", { replace: true });
+              logout({ logoutParams: { returnTo: window.location.origin } });
+            }}
             color="red"
             leftSection={
               <IconLogout style={{ width: rem(14), height: rem(14) }} />
