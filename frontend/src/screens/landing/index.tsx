@@ -64,7 +64,7 @@ const CTA = () => {
   );
 };
 
-export default function Login() {
+export default function Landing() {
   return (
     <div>
       <Hero />

@@ -16,10 +16,14 @@ const client = axios.create({
 });
 
 async function getAuthHeaders() {
-    const token = await auth0.getTokenSilently();
-    return {
-        Authorization: `Bearer ${token}`
-    };
+    try {
+        const token = await auth0.getTokenSilently();
+        return {
+            Authorization: `Bearer ${token}`
+        };
+    } catch (e) {
+        return {};
+    }
 }
 
 async function get<T = any>(url: string) {

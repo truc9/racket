@@ -1,9 +1,9 @@
 import { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import { useClaims } from "./hooks/useClaims";
-import Login from "./screens/auth/login";
 import AdminLayout from "./screens/layouts/admin";
 import PublicLayout from "./screens/layouts/public";
+import Landing from "./screens/landing";
 
 const DashboardScreen = lazy(() => import("./screens/dashboard"));
 const MatchesScreen = lazy(() => import("./screens/matches"));
@@ -43,7 +43,7 @@ function App() {
           <Route index element={<AttendantRequestScreen />} />
         </Route>
       )}
-      <Route path="/login" element={<Login />} />
+      <Route path="/login" element={<Landing />} />
       <Route
         path="/public/outstanding-report"
         element={<PublicOutstandingReport />}
