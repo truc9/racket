@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/url"
 	"os"
 	"time"
@@ -21,11 +20,11 @@ import (
 func main() {
 	godotenv.Load()
 
-	c := di.Register()
+	container := di.Register()
 
-	r := gin.Default()
+	app := gin.Default()
 
-	r.Use(cors.New(cors.Config{
+	app.Use(cors.New(cors.Config{
 		AllowOrigins: []string{
 			"http://localhost:5173",
 			"https://getracket.vercel.app",
@@ -37,10 +36,15 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	r.GET("/health", func(ctx *gin.Context) {
+	app.GET("/health", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
 			"message": "ok",
 		})
+	})
+
+	public := app.Group("/api/v1/public")
+	container.Invoke(func(handler *handler.ReportingHandler) {
+		public.GET("/reports/unpaid", handler.GetUnpaidReportForPublic)
 	})
 
 	issuerURL, _ := url.Parse(os.Getenv("AUTH0_ISSUER_URL"))
@@ -53,19 +57,16 @@ func main() {
 		[]string{audience},
 	)
 
-	log.Printf("Audience: %s\n", audience)
-	log.Printf("Issuer: %s\n", issuerURL)
-
 	jwtMiddleware := jwtmiddleware.New(jwtValidator.ValidateToken)
-	r.Use(adapter.Wrap(jwtMiddleware.CheckJWT))
+	app.Use(adapter.Wrap(jwtMiddleware.CheckJWT))
 
-	r.GET("/health/origins", func(ctx *gin.Context) {
+	app.GET("/health/origins", func(ctx *gin.Context) {
 		ctx.JSON(200, ctx.Request.Header.Get("Origin"))
 	})
 
-	v1 := r.Group("/api/v1")
+	v1 := app.Group("/api/v1")
 
-	c.Invoke(func(handler *handler.MatchHandler) {
+	container.Invoke(func(handler *handler.MatchHandler) {
 		v1.POST("/matches", handler.Create)
 		v1.GET("/matches", handler.GetAll)
 		v1.GET("/matches/archived", handler.GetArchivedMatches)
@@ -82,7 +83,7 @@ func main() {
 		v1.DELETE("/matches/:matchId", handler.Delete)
 	})
 
-	c.Invoke(func(handler *handler.PlayerHandler) {
+	container.Invoke(func(handler *handler.PlayerHandler) {
 		v1.GET("/players", handler.GetAll)
 		v1.GET("/players/external-users/:externalUserId/attendant-requests", handler.GetExternalUserAttendantRequests)
 		v1.POST("/players", handler.Create)
@@ -92,7 +93,7 @@ func main() {
 		v1.PUT("/players/:playerId/outstanding-payments/paid", handler.MarkOutstandingPaymentsAsPaid)
 	})
 
-	c.Invoke(func(handler *handler.RegistrationHandler) {
+	container.Invoke(func(handler *handler.RegistrationHandler) {
 		v1.GET("/registrations", handler.GetAll)
 		v1.POST("/registrations", handler.Register)
 		v1.POST("/registrations/attendant-requests", handler.AttendantRequest)
@@ -101,25 +102,29 @@ func main() {
 		v1.DELETE("/registrations/:registrationId", handler.Unregister)
 	})
 
-	c.Invoke(func(handler *handler.SportCenterHandler) {
+	container.Invoke(func(handler *handler.SportCenterHandler) {
 		v1.GET("/sportcenters", handler.GetAll)
 		v1.GET("/sportcenters/options", handler.GetOptions)
 		v1.POST("/sportcenters", handler.Create)
 		v1.PUT("/sportcenters/:sportCenterId", handler.Update)
 	})
 
-	c.Invoke(func(handler *handler.SettingsHandler) {
+	container.Invoke(func(handler *handler.SettingsHandler) {
 		v1.GET("/settings/message-template", handler.GetMessageTemplate)
 		v1.POST("/settings/message-template", handler.CreateMessageTemplate)
 	})
 
-	c.Invoke(func(handler *handler.ReportingHandler) {
+	container.Invoke(func(handler *handler.ReportingHandler) {
 		v1.GET("/reports/unpaid", handler.GetUnpaidReport)
 	})
 
-	c.Invoke(func(handler *handler.ActivityHandler) {
+	container.Invoke(func(handler *handler.ActivityHandler) {
 		v1.GET("/activities", handler.GetAll)
 	})
 
-	r.Run()
+	container.Invoke(func(handler *handler.ShareCodeHandler) {
+		v1.POST("/share-codes/urls", handler.CreateShareUrl)
+	})
+
+	app.Run()
 }

@@ -1,18 +1,31 @@
-import { Button, Table, Text } from "@mantine/core";
+import {
+  Button,
+  Code,
+  CopyButton,
+  Modal,
+  Table,
+  Text,
+  Tooltip,
+} from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 
 import clsx from "clsx";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import httpService from "../../common/httpservice";
 import Currency from "../../components/currency";
 import DataTableSkeleton from "../../components/skeleton/data-table-skeleton";
 import { UnpaidModel } from "../../models/reports/unpaid";
-import { FiCheckCircle } from "react-icons/fi";
+import { FiCheckCircle, FiShare } from "react-icons/fi";
 import { modals } from "@mantine/modals";
 import { IoWarning } from "react-icons/io5";
 import { notifications } from "@mantine/notifications";
+import { useDisclosure } from "@mantine/hooks";
 
 export default function OutstandingPayments() {
+  const [opened, { open: openShareCodeResult, close: closeShareCodeResult }] =
+    useDisclosure(false);
+  const [shareCodeUrl, setShareCodeUrl] = useState("");
+
   const { isPending, data, refetch } = useQuery({
     queryKey: ["getUnpaidReport"],
     queryFn: () => httpService.get<UnpaidModel[]>("api/v1/reports/unpaid"),
@@ -29,13 +42,8 @@ export default function OutstandingPayments() {
       centered: true,
       children: (
         <Text>
-          <span>
-            Are you sure, this will mark {model.playerName} paid all outstanding
-            payments ?
-          </span>
-          <p className="flex items-center gap-2 font-bold text-red-500">
-            <IoWarning size={20} /> This action is irreversible
-          </p>
+          Are you sure, this will mark {model.playerName} paid all outstanding
+          payments ?
         </Text>
       ),
       labels: { confirm: "Yes", cancel: "No" },
@@ -55,58 +63,102 @@ export default function OutstandingPayments() {
     });
   };
 
+  async function shareToEveryOne() {
+    const res = await httpService.post("api/v1/share-codes/urls", {
+      url: `${window.location.origin}/public/outstanding-report`,
+    });
+    setShareCodeUrl(res.fullUrl);
+    openShareCodeResult();
+  }
+
   return (
-    <Table striped highlightOnHover withRowBorders={false}>
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th>Name</Table.Th>
-          <Table.Th>Unpaid Amount</Table.Th>
-          <Table.Th>Matches</Table.Th>
-          <Table.Th>Summary</Table.Th>
-          <Table.Th></Table.Th>
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>
-        {isPending && <DataTableSkeleton row={3} col={5} />}
-        {data?.map((item) => {
-          return (
-            <Table.Tr key={item.playerId}>
-              <Table.Td>{item.playerName}</Table.Td>
-              <Table.Td
-                className={clsx(
-                  "font-bold",
-                  item.unpaidAmount > 20 ? "text-rose-500" : "text-emerald-500",
-                )}
-              >
-                <Currency value={item.unpaidAmount} />
-              </Table.Td>
-              <Table.Td>{item.matchCount}</Table.Td>
-              <Table.Td>{item.registrationSummary}</Table.Td>
-              <Table.Td className="flex-end flex justify-end space-x-2 text-right">
-                <Button
-                  size="xs"
-                  leftSection={<FiCheckCircle size={18} />}
-                  color="green"
-                  onClick={() => markPaid(item)}
-                >
-                  Mark Paid
-                </Button>
-              </Table.Td>
+    <>
+      <Modal
+        opened={opened}
+        onClose={closeShareCodeResult}
+        title="Share Code"
+        centered
+        size="lg"
+      >
+        <div className="flex flex-col gap-2">
+          <Code>{shareCodeUrl}</Code>
+          <CopyButton value={shareCodeUrl}>
+            {({ copied, copy }) => (
+              <Button color={copied ? "teal" : "blue"} onClick={copy}>
+                {copied ? "Copied Share URL" : "Copy Share URL"}
+              </Button>
+            )}
+          </CopyButton>
+        </div>
+      </Modal>
+      <div className="flex flex-col gap-2 py-3">
+        <div className="flex items-center gap-2">
+          <Tooltip label="Anyone with this link can access to this report">
+            <Button
+              leftSection={<FiShare />}
+              variant="outline"
+              color="red"
+              onClick={shareToEveryOne}
+            >
+              Publish
+            </Button>
+          </Tooltip>
+        </div>
+        <Table striped highlightOnHover withRowBorders={false}>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Name</Table.Th>
+              <Table.Th>Unpaid Amount</Table.Th>
+              <Table.Th>Matches</Table.Th>
+              <Table.Th>Summary</Table.Th>
+              <Table.Th></Table.Th>
             </Table.Tr>
-          );
-        })}
-        {totalUnpaid > 0 && (
-          <Table.Tr className="font-bold">
-            <Table.Td>Total</Table.Td>
-            <Table.Td>
-              <Currency value={totalUnpaid} />
-            </Table.Td>
-            <Table.Td></Table.Td>
-            <Table.Td></Table.Td>
-            <Table.Td></Table.Td>
-          </Table.Tr>
-        )}
-      </Table.Tbody>
-    </Table>
+          </Table.Thead>
+          <Table.Tbody>
+            {isPending && <DataTableSkeleton row={3} col={5} />}
+            {data?.map((item) => {
+              return (
+                <Table.Tr key={item.playerId}>
+                  <Table.Td>{item.playerName}</Table.Td>
+                  <Table.Td
+                    className={clsx(
+                      "font-bold",
+                      item.unpaidAmount > 20
+                        ? "text-rose-500"
+                        : "text-emerald-500",
+                    )}
+                  >
+                    <Currency value={item.unpaidAmount} />
+                  </Table.Td>
+                  <Table.Td>{item.matchCount}</Table.Td>
+                  <Table.Td>{item.registrationSummary}</Table.Td>
+                  <Table.Td className="flex-end flex justify-end space-x-2 text-right">
+                    <Button
+                      size="xs"
+                      leftSection={<FiCheckCircle size={18} />}
+                      color="green"
+                      onClick={() => markPaid(item)}
+                    >
+                      Mark Paid
+                    </Button>
+                  </Table.Td>
+                </Table.Tr>
+              );
+            })}
+            {totalUnpaid > 0 && (
+              <Table.Tr className="font-bold">
+                <Table.Td>Total</Table.Td>
+                <Table.Td>
+                  <Currency value={totalUnpaid} />
+                </Table.Td>
+                <Table.Td></Table.Td>
+                <Table.Td></Table.Td>
+                <Table.Td></Table.Td>
+              </Table.Tr>
+            )}
+          </Table.Tbody>
+        </Table>
+      </div>
+    </>
   );
 }

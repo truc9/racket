@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/truc9/racket/domain"
 	"github.com/truc9/racket/dto"
-	"github.com/truc9/racket/params"
+	"github.com/truc9/racket/param"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -47,7 +47,7 @@ func (h *PlayerHandler) GetAll(c *gin.Context) {
 
 func (h *PlayerHandler) GetExternalUserAttendantRequests(c *gin.Context) {
 	var result []dto.PlayerAttendantRequestDto
-	externalUserId := params.Get(c, "externalUserId")
+	externalUserId := param.FromRoute(c, "externalUserId")
 	h.db.Raw(`
 	SELECT m.id as match_id, pl.id as player_id
 	FROM matches m
@@ -63,7 +63,7 @@ func (h *PlayerHandler) GetExternalUserAttendantRequests(c *gin.Context) {
 
 func (h *PlayerHandler) Update(c *gin.Context) {
 	var model dto.PlayerSummaryDto
-	id := params.Get(c, "playerId")
+	id := param.FromRoute(c, "playerId")
 	if err := c.BindJSON(&model); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
@@ -78,7 +78,7 @@ func (h *PlayerHandler) Update(c *gin.Context) {
 }
 
 func (h *PlayerHandler) Delete(c *gin.Context) {
-	id := params.Get(c, "playerId")
+	id := param.FromRoute(c, "playerId")
 
 	if err := h.db.Unscoped().Where("player_id = ?", id).Delete(&domain.Registration{}).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
@@ -96,14 +96,14 @@ func (h *PlayerHandler) SendWelcomeEmail(c *gin.Context) {
 	dto := &dto.EmailDto{}
 	c.BindJSON(dto)
 
-	playerId := params.Get(c, "playerId")
+	playerId := param.FromRoute(c, "playerId")
 	var name string
 	h.db.Find(&domain.Player{}, playerId).Select("first_name", &name)
 	c.Status(http.StatusOK)
 }
 
 func (h *PlayerHandler) MarkOutstandingPaymentsAsPaid(c *gin.Context) {
-	playerId := params.Get(c, "playerId")
+	playerId := param.FromRoute(c, "playerId")
 	if err := h.db.
 		Model(&domain.Registration{}).
 		Where("player_id = ? AND is_paid = false", playerId).

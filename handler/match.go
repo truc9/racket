@@ -8,7 +8,7 @@ import (
 	"github.com/samber/lo"
 	"github.com/truc9/racket/domain"
 	"github.com/truc9/racket/dto"
-	"github.com/truc9/racket/params"
+	"github.com/truc9/racket/param"
 	"github.com/truc9/racket/service"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -109,7 +109,7 @@ func (h *MatchHandler) GetUpcomingMatches(c *gin.Context) {
 }
 
 func (h *MatchHandler) Delete(c *gin.Context) {
-	matchId := params.Get(c, "matchId")
+	matchId := param.FromRoute(c, "matchId")
 	if err := h.db.Delete(&domain.Match{}, matchId).Error; err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
@@ -191,7 +191,7 @@ func (h *MatchHandler) GetRegistrationsByMatch(c *gin.Context) {
 }
 
 func (h *MatchHandler) UpdateCost(c *gin.Context) {
-	matchId := params.Get(c, "matchId")
+	matchId := param.FromRoute(c, "matchId")
 	dto := dto.MatchCostDto{}
 	if err := c.BindJSON(&dto); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -210,7 +210,7 @@ func (h *MatchHandler) UpdateCost(c *gin.Context) {
 }
 
 func (h *MatchHandler) UpdateMatch(c *gin.Context) {
-	matchId := params.Get(c, "matchId")
+	matchId := param.FromRoute(c, "matchId")
 	dto := dto.UpdateMatchDto{}
 	if err := c.BindJSON(&dto); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
@@ -250,7 +250,7 @@ func (h *MatchHandler) UpdateMatch(c *gin.Context) {
 }
 
 func (h *MatchHandler) GetCost(c *gin.Context) {
-	matchId := params.Get(c, "matchId")
+	matchId := param.FromRoute(c, "matchId")
 	var cost float64
 	if err := h.db.Select("cost").Find(&domain.Match{}, matchId).Scan(&cost).Error; err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
@@ -260,7 +260,7 @@ func (h *MatchHandler) GetCost(c *gin.Context) {
 }
 
 func (h *MatchHandler) GetAdditionalCost(c *gin.Context) {
-	matchId := params.Get(c, "matchId")
+	matchId := param.FromRoute(c, "matchId")
 	var costs []float64
 	if err := h.db.Model(&domain.AdditionalCost{}).Where("match_id = ?", matchId).Select("amount").Scan(&costs).Error; err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
@@ -273,7 +273,7 @@ func (h *MatchHandler) GetAdditionalCost(c *gin.Context) {
 }
 
 func (h *MatchHandler) CreateAdditionalCost(c *gin.Context) {
-	matchId := params.Get(c, "matchId")
+	matchId := param.FromRoute(c, "matchId")
 	costs := []dto.AdditionalCostDto{}
 	if err := c.BindJSON(&costs); err != nil {
 		h.logger.Debugf("error parse dto: %v", err.Error())

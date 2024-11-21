@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/truc9/racket/dto"
-	"github.com/truc9/racket/params"
+	"github.com/truc9/racket/param"
 	"github.com/truc9/racket/service"
 )
 
@@ -61,7 +61,7 @@ func (h *SportCenterHandler) Create(c *gin.Context) {
 
 func (h *SportCenterHandler) Update(c *gin.Context) {
 	dto := dto.SportCenterDto{}
-	id := params.Get(c, "sportCenterId")
+	id := param.FromRoute(c, "sportCenterId")
 
 	if err := c.BindJSON(&dto); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
