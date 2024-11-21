@@ -73,9 +73,9 @@ function AdminLayout() {
         )}
       >
         <div className="flex flex-1 flex-col">
-          {!collapsed && (
-            <div className="p-2 text-2xl font-bold">{APP_NAME}</div>
-          )}
+          <div className="flex justify-center text-center">
+            <img src="logo.svg" alt="LOGO" width={100} height={100} />
+          </div>
           <div className={cx("flex flex-col p-2", collapsed && "items-center")}>
             <UserProfile showLabel={!collapsed} />
           </div>
