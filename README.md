@@ -1,4 +1,4 @@
-# 🧜‍♀️ RACKET
+![LOGO](art/logo.svg)
 
 [![Go](https://github.com/truc9/racket/actions/workflows/go.yml/badge.svg)](https://github.com/truc9/racket/actions/workflows/go.yml) [![CodeQL Advanced](https://github.com/truc9/racket/actions/workflows/codeql.yml/badge.svg)](https://github.com/truc9/racket/actions/workflows/codeql.yml)
 
