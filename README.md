@@ -38,6 +38,7 @@ docker compose up
 - ✅ Duplicate match
 - ✅ Unpaid report
 - ✅ Support cost management
+- ✅ Support anonymously view outstanding report
 - 🚧 Support notification (Facebook Messenger, Email, Push Notification)
 - 🚧 Monzo API Integration
 - 🚧 Support Mobile Devices (iOS, Android)
