@@ -92,16 +92,6 @@ func (h *PlayerHandler) Delete(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-func (h *PlayerHandler) SendWelcomeEmail(c *gin.Context) {
-	dto := &dto.EmailDto{}
-	c.BindJSON(dto)
-
-	playerId := param.FromRoute(c, "playerId")
-	var name string
-	h.db.Find(&domain.Player{}, playerId).Select("first_name", &name)
-	c.Status(http.StatusOK)
-}
-
 func (h *PlayerHandler) MarkOutstandingPaymentsAsPaid(c *gin.Context) {
 	playerId := param.FromRoute(c, "playerId")
 	if err := h.db.

@@ -87,7 +87,6 @@ func main() {
 		v1.GET("/players", handler.GetAll)
 		v1.GET("/players/external-users/:externalUserId/attendant-requests", handler.GetExternalUserAttendantRequests)
 		v1.POST("/players", handler.Create)
-		v1.POST("/players/:playerId/welcome-email", handler.SendWelcomeEmail)
 		v1.DELETE("/players/:playerId", handler.Delete)
 		v1.PUT("/players/:playerId", handler.Update)
 		v1.PUT("/players/:playerId/outstanding-payments/paid", handler.MarkOutstandingPaymentsAsPaid)
