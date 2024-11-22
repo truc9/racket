@@ -27,16 +27,18 @@ const MatchList: React.FC<Prop> = ({ matches }) => {
               <Accordion.Control icon={<FiMapPin />}>
                 <div className="flex items-center justify-between px-5">
                   <div className="flex items-center space-x-2">
-                    <span>{dayjs(m.start).format("dddd")}</span>
-                    <span>|</span>
                     <span className="font-bold">
-                      {m.sportCenterName || "N/A"}
+                      {dayjs(m.start).format("DD/MM dddd")}
                     </span>
-                    <Badge color="green">{m.court}</Badge>
+                    <span>{m.sportCenterName || "N/A"}</span>
+                    <Badge color="pink">{formatter.formatTime(m.start)}</Badge>
                   </div>
                   <div className="flex items-center gap-2">
-                    <FiClock />
-                    <span>{formatter.formatDate(m.start)}</span>
+                    <Badge color="green" variant="light">
+                      {m.court.toLowerCase().includes("court")
+                        ? m.court
+                        : `Court ${m.court}`}
+                    </Badge>
                   </div>
                 </div>
               </Accordion.Control>
