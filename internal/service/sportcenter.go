@@ -4,8 +4,8 @@ import (
 	"strconv"
 
 	"github.com/samber/lo"
-	"github.com/truc9/racket/domain"
-	"github.com/truc9/racket/dto"
+	"github.com/truc9/racket/internal/domain"
+	"github.com/truc9/racket/internal/dto"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )

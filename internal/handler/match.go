@@ -6,10 +6,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/samber/lo"
-	"github.com/truc9/racket/domain"
-	"github.com/truc9/racket/dto"
-	"github.com/truc9/racket/param"
-	"github.com/truc9/racket/service"
+	"github.com/truc9/racket/internal/domain"
+	"github.com/truc9/racket/internal/dto"
+	"github.com/truc9/racket/internal/service"
+	"github.com/truc9/racket/pkg/param"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )

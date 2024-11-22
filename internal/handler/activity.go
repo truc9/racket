@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/truc9/racket/service"
+	"github.com/truc9/racket/internal/service"
 )
 
 type ActivityHandler struct {

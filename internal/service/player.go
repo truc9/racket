@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/truc9/racket/domain"
-	"github.com/truc9/racket/dto"
+	"github.com/truc9/racket/internal/domain"
+	"github.com/truc9/racket/internal/dto"
 	"gorm.io/gorm"
 )
 

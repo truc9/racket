@@ -1,9 +1,7 @@
-package activity
+package domain
 
 import (
 	"errors"
-
-	"github.com/truc9/racket/domain"
 )
 
 type ActivityType = int
@@ -20,7 +18,7 @@ const (
 )
 
 type Activity struct {
-	domain.BaseModel
+	BaseModel
 	TypeId      ActivityType `json:"typeId"`
 	Description string       `json:"description"`
 	Payload     string       `json:"payload"`

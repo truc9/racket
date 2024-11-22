@@ -6,8 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/truc9/racket/domain"
-	"github.com/truc9/racket/domain/activity"
+	"github.com/truc9/racket/internal/domain"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -38,7 +37,7 @@ func NewDatabase() *gorm.DB {
 			&domain.AdditionalCost{},
 			&domain.SportCenter{},
 			&domain.Settings{},
-			&activity.Activity{},
+			&domain.Activity{},
 			&domain.ShareCode{},
 		)
 

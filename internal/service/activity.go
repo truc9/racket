@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/samber/lo"
-	"github.com/truc9/racket/domain/activity"
-	"github.com/truc9/racket/dto"
+	"github.com/truc9/racket/internal/domain"
+	"github.com/truc9/racket/internal/dto"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -33,12 +33,12 @@ func NewActivityService(
 }
 
 func (s *ActivityService) GetAll() []dto.ActivityDto {
-	activities := []activity.Activity{}
+	activities := []domain.Activity{}
 	if err := s.db.Order("created_at desc").Find(&activities).Error; err != nil {
 		return []dto.ActivityDto{}
 	}
 
-	return lo.Map(activities, func(ac activity.Activity, _ int) dto.ActivityDto {
+	return lo.Map(activities, func(ac domain.Activity, _ int) dto.ActivityDto {
 		return dto.ActivityDto{
 			TypeId:      ac.TypeId,
 			TypeName:    ac.GetTypeName(),
@@ -50,7 +50,7 @@ func (s *ActivityService) GetAll() []dto.ActivityDto {
 }
 
 // TODO: consider passing transaction into here when reuse ?
-func (s *ActivityService) BuildRegisterActivity(playerId, matchId uint) (*activity.Activity, error) {
+func (s *ActivityService) BuildRegisterActivity(playerId, matchId uint) (*domain.Activity, error) {
 	player, _ := s.playersvc.GetPlayerSummary(playerId)
 	match, _ := s.matchsvc.GetMatchSummary(matchId)
 
@@ -69,15 +69,15 @@ func (s *ActivityService) BuildRegisterActivity(playerId, matchId uint) (*activi
 		s.logger.Errorf("Unable to parse data json %s", err.Error())
 		return nil, err
 	}
-	return &activity.Activity{
-		TypeId:      activity.MatchRegistered,
+	return &domain.Activity{
+		TypeId:      domain.MatchRegistered,
 		Description: fmt.Sprintf("%s registered %s on %s", data.Player, match.SportCenterName, match.Start.Format("02/01/2006")),
 		Payload:     string(payload),
 	}, nil
 }
 
 // TODO: consider passing transaction into here when reuse ?
-func (s *ActivityService) BuildUnregisterActivity(playerId, matchId uint) (*activity.Activity, error) {
+func (s *ActivityService) BuildUnregisterActivity(playerId, matchId uint) (*domain.Activity, error) {
 	player, _ := s.playersvc.GetPlayerSummary(playerId)
 	match, _ := s.matchsvc.GetMatchSummary(matchId)
 
@@ -96,8 +96,8 @@ func (s *ActivityService) BuildUnregisterActivity(playerId, matchId uint) (*acti
 		s.logger.Errorf("Unable to parse data json %s", err.Error())
 		return nil, err
 	}
-	return &activity.Activity{
-		TypeId:      activity.MatchUnRegistered,
+	return &domain.Activity{
+		TypeId:      domain.MatchUnRegistered,
 		Description: fmt.Sprintf("%s unregistered %s on %s", data.Player, match.SportCenterName, match.Start.Format("02/01/2006")),
 		Payload:     string(payload),
 	}, nil
