@@ -17,17 +17,12 @@ const client = axios.create({
 
 async function getAuthHeaders() {
     try {
-        const token = await auth0.getTokenSilently({
-            authorizationParams: {
-                scope: "read:current_user",
-                audience: import.meta.env.VITE_AUTH0_AUDIENCE
-            }
-        });
+        const token = await auth0.getTokenSilently();
         return {
             Authorization: `Bearer ${token}`
         };
     } catch (e) {
-        alert(`Unable to get access token: ${e}`);
+        alert(e);
         return {};
     }
 }

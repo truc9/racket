@@ -41,25 +41,25 @@ const theme = createTheme({
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <MantineProvider theme={theme}>
-          <ModalsProvider>
-            <Auth0Provider
-              domain={import.meta.env.VITE_AUTH0_DOMAIN}
-              clientId={import.meta.env.VITE_AUTH0_CLIENTID}
-              authorizationParams={{
-                audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-                redirect_uri: window.location.origin,
-              }}
-              cacheLocation="memory"
-            >
+    <Auth0Provider
+      domain={import.meta.env.VITE_AUTH0_DOMAIN}
+      clientId={import.meta.env.VITE_AUTH0_CLIENTID}
+      authorizationParams={{
+        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+        redirect_uri: window.location.origin,
+      }}
+      cacheLocation="memory"
+    >
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <MantineProvider theme={theme}>
+            <ModalsProvider>
               <App />
               <Notifications />
-            </Auth0Provider>
-          </ModalsProvider>
-        </MantineProvider>
-      </QueryClientProvider>
-    </BrowserRouter>
+            </ModalsProvider>
+          </MantineProvider>
+        </QueryClientProvider>
+      </BrowserRouter>
+    </Auth0Provider>
   </React.StrictMode>,
 );
