@@ -5,14 +5,15 @@ import dayjs from "dayjs";
 import { FiCalendar, FiClock, FiGift, FiMapPin } from "react-icons/fi";
 import { IoCheckmarkCircle, IoFileTrayOutline } from "react-icons/io5";
 import formatter from "../../common/formatter";
-import httpService from "../../common/httpservice";
 import {
   useAttendantRequestsQuery,
   useUpcomingMatches,
 } from "../../hooks/useQueries";
 import { MatchSummaryModel } from "../../models";
+import { useApi } from "../../hooks/useApi";
 
 export default function AttendantRequests() {
+  const api = useApi();
   const { user } = useAuth0();
   const { data: attendantRequests, refetch: refetchAttendants } =
     useAttendantRequestsQuery(user?.sub ?? "");
@@ -24,7 +25,7 @@ export default function AttendantRequests() {
   } = useUpcomingMatches();
 
   const toggleAttendantClick = async (match: MatchSummaryModel) => {
-    await httpService.post("api/v1/registrations/attendant-requests", {
+    await api.post("api/v1/registrations/attendant-requests", {
       externalUserId: user?.sub,
       lastName: user?.family_name,
       firstName: user?.given_name,
