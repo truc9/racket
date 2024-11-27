@@ -32,6 +32,7 @@ func NewDatabase() *gorm.DB {
 
 		dbCtx.AutoMigrate(
 			&domain.Player{},
+			&domain.Account{},
 			&domain.Match{},
 			&domain.Registration{},
 			&domain.AdditionalCost{},

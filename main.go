@@ -90,6 +90,7 @@ func main() {
 		v1.DELETE("/players/:playerId", handler.Delete)
 		v1.PUT("/players/:playerId", handler.Update)
 		v1.PUT("/players/:playerId/outstanding-payments/paid", handler.MarkOutstandingPaymentsAsPaid)
+		v1.POST("/players/:playerId/accounts", handler.OpenAccount)
 	})
 
 	container.Invoke(func(handler *handler.RegistrationHandler) {

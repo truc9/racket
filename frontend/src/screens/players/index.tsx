@@ -2,7 +2,6 @@ import {
   ActionIcon,
   Button,
   Drawer,
-  Skeleton,
   Table,
   Text,
   TextInput,
@@ -10,16 +9,22 @@ import {
 } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
+import { modals } from "@mantine/modals";
+import { notifications } from "@mantine/notifications";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { IoAdd, IoMail, IoPencil, IoSave, IoTrash } from "react-icons/io5";
+import {
+  IoAdd,
+  IoCalculatorOutline,
+  IoPencil,
+  IoSave,
+  IoTrash,
+} from "react-icons/io5";
 import { z } from "zod";
 import formatter from "../../common/formatter";
 import httpService from "../../common/httpservice";
 import Page from "../../components/page";
-import { PlayerSummaryModel, UpdatePlayerModel } from "./models";
-import { notifications } from "@mantine/notifications";
-import { modals } from "@mantine/modals";
 import DataTableSkeleton from "../../components/skeleton/data-table-skeleton";
+import { PlayerSummaryModel, UpdatePlayerModel } from "./models";
 
 const schema = z.object({
   id: z.number().nullable(),
@@ -50,7 +55,7 @@ function Players() {
     queryFn: () => httpService.get<PlayerSummaryModel[]>("api/v1/players"),
   });
 
-  const createOrUpdateMutation = useMutation({
+  const createOrUpdateMut = useMutation({
     mutationFn: (model: UpdatePlayerModel) => {
       if (model.id) {
         return httpService.put(`api/v1/players/${model.id}`, model);
@@ -64,7 +69,7 @@ function Players() {
     },
   });
 
-  const deleteMutation = useMutation({
+  const deleteMut = useMutation({
     mutationFn: (model: PlayerSummaryModel) => {
       return httpService.del(`api/v1/players/${model.id}`);
     },
@@ -75,6 +80,26 @@ function Players() {
       notifications.show({
         title: "Error",
         message: "Unable to delete player.",
+        color: "red",
+      });
+    },
+  });
+
+  const openAccountMut = useMutation({
+    mutationFn(model: PlayerSummaryModel) {
+      return httpService.post(`api/v1/players/${model.id}/accounts`, {});
+    },
+    onSuccess(_data, _variables, _context) {
+      notifications.show({
+        title: "Success",
+        message: `Account open success`,
+        color: "green",
+      });
+    },
+    onError(err, _) {
+      notifications.show({
+        title: "Error",
+        message: "Unable to open account for player",
         color: "red",
       });
     },
@@ -98,15 +123,13 @@ function Players() {
       labels: { confirm: "Yes", cancel: "Cancel" },
       confirmProps: { color: "red" },
       onConfirm: async () => {
-        deleteMutation.mutate(model);
+        deleteMut.mutate(model);
       },
     });
   };
 
-  const sendWelcomeEmail = async (model: PlayerSummaryModel) => {
-    await httpService.post(`api/v1/players/${model.id}/welcome-email`, {
-      to: [model.email],
-    });
+  const openNewAccount = async (model: PlayerSummaryModel) => {
+    await openAccountMut.mutateAsync(model);
   };
 
   return (
@@ -149,14 +172,13 @@ function Players() {
                       )}
                     </Table.Td>
                     <Table.Td className="flex items-center justify-end gap-2">
-                      <Tooltip label="Welcome Email" position="top">
+                      <Tooltip label="Open New Account" position="top">
                         <ActionIcon
-                          disabled={!item.email}
                           color="pink"
-                          onClick={() => sendWelcomeEmail(item)}
+                          onClick={() => openNewAccount(item)}
                           size="lg"
                         >
-                          <IoMail />
+                          <IoCalculatorOutline />
                         </ActionIcon>
                       </Tooltip>
 
@@ -185,9 +207,7 @@ function Players() {
         title="Create Player"
       >
         <form
-          onSubmit={form.onSubmit((model) =>
-            createOrUpdateMutation.mutate(model),
-          )}
+          onSubmit={form.onSubmit((model) => createOrUpdateMut.mutate(model))}
           className="flex flex-col gap-2"
         >
           <TextInput label="First name" {...form.getInputProps("firstName")} />

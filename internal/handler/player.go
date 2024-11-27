@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -105,4 +106,30 @@ func (h *PlayerHandler) MarkOutstandingPaymentsAsPaid(c *gin.Context) {
 		return
 	}
 	c.Status(http.StatusOK)
+}
+
+func (h *PlayerHandler) OpenAccount(c *gin.Context) {
+	playerId := param.FromRouteUInt(c, "playerId")
+
+	var count int64
+	if err := h.db.
+		Model(&domain.Account{}).
+		Where("player_id = ?", playerId).
+		Count(&count).Error; err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	if count > 0 {
+		c.AbortWithError(http.StatusBadRequest, errors.New("player already has an active account"))
+		return
+	}
+
+	acc := domain.NewAccount(playerId)
+	if err := h.db.Create(acc).Error; err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, acc.ID)
 }
