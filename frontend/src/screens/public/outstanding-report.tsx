@@ -31,8 +31,8 @@ export default function Page() {
         <Table.Tr>
           <Table.Th>Name</Table.Th>
           <Table.Th>Unpaid Amount</Table.Th>
-          <Table.Th>Matches</Table.Th>
-          <Table.Th>Summary</Table.Th>
+          <Table.Th>Attendant Count</Table.Th>
+          <Table.Th>Synthetic Costs</Table.Th>
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>
