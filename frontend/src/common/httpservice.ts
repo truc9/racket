@@ -22,6 +22,7 @@ async function getAuthHeaders() {
             Authorization: `Bearer ${token}`
         };
     } catch (e) {
+        alert('Unable to get access token!!!');
         return {};
     }
 }
