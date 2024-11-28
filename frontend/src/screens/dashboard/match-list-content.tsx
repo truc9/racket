@@ -34,6 +34,7 @@ import {
 } from "../../models";
 import AdditionalCostEditor from "./additional-cost-editor";
 import MatchFigure from "./match-figure";
+import { IconCurrencyPound } from "@tabler/icons-react";
 
 interface Prop {
   match: MatchSummaryModel;
@@ -301,7 +302,7 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
                             ? unpaidMut.mutate(reg.registrationId)
                             : paidMut.mutate(reg.registrationId)
                         }
-                        icon={<IoCash />}
+                        icon={<IconCurrencyPound />}
                       />
                     </div>
                   ) : (
