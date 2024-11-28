@@ -1,20 +1,20 @@
-import { Alert, Button, Modal } from "@mantine/core";
+import { Alert, Button, Modal, Switch } from "@mantine/core";
 import { useClipboard, useDisclosure } from "@mantine/hooks";
 import { useMutation } from "@tanstack/react-query";
 import cx from "clsx";
 import dayjs from "dayjs";
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { FaCashRegister } from "react-icons/fa";
 import { FiDollarSign } from "react-icons/fi";
 import {
   IoBan,
   IoBaseball,
   IoCash,
-  IoChatbox,
   IoCopy,
   IoHeartCircle,
+  IoMapOutline,
+  IoNotificationsCircleOutline,
   IoPersonSharp,
-  IoPin,
   IoTime,
 } from "react-icons/io5";
 import Markdown from "react-markdown";
@@ -44,6 +44,7 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
   const clipboardRefLoc = useRef<HTMLDivElement>(null!);
   const clipboard = useClipboard({ timeout: 500 });
   const clipboardRef = useRef<HTMLDivElement>(null!);
+  const [showAttendantOnly, setShowAttendantOnly] = useState(false);
 
   const [
     additionalCostOpened,
@@ -137,22 +138,24 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
           <div className="flex flex-col gap-3">
             <Alert
               className="relative"
-              color="red"
+              color="orange"
               title="Match Details"
-              icon={<IoPin />}
+              icon={<IoMapOutline />}
             >
               <div className="flex flex-col gap-2" ref={clipboardRefLoc}>
-                <div className="flex items-center gap-2 font-bold">
-                  <span>Match open at {match.sportCenterName}</span>
+                <div className="flex items-center gap-2">
+                  <span>
+                    <span>🗺️ Location: </span>
+                    <span className="font-bold">{match.sportCenterName}</span>
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span>
-                    <span>📆 </span>
-                    {dayjs(match.start).format("dddd DD-MM-YYYY")}
-                    <span> ⏰ </span>
-                    {dayjs(match.start).format("hh:mm")}
+                    {dayjs(match.start).format("hh:mm A")}
                     <span> to </span>
-                    {dayjs(match.end).format("hh:mm")}
+                    {dayjs(match.end).format("hh:mm A")}
+                    <span> | </span>
+                    {dayjs(match.start).format("dddd DD-MM-YYYY")}
                   </span>
                 </div>
               </div>
@@ -160,7 +163,7 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
                 className="absolute right-2 top-2"
                 variant="light"
                 leftSection={<IoCopy />}
-                color={clipboardLoc.copied ? "purple" : "red"}
+                color={clipboardLoc.copied ? "purple" : "orange"}
                 onClick={() =>
                   clipboardLoc.copy(clipboardRefLoc.current.innerText)
                 }
@@ -174,7 +177,7 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
               variant="light"
               color="green"
               title="Message"
-              icon={<IoChatbox />}
+              icon={<IoNotificationsCircleOutline />}
             >
               <div ref={clipboardRef}>
                 <Markdown
@@ -242,9 +245,19 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
           </div>
         </div>
 
-        <div className="flex flex-col">
-          {registrations &&
-            registrations.map((reg) => {
+        <div className="flex flex-col gap-3">
+          <Switch
+            checked={showAttendantOnly}
+            offLabel="All"
+            onChange={(event) =>
+              setShowAttendantOnly(event.currentTarget.checked)
+            }
+            label="Show attendant only"
+          />
+
+          {registrations
+            ?.filter((r) => showAttendantOnly === false || r.registrationId)
+            ?.map((reg) => {
               return (
                 <div
                   key={reg.playerId}
