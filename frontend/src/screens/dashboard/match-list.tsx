@@ -1,7 +1,7 @@
 import { Accordion, Badge } from "@mantine/core";
 import dayjs from "dayjs";
 import React, { Suspense } from "react";
-import { FiClock, FiMapPin } from "react-icons/fi";
+import { FiMapPin } from "react-icons/fi";
 import formatter from "../../common/formatter";
 import Loading from "../../components/loading";
 import { MatchSummaryModel } from "../../models";
@@ -9,15 +9,19 @@ import MatchListContent from "./match-list-content";
 
 interface Prop {
   matches: MatchSummaryModel[];
+  expandFirstItem?: boolean;
 }
 
-const MatchList: React.FC<Prop> = ({ matches }) => {
+const MatchList: React.FC<Prop> = ({ matches, expandFirstItem }) => {
   if (!matches || matches.length === 0) {
     return <div>No matches</div>;
   }
 
   return (
-    <Accordion variant="separated">
+    <Accordion
+      variant="separated"
+      defaultValue={expandFirstItem ? `${matches[0].matchId}` : null}
+    >
       {matches &&
         matches.map((m, idx) => {
           return !m ? (

@@ -9,9 +9,16 @@ interface Props {
   matches?: MatchSummaryModel[];
   isLoading?: boolean;
   icon?: React.ReactNode;
+  expandFirstItem?: boolean;
 }
 
-const MatchSection: React.FC<Props> = ({ title, matches, isLoading, icon }) => {
+const MatchSection: React.FC<Props> = ({
+  title,
+  matches,
+  isLoading,
+  icon,
+  expandFirstItem,
+}) => {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center space-x-2 text-lg font-bold">
@@ -25,7 +32,9 @@ const MatchSection: React.FC<Props> = ({ title, matches, isLoading, icon }) => {
           <Skeleton height={40} />
         </div>
       )}
-      {matches && <MatchList matches={matches} />}
+      {matches && (
+        <MatchList matches={matches} expandFirstItem={expandFirstItem} />
+      )}
     </div>
   );
 };

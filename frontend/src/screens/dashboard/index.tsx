@@ -31,6 +31,7 @@ function Dashboard() {
           title="Today"
           isLoading={todayMatchesLoading}
           matches={todayMatches}
+          expandFirstItem={true}
         />
 
         <MatchSection
@@ -38,6 +39,7 @@ function Dashboard() {
           title="Future"
           isLoading={futureMatchesLoading}
           matches={futureMatches}
+          expandFirstItem={true}
         />
 
         <MatchSection
