@@ -5,6 +5,11 @@ import {
   useFutureMatchesQuery,
   useTodayMatchesQuery,
 } from "../../hooks/useQueries";
+import {
+  IoArchiveOutline,
+  IoCalendarClearOutline,
+  IoTodayOutline,
+} from "react-icons/io5";
 
 const MatchSection = lazy(() => import("./match-section"));
 
@@ -22,18 +27,21 @@ function Dashboard() {
     <Page title="Dashboard">
       <div className="flex flex-col gap-2">
         <MatchSection
+          icon={<IoTodayOutline />}
           title="Today"
           isLoading={todayMatchesLoading}
           matches={todayMatches}
         />
 
         <MatchSection
+          icon={<IoCalendarClearOutline />}
           title="Future"
           isLoading={futureMatchesLoading}
           matches={futureMatches}
         />
 
         <MatchSection
+          icon={<IoArchiveOutline />}
           title="Archived"
           isLoading={archivedMatchesLoading}
           matches={archivedMatches}

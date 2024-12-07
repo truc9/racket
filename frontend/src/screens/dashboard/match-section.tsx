@@ -8,20 +8,22 @@ interface Props {
   title: string;
   matches?: MatchSummaryModel[];
   isLoading?: boolean;
+  icon?: React.ReactNode;
 }
 
-const MatchSection: React.FC<Props> = ({ title, matches, isLoading }) => {
+const MatchSection: React.FC<Props> = ({ title, matches, isLoading, icon }) => {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center space-x-2 text-lg font-bold">
-        <IoPlanetOutline />
+        {icon || <IoPlanetOutline />}
         <h3>{title}</h3>
       </div>
       {isLoading && (
-        <>
+        <div className="flex items-center gap-2">
+          <Skeleton height={40} className="w-1/5" />
+          <Skeleton height={40} className="w-2/5" />
           <Skeleton height={40} />
-          <Skeleton height={40} mt={1} />
-        </>
+        </div>
       )}
       {matches && <MatchList matches={matches} />}
     </div>

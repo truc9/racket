@@ -45,7 +45,7 @@ const MatchListContent: React.FC<Prop> = ({ match }) => {
   const clipboardRefLoc = useRef<HTMLDivElement>(null!);
   const clipboard = useClipboard({ timeout: 500 });
   const clipboardRef = useRef<HTMLDivElement>(null!);
-  const [showAttendantOnly, setShowAttendantOnly] = useState(false);
+  const [showAttendantOnly, setShowAttendantOnly] = useState(true);
 
   const [
     additionalCostOpened,
