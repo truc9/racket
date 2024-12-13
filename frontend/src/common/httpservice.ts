@@ -22,7 +22,6 @@ async function getAuthHeaders() {
             Authorization: `Bearer ${token}`
         };
     } catch (e) {
-        alert(e);
         return {};
     }
 }
