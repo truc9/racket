@@ -3,6 +3,7 @@ import { IconMoneybag, IconTimeline } from "@tabler/icons-react";
 import { lazy, Suspense, useState } from "react";
 import Page from "../../components/page";
 import SectionLoading from "../../components/section-loading";
+import { IoQrCodeOutline } from "react-icons/io5";
 
 type TabType = "unpaid" | "activity-log" | "share-codes";
 
@@ -34,7 +35,7 @@ export default function Reporting() {
           </Tabs.Tab>
           <Tabs.Tab
             value="share-codes"
-            leftSection={<IconTimeline style={iconStyle} />}
+            leftSection={<IoQrCodeOutline style={iconStyle} />}
             onClick={() => setTab("share-codes")}
           >
             Share Codes

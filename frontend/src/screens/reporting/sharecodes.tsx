@@ -5,6 +5,7 @@ import { FiTrash } from "react-icons/fi";
 import { useApi } from "../../hooks/useApi";
 import { ShareUrlModel } from "./models";
 import DataTableSkeleton from "../../components/skeleton/data-table-skeleton";
+import { QRCodeSVG } from "qrcode.react";
 
 export default function ShareCodes() {
   const { get, del } = useApi();
@@ -22,7 +23,7 @@ export default function ShareCodes() {
     <Table striped highlightOnHover withRowBorders={false}>
       <Table.Thead>
         <Table.Tr>
-          <Table.Th>ID</Table.Th>
+          <Table.Th>QR Code</Table.Th>
           <Table.Th>URL</Table.Th>
           <Table.Th></Table.Th>
         </Table.Tr>
@@ -34,7 +35,9 @@ export default function ShareCodes() {
           data?.map((item) => {
             return (
               <Table.Tr key={item.id}>
-                <Table.Td>{item.id}</Table.Td>
+                <Table.Td>
+                  <QRCodeSVG value={item.fullUrl} />
+                </Table.Td>
                 <Table.Td>{item.fullUrl}</Table.Td>
                 <Table.Td>
                   <Button
