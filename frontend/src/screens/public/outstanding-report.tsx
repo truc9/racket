@@ -55,7 +55,6 @@ export default function Page() {
         <Table.Tr>
           <Table.Th>Name</Table.Th>
           <Table.Th>Unpaid Amount</Table.Th>
-          <Table.Th>Attendant Count</Table.Th>
           <Table.Th>Synthetic Costs</Table.Th>
         </Table.Tr>
       </Table.Thead>
@@ -73,7 +72,6 @@ export default function Page() {
               >
                 <Currency value={item.unpaidAmount} />
               </Table.Td>
-              <Table.Td>{item.matchCount}</Table.Td>
               <Table.Td>{item.registrationSummary}</Table.Td>
             </Table.Tr>
           );
