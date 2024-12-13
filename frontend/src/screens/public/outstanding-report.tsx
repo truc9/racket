@@ -72,7 +72,7 @@ export default function Page() {
               >
                 <Currency value={item.unpaidAmount} />
               </Table.Td>
-              <Table.Td>{item.registrationSummary}</Table.Td>
+              <Table.Td width={150}>{item.registrationSummary}</Table.Td>
             </Table.Tr>
           );
         })}
@@ -82,7 +82,6 @@ export default function Page() {
             <Table.Td>
               <Currency value={totalUnpaid} />
             </Table.Td>
-            <Table.Td></Table.Td>
             <Table.Td></Table.Td>
           </Table.Tr>
         )}
