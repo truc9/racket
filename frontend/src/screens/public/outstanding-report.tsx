@@ -53,9 +53,9 @@ export default function Page() {
     <Table striped highlightOnHover withRowBorders={false}>
       <Table.Thead>
         <Table.Tr>
-          <Table.Th>Name</Table.Th>
-          <Table.Th>Unpaid Amount</Table.Th>
-          <Table.Th>Synthetic Costs</Table.Th>
+          <Table.Th>Player</Table.Th>
+          <Table.Th>Amount</Table.Th>
+          <Table.Th>Dates</Table.Th>
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>
