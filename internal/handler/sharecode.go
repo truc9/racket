@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/truc9/racket/internal/domain"
 	"github.com/truc9/racket/internal/dto"
+	"github.com/truc9/racket/pkg/param"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -38,4 +39,23 @@ func (h *ShareCodeHandler) CreateShareUrl(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, sc)
+}
+
+func (h *ShareCodeHandler) GetShareUrls(c *gin.Context) {
+	shareUrls := []dto.ShareCodeDto{}
+	if err := h.db.Model(&domain.ShareCode{}).Select("Id", "FullUrl").Scan(&shareUrls).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, shareUrls)
+}
+
+func (h *ShareCodeHandler) DeleteShareCodeUrl(c *gin.Context) {
+	id := param.FromRoute(c, "shareCodeId")
+	if err := h.db.Delete(&domain.ShareCode{}, id).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, "Delete success")
 }

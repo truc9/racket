@@ -5,7 +5,7 @@ interface Props {
   text?: string;
 }
 
-const Loading: FC<Props> = ({ text }) => {
+const SectionLoading: FC<Props> = ({ text }) => {
   return (
     <div className="flex h-full w-full items-center justify-center">
       <div className="flex items-center space-x-2">
@@ -16,4 +16,4 @@ const Loading: FC<Props> = ({ text }) => {
   );
 };
 
-export default Loading;
+export default SectionLoading;

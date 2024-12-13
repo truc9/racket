@@ -3,8 +3,8 @@ import { Tooltip } from "@mantine/core";
 import cx from "clsx";
 import { FC, ReactNode, Suspense, useState } from "react";
 import { Navigate, NavLink, Outlet } from "react-router-dom";
-import FullScreenLoading from "../../components/fullscreen-loading";
-import Loading from "../../components/loading";
+import AppLoading from "../../components/app-loading";
+import SectionLoading from "../../components/section-loading";
 import LogoutButton from "../../components/logout-button";
 import UserProfile from "../../components/profile";
 
@@ -56,7 +56,7 @@ function AdminLayout() {
   }
 
   if (isLoading) {
-    return <FullScreenLoading text="Log you in..." />;
+    return <AppLoading text="Log you in..." />;
   }
 
   if (!isAuthenticated || !user) {
@@ -141,7 +141,7 @@ function AdminLayout() {
         </div>
       </div>
       <div className="flex w-full flex-1 bg-slate-300">
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={<SectionLoading />}>
           <Outlet />
         </Suspense>
       </div>

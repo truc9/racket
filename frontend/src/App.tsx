@@ -12,11 +12,9 @@ const HealthScreen = lazy(() => import("./screens/health"));
 const SportCentersScreen = lazy(() => import("./screens/sportcenter"));
 const SettingsScreen = lazy(() => import("./screens/settings"));
 const PageNotFoundScreen = lazy(() => import("./screens/page-not-found"));
-const AttendantRequestScreen = lazy(
-  () => import("./components/attendant-requests"),
-);
+const Requests = lazy(() => import("./components/requests"));
 const AdminRequestScreen = lazy(() => import("./screens/admin-requests"));
-const Reportings = lazy(() => import("./screens/reporting"));
+const ReportingScreen = lazy(() => import("./screens/reporting"));
 const PublicOutstandingReport = lazy(
   () => import("./screens/public/outstanding-report"),
 );
@@ -33,14 +31,14 @@ function App() {
           <Route path="players" element={<PlayerScreen />} />
           <Route path="matches" element={<MatchesScreen />} />
           <Route path="sportcenters" element={<SportCentersScreen />} />
-          <Route path="reports" element={<Reportings />} />
+          <Route path="reports" element={<ReportingScreen />} />
           <Route path="health" element={<HealthScreen />} />
           <Route path="settings" element={<SettingsScreen />} />
           <Route path="*" element={<PageNotFoundScreen />} />
         </Route>
       ) : (
         <Route element={<PublicLayout />}>
-          <Route index element={<AttendantRequestScreen />} />
+          <Route index element={<Requests />} />
         </Route>
       )}
       <Route path="/login" element={<Landing />} />

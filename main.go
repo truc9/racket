@@ -123,7 +123,9 @@ func main() {
 	})
 
 	container.Invoke(func(handler *handler.ShareCodeHandler) {
+		v1.GET("/share-codes/urls", handler.GetShareUrls)
 		v1.POST("/share-codes/urls", handler.CreateShareUrl)
+		v1.DELETE("/share-codes/urls/:shareCodeId", handler.DeleteShareCodeUrl)
 	})
 
 	app.Run()

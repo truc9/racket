@@ -12,7 +12,7 @@ import {
 import { MatchSummaryModel } from "../../models";
 import { useApi } from "../../hooks/useApi";
 
-export default function AttendantRequests() {
+export default function Requests() {
   const api = useApi();
   const { user } = useAuth0();
   const { data: attendantRequests, refetch: refetchAttendants } =

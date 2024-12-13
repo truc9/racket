@@ -9,26 +9,28 @@ import {
 } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 
+import { useDisclosure } from "@mantine/hooks";
+import { modals } from "@mantine/modals";
+import { notifications } from "@mantine/notifications";
 import clsx from "clsx";
 import { useMemo, useState } from "react";
+import { FiCheckCircle, FiShare } from "react-icons/fi";
 import httpService from "../../common/httpservice";
 import Currency from "../../components/currency";
 import DataTableSkeleton from "../../components/skeleton/data-table-skeleton";
+import { useApi } from "../../hooks/useApi";
 import { UnpaidModel } from "../../models/reports/unpaid";
-import { FiCheckCircle, FiShare } from "react-icons/fi";
-import { modals } from "@mantine/modals";
-import { IoWarning } from "react-icons/io5";
-import { notifications } from "@mantine/notifications";
-import { useDisclosure } from "@mantine/hooks";
 
-export default function OutstandingPayments() {
+export default function UnpaidReport() {
+  const { get } = useApi();
+
   const [opened, { open: openShareCodeResult, close: closeShareCodeResult }] =
     useDisclosure(false);
   const [shareCodeUrl, setShareCodeUrl] = useState("");
 
   const { isPending, data, refetch } = useQuery({
     queryKey: ["getUnpaidReport"],
-    queryFn: () => httpService.get<UnpaidModel[]>("api/v1/reports/unpaid"),
+    queryFn: () => get<UnpaidModel[]>("api/v1/reports/unpaid"),
   });
 
   const totalUnpaid = useMemo(() => {
@@ -96,14 +98,14 @@ export default function OutstandingPayments() {
           <Tooltip label="Anyone with this link can access to this report">
             <Button
               leftSection={<FiShare />}
-              variant="outline"
-              color="red"
+              variant="light"
               onClick={shareToEveryOne}
             >
               Publish
             </Button>
           </Tooltip>
         </div>
+
         <Table striped highlightOnHover withRowBorders={false}>
           <Table.Thead>
             <Table.Tr>
@@ -134,7 +136,6 @@ export default function OutstandingPayments() {
                   <Table.Td>{item.registrationSummary}</Table.Td>
                   <Table.Td className="flex-end flex justify-end space-x-2 text-right">
                     <Button
-                      size="xs"
                       leftSection={<FiCheckCircle size={18} />}
                       color="green"
                       onClick={() => markPaid(item)}

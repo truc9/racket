@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import React, { Suspense } from "react";
 import { FiMapPin } from "react-icons/fi";
 import formatter from "../../common/formatter";
-import Loading from "../../components/loading";
+import SectionLoading from "../../components/section-loading";
 import { MatchSummaryModel } from "../../models";
 import MatchListContent from "./match-list-content";
 
@@ -47,7 +47,7 @@ const MatchList: React.FC<Prop> = ({ matches, expandFirstItem }) => {
                 </div>
               </Accordion.Control>
               <Accordion.Panel>
-                <Suspense fallback={<Loading />}>
+                <Suspense fallback={<SectionLoading />}>
                   <MatchListContent match={m} />
                 </Suspense>
               </Accordion.Panel>

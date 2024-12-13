@@ -3,15 +3,15 @@ import { Menu, rem } from "@mantine/core";
 import { IconLogout } from "@tabler/icons-react";
 import { Suspense } from "react";
 import { Navigate, Outlet, useNavigate } from "react-router-dom";
-import FullScreenLoading from "../../components/fullscreen-loading";
-import Loading from "../../components/loading";
+import AppLoading from "../../components/app-loading";
+import SectionLoading from "../../components/section-loading";
 
 function PublicLayout() {
   const { user, isAuthenticated, isLoading, logout } = useAuth0();
   const navigate = useNavigate();
 
   if (isLoading) {
-    return <FullScreenLoading />;
+    return <AppLoading />;
   }
 
   if (!isAuthenticated && !user) {
@@ -53,7 +53,7 @@ function PublicLayout() {
         </Menu.Dropdown>
       </Menu>
 
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<SectionLoading />}>
         <Outlet />
       </Suspense>
     </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import Loading from "../loading";
+import SectionLoading from "../section-loading";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Navigate } from "react-router-dom";
 
@@ -11,7 +11,7 @@ const UserProfile: React.FC<UserProfileProp> = ({ showLabel }) => {
   const { user, isAuthenticated, isLoading } = useAuth0();
 
   if (isLoading) {
-    return <Loading />;
+    return <SectionLoading />;
   }
 
   if (!isAuthenticated) {

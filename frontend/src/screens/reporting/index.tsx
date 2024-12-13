@@ -2,27 +2,28 @@ import { rem, Tabs } from "@mantine/core";
 import { IconMoneybag, IconTimeline } from "@tabler/icons-react";
 import { lazy, Suspense, useState } from "react";
 import Page from "../../components/page";
-import Loading from "../../components/loading";
+import SectionLoading from "../../components/section-loading";
 
-type TabType = "outstanding-payment" | "activity-log";
+type TabType = "unpaid" | "activity-log" | "share-codes";
 
-const OutstandingPayments = lazy(() => import("./outstanding-payments"));
+const Unpaid = lazy(() => import("./unpaid"));
 const ActivityLogs = lazy(() => import("./activity-log"));
+const ShareCodes = lazy(() => import("./sharecodes"));
 
 export default function Reporting() {
   const iconStyle = { width: rem(16), height: rem(16) };
-  const [tab, setTab] = useState<TabType>("outstanding-payment");
+  const [tab, setTab] = useState<TabType>("unpaid");
 
   return (
     <Page title="Reports">
-      <Tabs defaultValue="outstanding-payment">
+      <Tabs defaultValue="unpaid">
         <Tabs.List>
           <Tabs.Tab
-            value="outstanding-payment"
+            value="unpaid"
             leftSection={<IconMoneybag style={iconStyle} />}
-            onClick={() => setTab("outstanding-payment")}
+            onClick={() => setTab("unpaid")}
           >
-            Outstanding Payments
+            Unpaid
           </Tabs.Tab>
           <Tabs.Tab
             value="activity-log"
@@ -31,12 +32,20 @@ export default function Reporting() {
           >
             Activities
           </Tabs.Tab>
+          <Tabs.Tab
+            value="share-codes"
+            leftSection={<IconTimeline style={iconStyle} />}
+            onClick={() => setTab("share-codes")}
+          >
+            Share Codes
+          </Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel value={tab}>
-          <Suspense fallback={<Loading />}>
-            {tab === "outstanding-payment" && <OutstandingPayments />}
+          <Suspense fallback={<SectionLoading />}>
+            {tab === "unpaid" && <Unpaid />}
             {tab === "activity-log" && <ActivityLogs />}
+            {tab === "share-codes" && <ShareCodes />}
           </Suspense>
         </Tabs.Panel>
       </Tabs>
