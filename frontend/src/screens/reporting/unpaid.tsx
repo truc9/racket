@@ -98,7 +98,7 @@ export default function UnpaidReport() {
           <Tooltip label="Anyone with this link can access to this report">
             <Button
               leftSection={<FiShare />}
-              variant="light"
+              variant="default"
               onClick={shareToEveryOne}
             >
               Publish
