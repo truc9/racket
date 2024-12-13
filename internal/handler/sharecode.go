@@ -52,7 +52,7 @@ func (h *ShareCodeHandler) GetShareUrls(c *gin.Context) {
 
 func (h *ShareCodeHandler) DeleteShareCodeUrl(c *gin.Context) {
 	id := param.FromRoute(c, "shareCodeId")
-	if err := h.db.Delete(&domain.ShareCode{}, id).Unscoped().Error; err != nil {
+	if err := h.db.Unscoped().Delete(&domain.ShareCode{}, id).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
