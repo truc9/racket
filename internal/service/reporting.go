@@ -62,7 +62,7 @@ func (s *ReportingService) GetUnpaidReport() ([]UnpaidByPlayer, error) {
 	JOIN cte_registration_history cte2 ON cte2.player_id = p.id
 	WHERE r.is_paid = false	
 	GROUP BY p.id, cte2.registration_summary
-	ORDER by unpaid_amount DESC
+	ORDER by player_name
 	`).Scan(&result).Error; err != nil {
 		return nil, err
 	}
