@@ -1,28 +1,45 @@
-import { Table } from "@mantine/core";
+import { Skeleton, TextInput } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { IoCalendarOutline, IoSearch } from "react-icons/io5";
 import { useSearchParams } from "react-router-dom";
-import DataTableSkeleton from "../../components/skeleton/data-table-skeleton";
-import { UnpaidModel } from "../../models/reports/unpaid";
 import Currency from "../../components/currency";
-import clsx from "clsx";
 import { useApi } from "../../hooks/useApi";
+import { UnpaidModel } from "../../models/reports/unpaid";
 
 export default function Page() {
   const { get } = useApi();
+  const [search, setSearch] = useState("");
   const [searchParams] = useSearchParams();
   const shareCode = searchParams.get("share-code");
-  const { isPending, data, isError } = useQuery({
+  const { isPending, data, isError, refetch } = useQuery({
     retry: false,
     queryKey: ["getPublicUnpaidReport"],
     queryFn: () =>
       get<UnpaidModel[]>(`api/v1/public/reports/unpaid?shareCode=${shareCode}`),
+    initialData: [],
   });
 
-  const totalUnpaid = useMemo(() => {
-    if (!data || data.length == 0) return 0;
-    return data.map((e) => e.unpaidAmount).reduce((prev, cur) => (cur += prev));
-  }, [data]);
+  const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  };
+
+  const normalize = (input: string) => {
+    return input
+      .normalize("NFD") // Decompose combined characters (e.g., "é" → "é")
+      .replace(/[\u0300-\u036f]/g, ""); // Remove diacritical marks
+  };
+
+  const filterPlayers = useMemo(() => {
+    if (search) {
+      return data?.filter((item) =>
+        normalize(item.playerName.toLowerCase()).includes(
+          normalize(search.toLowerCase()),
+        ),
+      );
+    }
+    return data;
+  }, [search, data]);
 
   //TODO: check 403 instead of isError
   if (isError) {
@@ -50,42 +67,51 @@ export default function Page() {
   }
 
   return (
-    <Table striped highlightOnHover withRowBorders={false}>
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th>Player</Table.Th>
-          <Table.Th>Amount</Table.Th>
-          <Table.Th>Dates</Table.Th>
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>
-        {isPending && <DataTableSkeleton row={3} col={5} />}
-        {data?.map((item) => {
+    <div className="m-auto flex flex-col justify-center gap-2 p-2 lg:w-1/2 xl:w-1/4">
+      <TextInput
+        leftSection={<IoSearch size={28} />}
+        size="lg"
+        placeholder="Search player..."
+        onChange={handleSearch}
+      />
+      {isPending ? (
+        <>
+          <Skeleton height={50} />
+          <Skeleton height={50} />
+          <Skeleton height={50} />
+        </>
+      ) : (
+        filterPlayers?.map((item) => {
           return (
-            <Table.Tr key={item.playerId}>
-              <Table.Td>{item.playerName}</Table.Td>
-              <Table.Td
-                className={clsx(
-                  "font-bold",
-                  item.unpaidAmount > 20 ? "text-rose-500" : "text-emerald-500",
-                )}
-              >
-                <Currency value={item.unpaidAmount} />
-              </Table.Td>
-              <Table.Td width={150}>{item.registrationSummary}</Table.Td>
-            </Table.Tr>
+            <div key={item.playerId} className="rounded bg-slate-50 p-3">
+              <div className="flex items-center justify-between gap-3 text-xl">
+                <div className="font-bold">{item.playerName}</div>
+                <div className="flex-1 border-[0.5px] border-dashed border-slate-500"></div>
+                <div className="font-bold text-purple-500">
+                  <Currency value={item.unpaidAmount} />
+                </div>
+              </div>
+
+              <div>
+                {item.registrationSummary.split(",").map((record, i) => {
+                  return (
+                    <div
+                      key={i}
+                      className="text- flex items-center justify-between gap-3 text-sm"
+                    >
+                      <div className="flex items-center gap-1">
+                        <IoCalendarOutline />
+                        {record.split(":")[0]}
+                      </div>
+                      <div>{record.split(":")[1]}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           );
-        })}
-        {totalUnpaid > 0 && (
-          <Table.Tr className="font-bold">
-            <Table.Td>Total</Table.Td>
-            <Table.Td>
-              <Currency value={totalUnpaid} />
-            </Table.Td>
-            <Table.Td></Table.Td>
-          </Table.Tr>
-        )}
-      </Table.Tbody>
-    </Table>
+        })
+      )}
+    </div>
   );
 }
