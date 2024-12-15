@@ -1,4 +1,4 @@
-import { Skeleton, TextInput } from "@mantine/core";
+import { TextInput } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { IoCalendarOutline, IoSearch } from "react-icons/io5";
@@ -6,19 +6,39 @@ import { useSearchParams } from "react-router-dom";
 import Currency from "../../components/currency";
 import { useApi } from "../../hooks/useApi";
 import { UnpaidModel } from "../../models/reports/unpaid";
+import SectionLoading from "../../components/section-loading";
 
 export default function Page() {
   const { get } = useApi();
   const [search, setSearch] = useState("");
   const [searchParams] = useSearchParams();
   const shareCode = searchParams.get("share-code");
-  const { isPending, data, isError, refetch } = useQuery({
+  const { isLoading, isPending, data, isError, refetch } = useQuery({
     retry: false,
     queryKey: ["getPublicUnpaidReport"],
-    queryFn: () =>
-      get<UnpaidModel[]>(`api/v1/public/reports/unpaid?shareCode=${shareCode}`),
-    initialData: [],
+    queryFn: async () => {
+      const res = await get<UnpaidModel[]>(
+        `api/v1/public/reports/unpaid?shareCode=${shareCode}`,
+      );
+      //TODO: return raw from API
+      return res.map((model) => {
+        return {
+          ...model,
+          dates: model.registrationSummary.split(",").map((d) => {
+            const segments = d.split(":");
+            return {
+              date: segments[0],
+              cost: segments[1],
+            };
+          }),
+        };
+      });
+    },
   });
+
+  const isDone = useMemo(() => {
+    return !isLoading && !isPending && !!data;
+  }, [isLoading, isPending, data]);
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -74,12 +94,10 @@ export default function Page() {
         placeholder="Search player..."
         onChange={handleSearch}
       />
-      {isPending ? (
-        <>
-          <Skeleton height={50} />
-          <Skeleton height={50} />
-          <Skeleton height={50} />
-        </>
+      {!isDone ? (
+        <div className="py-5">
+          <SectionLoading />
+        </div>
       ) : (
         filterPlayers?.map((item) => {
           return (
@@ -93,7 +111,7 @@ export default function Page() {
               </div>
 
               <div>
-                {item.registrationSummary.split(",").map((record, i) => {
+                {item.dates.map((record, i) => {
                   return (
                     <div
                       key={i}
@@ -101,9 +119,9 @@ export default function Page() {
                     >
                       <div className="flex items-center gap-1">
                         <IoCalendarOutline />
-                        {record.split(":")[0]}
+                        {record.date}
                       </div>
-                      <div>{record.split(":")[1]}</div>
+                      <div>{record.cost}</div>
                     </div>
                   );
                 })}
