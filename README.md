@@ -1,4 +1,6 @@
-![LOGO](art/logo.svg)
+<div align="center">
+  <img height="130" src="art/logo.svg" alt="LOGO" />
+</div>
 
 [![Go](https://github.com/truc9/racket/actions/workflows/go.yml/badge.svg)](https://github.com/truc9/racket/actions/workflows/go.yml) [![CodeQL Advanced](https://github.com/truc9/racket/actions/workflows/codeql.yml/badge.svg)](https://github.com/truc9/racket/actions/workflows/codeql.yml)
 
