@@ -1,4 +1,4 @@
-import { TextInput } from "@mantine/core";
+import { Skeleton, TextInput } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { IoCalendarOutline, IoSearch } from "react-icons/io5";
@@ -6,14 +6,22 @@ import { useSearchParams } from "react-router-dom";
 import Currency from "../../components/currency";
 import { useApi } from "../../hooks/useApi";
 import { UnpaidModel } from "../../models/reports/unpaid";
-import SectionLoading from "../../components/section-loading";
+
+const PlayerLoading = () => (
+  <>
+    <Skeleton height={50} circle />
+    <Skeleton height={15} radius="xl" />
+    <Skeleton height={15} mt={6} radius="xl" />
+    <Skeleton height={15} mt={6} width="70%" radius="xl" />
+  </>
+);
 
 export default function Page() {
   const { get } = useApi();
   const [search, setSearch] = useState("");
   const [searchParams] = useSearchParams();
   const shareCode = searchParams.get("share-code");
-  const { isLoading, isPending, data, isError, refetch } = useQuery({
+  const { isFetching, data, isError } = useQuery({
     retry: false,
     queryKey: ["getPublicUnpaidReport"],
     queryFn: async () => {
@@ -35,10 +43,6 @@ export default function Page() {
       });
     },
   });
-
-  const isDone = useMemo(() => {
-    return !isLoading && !isPending && !!data;
-  }, [isLoading, isPending, data]);
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -94,10 +98,12 @@ export default function Page() {
         placeholder="Search player..."
         onChange={handleSearch}
       />
-      {!isDone ? (
-        <div className="py-5">
-          <SectionLoading />
-        </div>
+      {isFetching ? (
+        <>
+          <PlayerLoading />
+          <PlayerLoading />
+          <PlayerLoading />
+        </>
       ) : (
         filterPlayers?.map((item) => {
           return (
