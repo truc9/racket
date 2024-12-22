@@ -116,7 +116,7 @@ export default function Page() {
             <div className="flex items-center justify-between gap-3 text-lg">
               <div className="font-semibold">{item.playerName}</div>
               <div className="mx-2 flex-1 border-t border-dashed border-slate-500"></div>
-              <div className="font-semibold text-purple-500">
+              <div className="font-semibold text-green-500">
                 <Currency value={item.unpaidAmount} />
               </div>
             </div>
