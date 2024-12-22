@@ -1,8 +1,8 @@
+import { Skeleton } from "@mantine/core";
 import React from "react";
 import { IoPlanetOutline } from "react-icons/io5";
 import { MatchSummaryModel } from "../../models";
 import MatchList from "./match-list";
-import { Skeleton } from "@mantine/core";
 
 interface Props {
   title: string;
@@ -19,6 +19,19 @@ const MatchSection: React.FC<Props> = ({
   icon,
   expandFirstItem,
 }) => {
+  const LoadingSkeleton = () => (
+    <div className="flex items-center gap-2">
+      <div>
+        <Skeleton height={30} circle />
+      </div>
+      <Skeleton height={30} className="w-2/12" radius={100} />
+      <Skeleton height={30} className="w-3/12" radius={100} />
+      <Skeleton height={30} className="w-1/12" radius={100} />
+      <Skeleton height={30} className="w-full" radius={100} />
+      <Skeleton height={30} className="w-2/12" radius={100} />
+    </div>
+  );
+
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center space-x-2 text-lg font-bold">
@@ -26,11 +39,11 @@ const MatchSection: React.FC<Props> = ({
         <h3>{title}</h3>
       </div>
       {isLoading && (
-        <div className="flex items-center gap-2">
-          <Skeleton height={40} className="w-1/5" />
-          <Skeleton height={40} className="w-2/5" />
-          <Skeleton height={40} />
-        </div>
+        <>
+          <LoadingSkeleton />
+          <LoadingSkeleton />
+          <LoadingSkeleton />
+        </>
       )}
       {matches && (
         <MatchList matches={matches} expandFirstItem={expandFirstItem} />
