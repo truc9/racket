@@ -91,54 +91,51 @@ export default function Page() {
   }
 
   return (
-    <div className="m-auto flex flex-col justify-center gap-2 p-2 lg:w-1/2 xl:w-1/4">
+    <div className="m-auto flex flex-col justify-center gap-4 p-4 lg:w-1/2 xl:w-1/3">
       <TextInput
-        leftSection={<IoSearch size={28} />}
-        size="lg"
+        leftSection={<IoSearch size={24} />}
+        size="md"
         placeholder="Search player..."
         onChange={handleSearch}
+        disabled={filterPlayers?.length === 0}
       />
       {isFetching ? (
-        <>
-          <PlayerLoading />
-          <PlayerLoading />
-          <PlayerLoading />
-        </>
+        Array.from({ length: 3 }).map((_, index) => (
+          <PlayerLoading key={index} />
+        ))
       ) : filterPlayers?.length === 0 ? (
         <div className="rounded-lg border border-dashed border-green-500 bg-green-50 px-5 py-12 text-center text-xl font-bold text-green-500 shadow">
           No more unpaid 🥰
         </div>
       ) : (
-        filterPlayers?.map((item) => {
-          return (
-            <div key={item.playerId} className="rounded bg-slate-50 p-3">
-              <div className="flex items-center justify-between gap-3 text-xl">
-                <div className="font-bold">{item.playerName}</div>
-                <div className="flex-1 border-[0.5px] border-dashed border-slate-500"></div>
-                <div className="font-bold text-purple-500">
-                  <Currency value={item.unpaidAmount} />
-                </div>
-              </div>
-
-              <div>
-                {item.dates.map((record, i) => {
-                  return (
-                    <div
-                      key={i}
-                      className="text- flex items-center justify-between gap-3 text-sm"
-                    >
-                      <div className="flex items-center gap-1">
-                        <IoCalendarOutline />
-                        {record.date}
-                      </div>
-                      <div>{record.cost}</div>
-                    </div>
-                  );
-                })}
+        filterPlayers?.map((item) => (
+          <div
+            key={item.playerId}
+            className="rounded bg-slate-50 p-4 shadow-sm"
+          >
+            <div className="flex items-center justify-between gap-3 text-lg">
+              <div className="font-semibold">{item.playerName}</div>
+              <div className="mx-2 flex-1 border-t border-dashed border-slate-500"></div>
+              <div className="font-semibold text-purple-500">
+                <Currency value={item.unpaidAmount} />
               </div>
             </div>
-          );
-        })
+            <div className="mt-2">
+              {item.dates.map((record, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between gap-3 text-sm"
+                >
+                  <div className="flex items-center gap-1">
+                    <IoCalendarOutline />
+                    {record.date}
+                  </div>
+                  <div>{record.cost}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
       )}
     </div>
   );
