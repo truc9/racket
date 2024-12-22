@@ -2,6 +2,7 @@ import { Accordion, Badge } from "@mantine/core";
 import dayjs from "dayjs";
 import React, { Suspense } from "react";
 import { FiMapPin } from "react-icons/fi";
+import { IoBeerOutline } from "react-icons/io5";
 import formatter from "../../common/formatter";
 import SectionLoading from "../../components/section-loading";
 import { MatchSummaryModel } from "../../models";
@@ -14,7 +15,11 @@ interface Prop {
 
 const MatchList: React.FC<Prop> = ({ matches, expandFirstItem }) => {
   if (!matches || matches.length === 0) {
-    return <div>No matches</div>;
+    return (
+      <div className="flex h-24 items-center justify-center gap-2 rounded-lg border border-dashed">
+        <IoBeerOutline /> No matches, enjoy your beer!
+      </div>
+    );
   }
 
   return (

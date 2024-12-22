@@ -45,9 +45,7 @@ const NavItem: FC<NavItemProps> = ({ label, path, icon, showLabel = true }) => {
 };
 
 function AdminLayout() {
-  const APP_NAME = "RACKET";
-
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   const { user, isAuthenticated, isLoading } = useAuth0();
 

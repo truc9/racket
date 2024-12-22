@@ -1,4 +1,4 @@
-import { Button, Table } from "@mantine/core";
+import { ActionIcon, Button, Table } from "@mantine/core";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { FiTrash } from "react-icons/fi";
@@ -6,6 +6,8 @@ import { useApi } from "../../hooks/useApi";
 import { ShareUrlModel } from "./models";
 import DataTableSkeleton from "../../components/skeleton/data-table-skeleton";
 import { QRCodeSVG } from "qrcode.react";
+import { IoLinkOutline } from "react-icons/io5";
+import { IconTrash } from "@tabler/icons-react";
 
 export default function ShareCodes() {
   const { get, del } = useApi();
@@ -23,8 +25,8 @@ export default function ShareCodes() {
     <Table striped highlightOnHover withRowBorders={false}>
       <Table.Thead>
         <Table.Tr>
-          <Table.Th>QR Code</Table.Th>
-          <Table.Th>URL</Table.Th>
+          <Table.Th>QR</Table.Th>
+          <Table.Th>Url</Table.Th>
           <Table.Th></Table.Th>
         </Table.Tr>
       </Table.Thead>
@@ -35,21 +37,29 @@ export default function ShareCodes() {
           data?.map((item) => {
             return (
               <Table.Tr key={item.id}>
-                <Table.Td>
-                  <QRCodeSVG value={item.fullUrl} />
+                <Table.Td width={100}>
+                  <QRCodeSVG height={50} width={50} value={item.fullUrl} />
                 </Table.Td>
-                <Table.Td>{item.fullUrl}</Table.Td>
                 <Table.Td>
-                  <Button
-                    leftSection={<FiTrash size={18} />}
+                  <a href={item.fullUrl} target="_blank">
+                    {item.fullUrl}
+                  </a>
+                </Table.Td>
+                <Table.Td>
+                  <ActionIcon
+                    variant="filled"
                     color="red"
+                    aria-label="Trash"
                     onClick={async () => {
                       await deleteMut.mutateAsync(item.id);
                       await refetch();
                     }}
                   >
-                    Delete
-                  </Button>
+                    <IconTrash
+                      style={{ width: "70%", height: "70%" }}
+                      stroke={1.5}
+                    />
+                  </ActionIcon>
                 </Table.Td>
               </Table.Tr>
             );
